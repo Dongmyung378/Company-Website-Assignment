@@ -1,4 +1,5 @@
-## 📖 프로젝트 개요 (About the Project)
+## 📖 About the Project
 
-본 프로젝트는 가상의 회사를 상정하여 구축된 **직원 관리 웹 애플리케이션** 입니다. 
-임직원들의 직종, 연봉, 개인정보 관리와 휴가 처리 및 복지 등을 목적으로 하며, **일반 직원(Employee)** 과 **관리자(Manager)** 의 권한을 분리하여 각 직무에 최적화된 기능과 인터페이스를 제공합니다.
+This project is a **robust Employee Management Web Application** engineered to streamline organizational workflows for a simulated enterprise. 
+
+Designed to efficiently manage employee roles, compensation metrics, personal data, leave requests, and corporate welfare benefits, the system implements strict **Role-Based Access Control (RBAC)**. By cleanly decoupling permissions between **General Employees** and **Managers**, the application delivers tailored functional flows and optimized user interfaces tailored to each role's distinct operational needs.
