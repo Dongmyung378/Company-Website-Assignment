@@ -3,7 +3,7 @@
 </p>
 
 <div align="center">
-  <img src="assets/images/company-illustration.jpg" alt="Kilburnazon company illustration" width="760">
+  <img src="public/assets/images/company-illustration.jpg" alt="Kilburnazon company illustration" width="760">
   <h1>Kilburnazon People Operations</h1>
   <p>A role-based employee operations platform built with PHP and MySQL.</p>
   <p>
@@ -70,9 +70,6 @@ For a deeper technical walkthrough, see [Architecture notes](docs/ARCHITECTURE.m
 
 ```text
 .
-├── assets/
-│   ├── css/                    # Page-specific presentation
-│   └── images/                 # Project artwork and default avatar
 ├── config/
 │   ├── database.php            # Environment-aware DB settings
 │   └── connection.php          # Shared MySQLi connection
@@ -82,11 +79,13 @@ For a deeper technical walkthrough, see [Architecture notes](docs/ARCHITECTURE.m
 │   └── README.md               # Database setup guide
 ├── docs/
 │   └── ARCHITECTURE.md         # System and data-flow decisions
-├── index.php                   # Application entry redirect
-├── login.php                   # Authentication entry point
-├── main.php                    # Employee dashboard
-├── admin_main.php              # Executive dashboard
-└── *.php                       # Feature pages
+└── public/                     # Only web-accessible directory
+    ├── assets/                 # Styles and static images
+    ├── index.php               # Application entry redirect
+    ├── login.php               # Authentication entry point
+    ├── main.php                # Employee dashboard
+    ├── admin_main.php          # Executive dashboard
+    └── *.php                   # Feature pages
 ```
 
 ## Run locally
@@ -113,20 +112,27 @@ PowerShell example for the standard MySQL port:
 
 ```powershell
 $env:DB_PORT = "3306"
-php -S 127.0.0.1:8000
 ```
 
 macOS/Linux example:
 
 ```bash
-DB_PORT=3306 php -S 127.0.0.1:8000
+export DB_PORT=3306
 ```
 
 ### 2. Initialize the schema
 
 Follow the one-time sequence in the [database setup guide](database/README.md). It creates the database, imports fictional seed data, prepares leave and login records, and installs the required trigger and stored procedure.
 
-### 3. Sign in
+### 3. Start the application
+
+Serve only the public document root so configuration and setup scripts cannot be requested from the browser:
+
+```bash
+php -S 127.0.0.1:8000 -t public
+```
+
+### 4. Sign in
 
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000). Seeded accounts initially use password `0000`; change it after the first login.
 

@@ -3,7 +3,7 @@
 </p>
 
 <div align="center">
-  <img src="assets/images/company-illustration.jpg" alt="Kilburnazon 회사 일러스트" width="760">
+  <img src="public/assets/images/company-illustration.jpg" alt="Kilburnazon 회사 일러스트" width="760">
   <h1>Kilburnazon 인사 운영 시스템</h1>
   <p>PHP와 MySQL로 구현한 역할 기반 직원 관리 웹 애플리케이션입니다.</p>
   <p>
@@ -70,9 +70,6 @@ flowchart LR
 
 ```text
 .
-├── assets/
-│   ├── css/                    # 페이지별 스타일
-│   └── images/                 # 프로젝트 이미지와 기본 프로필
 ├── config/
 │   ├── database.php            # 환경 변수 기반 DB 설정
 │   └── connection.php          # 공용 MySQLi 연결
@@ -81,12 +78,14 @@ flowchart LR
 │   ├── setup/                  # 스키마·초기화 스크립트
 │   └── README.md               # DB 설치 가이드
 ├── docs/
-│   └── ARCHITECTURE.md         # 시스템·데이터 흐름 설계
-├── index.php                   # 애플리케이션 시작점
-├── login.php                   # 로그인
-├── main.php                    # 일반 직원 대시보드
-├── admin_main.php              # 관리자 대시보드
-└── *.php                       # 기능별 페이지
+│   └── ARCHITECTURE.ko.md      # 시스템·데이터 흐름 설계
+└── public/                     # 웹에서 접근 가능한 유일한 폴더
+    ├── assets/                 # 스타일과 정적 이미지
+    ├── index.php               # 애플리케이션 시작점
+    ├── login.php               # 로그인
+    ├── main.php                # 일반 직원 대시보드
+    ├── admin_main.php          # 관리자 대시보드
+    └── *.php                   # 기능별 페이지
 ```
 
 ## 로컬 실행
@@ -113,20 +112,27 @@ MySQL 기본 포트를 사용하는 PowerShell 예시입니다.
 
 ```powershell
 $env:DB_PORT = "3306"
-php -S 127.0.0.1:8000
 ```
 
 macOS/Linux에서는 다음과 같이 실행합니다.
 
 ```bash
-DB_PORT=3306 php -S 127.0.0.1:8000
+export DB_PORT=3306
 ```
 
 ### 2. 스키마 초기화
 
 [데이터베이스 설치 가이드](database/README.ko.md)의 순서를 한 번씩 실행합니다. 데이터베이스 생성, 가상 데이터 가져오기, 휴가·로그인 데이터 준비, 트리거와 프로시저 설치가 진행됩니다.
 
-### 3. 로그인
+### 3. 애플리케이션 실행
+
+브라우저에서 설정 및 설치 스크립트에 접근하지 못하도록 `public/`만 웹 문서 루트로 실행합니다.
+
+```bash
+php -S 127.0.0.1:8000 -t public
+```
+
+### 4. 로그인
 
 [http://127.0.0.1:8000](http://127.0.0.1:8000)에 접속합니다. 초기 계정 비밀번호는 `0000`이며 첫 로그인 후 변경을 권장합니다.
 

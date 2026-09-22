@@ -12,30 +12,31 @@
 
 연결 정보는 `config/database.php`에서 관리하며 `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME` 환경 변수로 덮어쓸 수 있습니다. 기본값은 MySQL 포트 `3307`과 데이터베이스 이름 `company_db`입니다.
 
-리포지토리 루트에서 애플리케이션을 실행합니다.
-
-```bash
-php -S 127.0.0.1:8000
-```
-
 ## 초기화 순서
 
-다음 주소를 나열된 순서대로 방문합니다.
+리포지토리 루트에서 다음 명령을 나열된 순서대로 실행합니다.
 
-1. [`/database/setup/set_database.php`](http://127.0.0.1:8000/database/setup/set_database.php)
-2. [`/database/setup/material_table.php`](http://127.0.0.1:8000/database/setup/material_table.php)
-3. [`/database/setup/get_employees_data.php`](http://127.0.0.1:8000/database/setup/get_employees_data.php)
-4. [`/database/setup/department_table.php`](http://127.0.0.1:8000/database/setup/department_table.php)
-5. [`/database/setup/position_table.php`](http://127.0.0.1:8000/database/setup/position_table.php)
-6. [`/database/setup/office_table.php`](http://127.0.0.1:8000/database/setup/office_table.php)
-7. [`/database/setup/employee_table.php`](http://127.0.0.1:8000/database/setup/employee_table.php)
-8. [`/database/setup/emergency_table.php`](http://127.0.0.1:8000/database/setup/emergency_table.php)
-9. [`/database/setup/holiday_tables.php`](http://127.0.0.1:8000/database/setup/holiday_tables.php)
-10. [`/database/setup/set_holiday.php`](http://127.0.0.1:8000/database/setup/set_holiday.php)
-11. [`/database/setup/delete_employee_logs.php`](http://127.0.0.1:8000/database/setup/delete_employee_logs.php)
-12. [`/database/setup/login_table.php`](http://127.0.0.1:8000/database/setup/login_table.php)
-13. [`/database/setup/set_triggers_and_procedure.php`](http://127.0.0.1:8000/database/setup/set_triggers_and_procedure.php)
-14. 선택 사항: [`/database/setup/extra_tables.php`](http://127.0.0.1:8000/database/setup/extra_tables.php)
+```bash
+php database/setup/set_database.php
+php database/setup/material_table.php
+php database/setup/get_employees_data.php
+php database/setup/department_table.php
+php database/setup/position_table.php
+php database/setup/office_table.php
+php database/setup/employee_table.php
+php database/setup/emergency_table.php
+php database/setup/holiday_tables.php
+php database/setup/set_holiday.php
+php database/setup/delete_employee_logs.php
+php database/setup/login_table.php
+php database/setup/set_triggers_and_procedure.php
+```
+
+선택형 확장 스키마는 별도로 설치할 수 있습니다.
+
+```bash
+php database/setup/extra_tables.php
+```
 
 마지막 필수 단계에는 MySQL의 `TRIGGER`와 `CREATE ROUTINE` 권한이 필요합니다.
 
@@ -52,4 +53,4 @@ php -S 127.0.0.1:8000
 
 ## 로컬 데이터베이스 초기화
 
-설치 과정은 새 데이터베이스를 기준으로 작성되었습니다. 다시 초기화하려면 사용하는 MySQL 관리 도구에서 로컬 `company_db` 데이터베이스를 삭제한 뒤 설치 순서를 반복하세요. 배포 환경에서는 `database/setup/` 경로를 외부에 공개하지 마세요.
+설치 과정은 새 데이터베이스를 기준으로 작성되었습니다. 다시 초기화하려면 사용하는 MySQL 관리 도구에서 로컬 `company_db` 데이터베이스를 삭제한 뒤 설치 순서를 반복하세요. 설치 스크립트는 의도적으로 `public/` 문서 루트 밖에 두었으며 명령줄에서만 실행해야 합니다.

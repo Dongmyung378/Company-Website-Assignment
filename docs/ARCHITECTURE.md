@@ -29,9 +29,9 @@ sequenceDiagram
 
 | Boundary | Responsibility |
 | --- | --- |
-| Root PHP pages | Request handling, access checks, domain queries, and rendered views |
+| `public/*.php` | Request handling, access checks, domain queries, and rendered views |
 | `config/` | Environment-aware connection settings and the shared MySQLi connection |
-| `assets/` | Page presentation and static imagery |
+| `public/assets/` | Page presentation and static imagery |
 | `database/setup/` | One-time schema, seed transformation, triggers, and stored procedure setup |
 | `database/seeds/` | Fictional source records used to initialize the project |
 | `docs/` | Portfolio-facing design and maintenance context |
@@ -83,4 +83,4 @@ The department-based role rule is also intentionally documented rather than hidd
 
 ## Security posture
 
-The project hashes passwords, uses session-based authentication, escapes rendered employee data in key views, and binds parameters for core user-driven queries. Before production use, it still needs CSRF protection, consistent input validation, secure session-cookie settings, rate limiting, secret management, and non-public database setup routes.
+The project hashes passwords, uses session-based authentication, escapes rendered employee data in key views, and binds parameters for core user-driven queries. Its `public/` document root keeps configuration and database setup scripts outside browser access. Before production use, it still needs CSRF protection, consistent input validation, secure session-cookie settings, rate limiting, and managed secrets.

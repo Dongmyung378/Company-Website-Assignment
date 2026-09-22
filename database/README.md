@@ -12,30 +12,31 @@ The setup scripts transform the fictional CSV source into the normalized applica
 
 Connection values come from `config/database.php` and can be overridden with `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, and `DB_NAME` environment variables. The defaults use MySQL on port `3307` and database name `company_db`.
 
-Start the application from the repository root:
-
-```bash
-php -S 127.0.0.1:8000
-```
-
 ## Initialization sequence
 
-Open each route in the listed order:
+Run each command from the repository root in the listed order:
 
-1. [`/database/setup/set_database.php`](http://127.0.0.1:8000/database/setup/set_database.php)
-2. [`/database/setup/material_table.php`](http://127.0.0.1:8000/database/setup/material_table.php)
-3. [`/database/setup/get_employees_data.php`](http://127.0.0.1:8000/database/setup/get_employees_data.php)
-4. [`/database/setup/department_table.php`](http://127.0.0.1:8000/database/setup/department_table.php)
-5. [`/database/setup/position_table.php`](http://127.0.0.1:8000/database/setup/position_table.php)
-6. [`/database/setup/office_table.php`](http://127.0.0.1:8000/database/setup/office_table.php)
-7. [`/database/setup/employee_table.php`](http://127.0.0.1:8000/database/setup/employee_table.php)
-8. [`/database/setup/emergency_table.php`](http://127.0.0.1:8000/database/setup/emergency_table.php)
-9. [`/database/setup/holiday_tables.php`](http://127.0.0.1:8000/database/setup/holiday_tables.php)
-10. [`/database/setup/set_holiday.php`](http://127.0.0.1:8000/database/setup/set_holiday.php)
-11. [`/database/setup/delete_employee_logs.php`](http://127.0.0.1:8000/database/setup/delete_employee_logs.php)
-12. [`/database/setup/login_table.php`](http://127.0.0.1:8000/database/setup/login_table.php)
-13. [`/database/setup/set_triggers_and_procedure.php`](http://127.0.0.1:8000/database/setup/set_triggers_and_procedure.php)
-14. Optional: [`/database/setup/extra_tables.php`](http://127.0.0.1:8000/database/setup/extra_tables.php)
+```bash
+php database/setup/set_database.php
+php database/setup/material_table.php
+php database/setup/get_employees_data.php
+php database/setup/department_table.php
+php database/setup/position_table.php
+php database/setup/office_table.php
+php database/setup/employee_table.php
+php database/setup/emergency_table.php
+php database/setup/holiday_tables.php
+php database/setup/set_holiday.php
+php database/setup/delete_employee_logs.php
+php database/setup/login_table.php
+php database/setup/set_triggers_and_procedure.php
+```
+
+The optional extension schema can be installed separately:
+
+```bash
+php database/setup/extra_tables.php
+```
 
 The final required step needs MySQL permissions for `TRIGGER` and `CREATE ROUTINE`.
 
@@ -52,4 +53,4 @@ The final required step needs MySQL permissions for `TRIGGER` and `CREATE ROUTIN
 
 ## Resetting locally
 
-The setup sequence is intended for a fresh database. To reset it, remove the local `company_db` database using your normal MySQL administration tool, then repeat the sequence. Do not expose the `database/setup/` routes in a deployed environment.
+The setup sequence is intended for a fresh database. To reset it, remove the local `company_db` database using your normal MySQL administration tool, then repeat the sequence. The setup scripts intentionally remain outside the `public/` document root and should be executed only from the command line.
