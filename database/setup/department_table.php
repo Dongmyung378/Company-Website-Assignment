@@ -1,5 +1,5 @@
 <?php
-include 'db_connection.php';
+require __DIR__ . '/../../config/connection.php';
 
 $DepartmentTableSQL = "
     CREATE TABLE IF NOT EXISTS department (

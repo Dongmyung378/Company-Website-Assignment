@@ -1,151 +1,154 @@
-# Employee Management System
+<p align="right">
+  <strong>English</strong> · <a href="README.ko.md">한국어</a>
+</p>
 
-PHP와 MySQL로 만든 사내 직원 관리 웹 애플리케이션입니다. 일반 직원은 휴가를 신청하고 처리 상태를 확인할 수 있으며, 관리자(Executive 부서)는 직원 정보와 휴가, 근태, 급여 관련 업무를 한곳에서 관리할 수 있습니다.
+<div align="center">
+  <img src="assets/images/company-illustration.jpg" alt="Kilburnazon company illustration" width="760">
+  <h1>Kilburnazon People Operations</h1>
+  <p>A role-based employee operations platform built with PHP and MySQL.</p>
+  <p>
+    <img src="https://img.shields.io/badge/PHP-8.x-777BB4?logo=php&logoColor=white" alt="PHP 8.x">
+    <img src="https://img.shields.io/badge/MySQL-8.x-4479A1?logo=mysql&logoColor=white" alt="MySQL 8.x">
+    <img src="https://img.shields.io/badge/Architecture-Server--rendered-176B48" alt="Server-rendered architecture">
+  </p>
+</div>
 
-## 주요 기능
+## Overview
 
-### 공통
+Kilburnazon People Operations brings employee records, leave workflows, attendance reporting, payroll views, and audit history into one browser-based application. It was designed around two distinct user journeys: a focused self-service experience for employees and a broader operations workspace for the Executive department.
 
-- 사번과 비밀번호를 이용한 로그인
-- 비밀번호 변경 및 로그아웃
-- 연차, 병가, 개인 휴가 신청
-- 본인의 휴가 신청 내역과 승인 상태 확인
+This portfolio version organizes the original coursework into clear application, asset, configuration, database, and documentation boundaries while preserving its lightweight, framework-free PHP approach.
 
-### 관리자
+## What the project demonstrates
 
-- 직원 등록, 조회, 수정, 삭제
-- 부서, 직급, 근무지, 입사일 기준 직원 검색
-- 직원 상세 정보와 비상 연락처 확인
-- 휴가 신청 승인 및 반려
-- 월별 휴가·결근 현황과 부서별 통계 확인
-- 연간, 분기, 월간 급여 내역 조회 및 CSV 저장
-- 이번 달 생일자 확인
-- 삭제한 직원의 정보, 처리자, 사유를 기록으로 보관
+| Area | Implementation | Value |
+| --- | --- | --- |
+| Access control | Session authentication with role-based redirects | Separates employee self-service from administrative operations |
+| People operations | Employee CRUD, searchable directory, and emergency contacts | Centralizes core workforce records |
+| Leave workflow | Request, balance tracking, approval, rejection, and personal history | Models a complete request lifecycle |
+| Reporting | Monthly absence summaries, department breakdowns, and payroll exports | Turns operational data into usable views |
+| Data integrity | Foreign keys, triggers, a stored procedure, and deletion audit logs | Keeps related records consistent and traceable |
+| Secure credentials | `password_hash()` and `password_verify()` | Avoids storing passwords in plain text |
 
-관리자 화면은 `department_id`가 `2`인 계정에만 열립니다. 그 외 계정은 일반 직원 화면으로 이동합니다.
+## Product flows
 
-## 사용 기술
+### Employee workspace
 
-- PHP
-- MySQL / MySQLi
-- HTML, CSS, JavaScript
-- PHP Session 기반 로그인 상태 관리
-- MySQL Trigger와 Stored Procedure
+- Sign in with an employee ID and password.
+- Submit annual, sick, or personal leave requests.
+- Review request history and approval status.
+- Change the account password securely.
 
-프레임워크 없이 PHP 페이지와 MySQL 쿼리로 구성한 프로젝트입니다.
+### Executive workspace
 
-## 프로젝트 구성
+- Create, search, inspect, update, and remove employee records.
+- Approve or reject leave requests and update balances.
+- Review monthly absence and department summaries.
+- Explore annual, quarterly, and monthly salary views and export CSV data.
+- See upcoming birthdays and retained deletion records.
+
+> The current authorization rule treats `department_id = 2` as the Executive role. This is documented as a deliberate constraint of the coursework data model; a dedicated roles table is the recommended production evolution.
+
+## Architecture
+
+```mermaid
+flowchart LR
+    Browser[Browser] --> Pages[Server-rendered PHP pages]
+    Pages --> Session[PHP session + role checks]
+    Pages --> Connection[Shared database connection]
+    Connection --> MySQL[(MySQL)]
+    MySQL --> Core[Employee and organization data]
+    MySQL --> Leave[Leave balances and requests]
+    MySQL --> Audit[Login and deletion audit data]
+```
+
+The application intentionally uses a compact server-rendered architecture. Page controllers validate the session, execute MySQLi queries, and render HTML in a single request. Shared connection settings live under `config/`, and database initialization is isolated under `database/`.
+
+For a deeper technical walkthrough, see [Architecture notes](docs/ARCHITECTURE.md).
+
+## Repository structure
 
 ```text
 .
-├── login.php                    # 로그인
-├── main.php                     # 일반 직원 메인 화면
-├── admin_main.php               # 관리자 메인 화면
-├── add_employee.php             # 직원 등록
-├── list_employees.php           # 직원 목록 및 검색
-├── employee_detail.php          # 직원 상세 정보
-├── update_employee.php          # 직원 정보 수정
-├── delete_employee.php          # 직원 삭제
-├── delete_records.php           # 삭제 이력 조회
-├── holiday_requests.php         # 휴가 신청
-├── check_my_holiday.php         # 개인 휴가 내역 조회
-├── check_holiday_requests.php   # 휴가 승인 및 반려
-├── check_absence.php            # 월별 휴가·결근 리포트
-├── salary_table.php             # 급여 리포트 및 CSV 저장
-├── happybirthday.php            # 이달의 생일자 조회
-├── change_password.php          # 비밀번호 변경
-├── db_connection.php            # 애플리케이션 DB 연결 설정
-├── setup/                       # DB 생성, 초기 데이터, 트리거 설정
-└── images/                      # 로그인 배경 및 기본 프로필 이미지
+├── assets/
+│   ├── css/                    # Page-specific presentation
+│   └── images/                 # Project artwork and default avatar
+├── config/
+│   ├── database.php            # Environment-aware DB settings
+│   └── connection.php          # Shared MySQLi connection
+├── database/
+│   ├── seeds/                  # Fictional employee seed data
+│   ├── setup/                  # Schema and initialization scripts
+│   └── README.md               # Database setup guide
+├── docs/
+│   └── ARCHITECTURE.md         # System and data-flow decisions
+├── index.php                   # Application entry redirect
+├── login.php                   # Authentication entry point
+├── main.php                    # Employee dashboard
+├── admin_main.php              # Executive dashboard
+└── *.php                       # Feature pages
 ```
 
-`setup/extra_tables.php`에는 상품, 주문, 결제, 배송 등 확장용 테이블도 포함되어 있습니다. 현재 직원 관리 화면에서는 직접 사용하지 않습니다.
+## Run locally
 
-## 실행 방법
+### Requirements
 
-### 1. 실행 환경 준비
-
-다음 환경이 필요합니다.
-
-- PHP 8.x (`mysqli` 확장 활성화)
+- PHP 8.x with the `mysqli` extension
 - MySQL 8.x
-- PHP를 실행할 수 있는 로컬 웹 서버(XAMPP, WAMP 또는 PHP 내장 서버)
+- A local server such as PHP's built-in server, XAMPP, or WAMP
 
-### 2. 데이터베이스 연결 설정
+### 1. Configure the database
 
-아래 두 파일의 접속 정보를 로컬 MySQL 환경에 맞게 수정합니다.
+The defaults target `127.0.0.1:3307`, use the `root` user with no password, and create `company_db`. Override any value with environment variables:
 
-- `db_connection.php`
-- `setup/db_connection.php`
+| Variable | Default |
+| --- | --- |
+| `DB_HOST` | `127.0.0.1` |
+| `DB_PORT` | `3307` |
+| `DB_USER` | `root` |
+| `DB_PASSWORD` | empty |
+| `DB_NAME` | `company_db` |
 
-기본 설정은 다음과 같습니다.
+PowerShell example for the standard MySQL port:
 
-```php
-$servername = "127.0.0.1";
-$username = "root";
-$password = "";
-$dbname = "company_db";
-$port = 3307;
+```powershell
+$env:DB_PORT = "3306"
+php -S 127.0.0.1:8000
 ```
 
-MySQL 기본 포트를 사용한다면 `$port`를 `3306`으로 변경해야 합니다.
-
-### 3. 데이터베이스 초기화
-
-웹 서버를 실행한 뒤 `setup` 폴더의 파일을 아래 순서대로 한 번씩 엽니다. 예를 들어 PHP 내장 서버를 사용한다면 프로젝트 루트에서 다음 명령을 실행할 수 있습니다.
+macOS/Linux example:
 
 ```bash
-php -S localhost:8000
+DB_PORT=3306 php -S 127.0.0.1:8000
 ```
 
-이후 브라우저에서 아래 주소를 순서대로 방문합니다.
+### 2. Initialize the schema
 
-1. `http://localhost:8000/setup/set_database.php`
-2. `http://localhost:8000/setup/material_table.php`
-3. `http://localhost:8000/setup/get_employees_data.php`
-4. `http://localhost:8000/setup/department_table.php`
-5. `http://localhost:8000/setup/position_table.php`
-6. `http://localhost:8000/setup/office_table.php`
-7. `http://localhost:8000/setup/employee_table.php`
-8. `http://localhost:8000/setup/emergency_table.php`
-9. `http://localhost:8000/setup/holiday_tables.php`
-10. `http://localhost:8000/setup/set_holiday.php`
-11. `http://localhost:8000/setup/delete_employee_logs.php`
-12. `http://localhost:8000/setup/login_table.php`
-13. `http://localhost:8000/setup/set_triger_and_procedure.php`
-14. `http://localhost:8000/setup/extra_tables.php` (선택)
+Follow the one-time sequence in the [database setup guide](database/README.md). It creates the database, imports fictional seed data, prepares leave and login records, and installs the required trigger and stored procedure.
 
-초기 직원 데이터는 `setup/Employees.csv`에서 불러옵니다. 트리거와 프로시저를 생성하는 계정에는 MySQL의 `TRIGGER`, `CREATE ROUTINE` 권한이 필요합니다.
+### 3. Sign in
 
-### 4. 로그인
+Open [http://127.0.0.1:8000](http://127.0.0.1:8000). Seeded accounts initially use password `0000`; change it after the first login.
 
-초기 데이터의 모든 직원 계정에는 다음 비밀번호가 설정됩니다.
+## Key engineering decisions
 
-```text
-0000
-```
+- **Prepared statements for user-driven queries:** Employee lookup, authentication, and update flows bind values instead of interpolating request data.
+- **Database-backed invariants:** Foreign keys connect organization and employee records, while triggers provision default leave and login rows for new employees.
+- **Auditable deletion:** A stored procedure snapshots essential employee and operator details before removal.
+- **Portable configuration:** Runtime environment variables replace duplicated, machine-specific database settings.
+- **Deliberately modest stack:** The project demonstrates PHP, SQL, sessions, and relational modeling without hiding those mechanics behind a framework.
 
-`http://localhost:8000/login.php`에 접속한 뒤 CSV에 등록된 사번과 초기 비밀번호로 로그인합니다. 로그인 후에는 비밀번호 변경을 권장합니다.
+## Next iterations
 
-## 데이터베이스 개요
+- Replace the department-based role rule with explicit roles and permissions.
+- Add CSRF tokens, stricter request validation, and production-safe error logging.
+- Convert ordered setup scripts into versioned migrations and an idempotent seed command.
+- Add integration tests for authentication, leave approvals, and audit logging.
+- Extract shared layouts and domain services as the feature set grows.
 
-| 테이블 | 용도 |
-| --- | --- |
-| `employees` | 직원 기본 정보와 부서, 직급, 근무지 연결 |
-| `department` | 부서 정보 |
-| `position` | 부서별 직급 정보 |
-| `office` | 근무지 정보 |
-| `emergency_table` | 직원 비상 연락처 |
-| `login` | 직원별 비밀번호 해시 |
-| `holiday_balance` | 휴가 유형별 잔여 일수 |
-| `holiday_requests` | 휴가 신청과 처리 상태 |
-| `delete_employee_logs` | 삭제된 직원과 삭제 사유 기록 |
+## Notes
 
-새 직원을 등록하면 트리거가 로그인 계정과 기본 휴가 일수(연차 28일, 병가 10일, 개인 휴가 5일)를 함께 생성합니다. 직원 삭제는 저장 프로시저를 통해 처리되며, 삭제 전에 주요 정보와 사유를 별도 테이블에 남깁니다.
-
-## 참고 사항
-
-- 이 프로젝트는 로컬 개발 및 학습용으로 작성되었습니다.
-- `setup/Employees.csv`의 직원 정보는 가상의 인물들입니다.
-- DB 접속 정보와 초기 비밀번호는 운영 환경에서 그대로 사용하지 마세요.
-- 라이선스는 별도로 명시되어 있지 않습니다.
+- This is a local development and learning project, not a production HR system.
+- All people in `database/seeds/employees.csv` are fictional.
+- The initial password and default connection values must not be used in production.
+- Optional commerce and delivery tables are retained as an extension exercise and are not used by the current UI.

@@ -1,5 +1,5 @@
 <?php
-include 'db_connection.php';
+require __DIR__ . '/config/connection.php';
 session_start();
 
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
@@ -125,7 +125,7 @@ $conn->close();
 <html>
 
 <head>
-    <link rel="stylesheet" href="styles_list.css">
+    <link rel="stylesheet" href="assets/css/employee-list.css">
     <button class="back-button" onclick="window.location.href='admin_main.php'">Back to Main</button>
 </head>
 
@@ -177,7 +177,7 @@ $conn->close();
         <?php if ($result && $result->num_rows > 0): ?>
             <?php while ($row = $result->fetch_assoc()): ?>
                 <a href="employee_detail.php?id=<?php echo $row['employee_id']; ?>" class="card">
-                    <img src="images/default.jpg" alt="Photo of <?php echo htmlspecialchars($row['name']); ?>">
+                    <img src="assets/images/default-avatar.jpg" alt="Photo of <?php echo htmlspecialchars($row['name']); ?>">
                     <h3><?php echo htmlspecialchars($row['name']); ?></h3>
                     <p><strong>Department:</strong> <?php echo htmlspecialchars($row['department_name']); ?></p>
                     <p><strong>Position:</strong> <?php echo htmlspecialchars($row['position_name']); ?></p>

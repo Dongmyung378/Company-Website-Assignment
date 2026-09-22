@@ -1,5 +1,5 @@
 <?php
-include 'db_connection.php';
+require __DIR__ . '/config/connection.php';
 session_start();
 
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
@@ -14,12 +14,6 @@ if ($_SESSION['department'] !== 2) {
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
-
-$conn = new mysqli($servername, $username, $password, $dbname, $port);
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
 
 $employee_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
@@ -50,8 +44,8 @@ $sql = "
         department d ON e.department_id = d.department_id
     JOIN 
         office o ON e.office_id = o.office_id
-    JOIN 
-        position p ON p.department_id = d.department_id
+    JOIN
+        position p ON p.position_id = e.position_id
     LEFT JOIN 
         emergency_table ec ON e.employee_id = ec.employee_id
     WHERE 
@@ -78,74 +72,19 @@ $conn->close();
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <title><?php echo htmlspecialchars($employee['name']); ?>의 세부 정보</title>
-    <link rel="stylesheet" type="text/css" href="styles.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f9f9f9;
-        }
-
-        .detail-container {
-            max-width: 800px;
-            margin: 0 auto;
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .detail-header {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .detail-header img {
-            width: 150px;
-            height: 150px;
-            object-fit: cover;
-            border-radius: 50%;
-        }
-
-        .detail-header h2 {
-            margin: 0;
-            font-size: 28px;
-            color: #333;
-        }
-
-        .detail-info p {
-            font-size: 18px;
-            margin: 10px 0;
-            color: #555;
-        }
-
-        .back-button {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-        }
-
-        .back-button:hover {
-            opacity: 0.9;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?php echo htmlspecialchars($employee['name']); ?> · Employee profile</title>
+    <link rel="stylesheet" href="assets/css/employee-detail.css">
 </head>
 
 <body>
     <div class="detail-container">
         <div class="detail-header">
-            <img src="images/default.jpg" alt="Photo: <?php echo htmlspecialchars($employee['name']); ?>">
+            <img src="assets/images/default-avatar.jpg" alt="Photo: <?php echo htmlspecialchars($employee['name']); ?>">
             <h1><?php echo htmlspecialchars($employee['name']); ?></h1>
         </div>
         <div class="detail-info">
@@ -168,6 +107,7 @@ $conn->close();
             <p><strong>Phone Number:</strong> <?php echo htmlspecialchars($employee['emergency_phone']); ?></p>
             <a href="list_employees.php" class="back-button">Back</a>
         </div>
+    </div>
 </body>
 
 </html>

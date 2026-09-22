@@ -1,5 +1,5 @@
 <?php
-include 'db_connection.php';
+require __DIR__ . '/config/connection.php';
 session_start();
 
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
@@ -134,7 +134,7 @@ $conn->close();
 <html>
 
 <head>
-    <link rel="stylesheet" href="styles_add.css">
+    <link rel="stylesheet" href="assets/css/add-employee.css">
 </head>
 
 <body>

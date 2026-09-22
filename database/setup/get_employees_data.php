@@ -1,7 +1,7 @@
 <?php
-include 'db_connection.php';
+require __DIR__ . '/../../config/connection.php';
 
-$csvFile = "Employees.csv";
+$csvFile = __DIR__ . '/../seeds/employees.csv';
 if (($handle = fopen($csvFile, "r")) !== FALSE) {
     fgetcsv($handle);
 

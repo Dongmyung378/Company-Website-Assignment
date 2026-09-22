@@ -1,5 +1,5 @@
 <?php
-include 'db_connection.php';
+require __DIR__ . '/config/connection.php';
 session_start();
 
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
@@ -113,7 +113,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_employee'])) {
 <html lang="en">
 
 <head>
-    <link rel="stylesheet" href="styles_update.css">
+    <link rel="stylesheet" href="assets/css/update-employee.css">
 </head>
 
 <body>

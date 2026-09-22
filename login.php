@@ -1,5 +1,5 @@
 <?php
-include 'db_connection.php';
+require __DIR__ . '/config/connection.php';
 session_start();
 
 $error = '';
@@ -52,7 +52,7 @@ $conn->close();
     <style>
         body {
             font-family: Arial, sans-serif;
-            background: url('images/kilburnazon.jpg') no-repeat left center fixed;
+            background: url('assets/images/company-illustration.jpg') no-repeat left center fixed;
             background-size: contain;
             display: flex;
             justify-content: flex-end;

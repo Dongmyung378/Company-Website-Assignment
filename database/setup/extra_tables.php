@@ -1,5 +1,5 @@
 <?php
-include 'db_connection.php';
+require __DIR__ . '/../../config/connection.php';
 
 $tablesql1 = "
     CREATE TABLE IF NOT EXISTS delivery_driver (

@@ -1,5 +1,5 @@
 <?php
-include 'db_connection.php';
+require __DIR__ . '/../../config/connection.php';
 
 // check error conditions
 error_reporting(E_ALL);
