@@ -1,3 +1,7 @@
+<p align="right">
+  <strong>English</strong> · <a href="ARCHITECTURE.ko.md">한국어</a>
+</p>
+
 # Architecture Notes
 
 [← Back to the project overview](../README.md)
