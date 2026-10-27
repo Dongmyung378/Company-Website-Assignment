@@ -25,19 +25,34 @@ The directory searches `%`, `_` and `!` literally using bound SQL parameters. A 
 
 The department filter and leave preview are browser assistance, not authorization. The server still validates position membership, account state, date ranges, balances, CSRF, record versions and transactions. JavaScript-disabled use retains server rendering and validation. Wide tables scroll inside their panels rather than widening the entire page. Reduced-motion preferences and print layouts are supported.
 
+## English first, Korean by choice
+
+The default interface is English, regardless of the browser's Accept-Language header. Use the header selector to choose Korean. A host-only, HttpOnly, SameSite=Lax preference cookie preserves that choice across navigation, sign-in and sign-out. Changing a display language never changes permissions, employee IDs, stored status values or payroll numbers. The language links preserve current search filters; an unsaved-entry confirmation prevents an accidental reload from discarding form input.
+
+English source strings and named placeholders are maintained in `lib/i18n.php` and `lib/translations/*.ko.php`. Shared HR terms have one canonical Korean translation. Annual leave means 연차 휴가, sick leave means 병가, and personal leave means 개인 휴가. The monthly report counts approved leave, so it is described as 월별 휴가 현황 rather than an unexcused-absence report. Full-Time/Part-Time are translated as 전일제/시간제, without claiming permanent employment status. UK National Insurance numbers are not described as Korean resident registration numbers.
+
+All application labels, help, status badges, account notices and client-side previews have Korean text. Employee names, addresses and other entered data remain unchanged. Native browser date-picker dialogs follow the browser/OS locale. CSV exports deliberately retain the original English headers and values; the export screen explains that behavior.
+
+## Readability and visual consistency
+
+The navy/teal design uses consistent SVG icons and neutral avatar colors. Body copy, navigation, field labels, report headings, badges and supporting text were increased in size. Activity rows and login panels have tighter, deliberate spacing. Numeric salary columns align right; wide tables show a localized horizontal-scroll hint. The mobile menu keeps background content inert while it is open.
+
+Computed foreground/background colors, including alpha composition, are checked against the [W3C text-contrast criteria](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html) and [non-text contrast criteria](https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html). These checks use 4.5:1 for normal text, 3:1 for large text, and 3:1 for meaningful control boundaries/icons. They are focused checks, not a claim of complete accessibility certification.
+
 ## Local access
 
 Follow the existing [setup guide](../database/README.md). Login information is delivered through private local credential exports, never a fixed public password in source. An owner's local demo account and access note are runtime data excluded from Git. An administrator must change a temporary password at first sign-in.
 
 ## Verification
 
-Recorded results: **97/97 HTTP/workflow checks**, **219/219 browser assertions**, **41 page/viewport combinations**, **12 reviewed screenshots**, and **47/47 PHP syntax checks**. All screens were checked at 1440px and 390px, with additional 360px and 768px coverage.
+Current results: **121/121 HTTP, security, workflow and language assertions**; **1,288/1,288 real-browser assertions** across **90 page/language/viewport combinations**, including **24 reviewed screenshots**. English and Korean were checked at 1440px and 390px; 320px, 360px and 768px have additional checks.
 
-Current results are stored separately from the earlier security-update evidence so that the initial record remains available:
+Across those rendered cases, 22,168 text samples and 78 placeholders met their contrast thresholds. The minimum measured text contrast was **4.792:1**, placeholder contrast **5.277:1**, and control-boundary contrast **3.494:1**. The audit also checked 868 functional SVG samples, 22,506 font-size samples and 84 button/icon containment samples. No unresolved paint stacks or failures remained. Hidden, inactive, inert and decorative content is excluded as described in the saved report.
 
-- [HTTP, security and workflow regression](verification/ui-regression.json): the previous 83 assertions plus 14 checks for search, escaping, pagination, direct edit prefill and administrator restrictions.
-- [PHP syntax checks](verification/ui-php-lint.json): all 47 PHP source files, including the shared UI helper.
-- [Real-browser UI checks](verification/ui-browser.json): every rendered screen at 1440px desktop and 390px mobile widths, with additional 360px and 768px checks. It checks page structure, unique IDs, labelled controls, document overflow, script/resource failures, navigation, calendar preview and actual CSRF-protected form clicks.
+- [Current HTTP/language evidence](verification/bilingual-regression.json) retains the original 97 checks and adds 24 grouped language checks, including all 17 screens in both languages, default-language behavior, locale persistence, placeholder coverage, unchanged English CSV and access restrictions.
+- [Current PHP syntax evidence](verification/bilingual-php-lint.json) covers all 52 PHP files, including the language catalogs.
+- [Current browser and computed-style evidence](verification/bilingual-browser.json) records contrast, layout, language selection, unsaved-entry handling, form clicks, calendar previews, resource/script errors and test-process cleanup.
+- Earlier [interface regression](verification/ui-regression.json), [browser evidence](verification/ui-browser.json) and [security-update evidence](SECURITY.md) remain available as the initial checkpoints.
 
 Re-run the standard suite against a disposable `_test` database:
 
@@ -51,6 +66,6 @@ The optional browser suite additionally needs a local Microsoft Edge installatio
 python tests/browser_ui.py
 ~~~
 
-Use `--edge /path/to/msedge` or `EDGE_BIN` for another Edge installation. Both scripts respect `PHP_BIN` and `PHP_ARGS_JSON`; see [verification setup](SECURITY.md#reproduce). Screenshots are written only to ignored `var/ui-screenshots/`, not published with credentials or browser profiles.
+Use `--edge /path/to/msedge` or `EDGE_BIN` for another Edge installation. Both scripts respect `PHP_BIN` and `PHP_ARGS_JSON`; see [verification setup](SECURITY.md#reproduce). Screenshots are written to ignored `var/ui-screenshots/`. Only the blank English/Korean sign-in previews are selected for `docs/images/`; credentials and browser profiles are never published.
 
 The layout checks and visual review cover the listed viewports in local Edge. They are not a claim of complete accessibility certification, all-browser compatibility or every possible content length. Existing functionality is also checked through HTTP and concurrent requests, independently of presentation.

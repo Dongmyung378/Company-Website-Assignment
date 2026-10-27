@@ -24,6 +24,12 @@ sequenceDiagram
 
 The original 18 PHP endpoints remain page controllers. `config/bootstrap.php` centralizes authorization, sessions, CSRF and output helpers. `lib/business.php` validates employee and leave fields. Database setup is CLI-only and uses a separate schema account. The web account has no schema or user-management privileges.
 
+## Presentation and language boundaries
+
+`lib/ui.php` renders the shared navigation, page frame and language control. `lib/i18n.php` defaults to English and loads reviewed Korean source-message catalogs only when Korean is selected. A non-authentication preference cookie keeps the chosen display language; switching language does not modify employee records or access rights. Shared HR vocabulary is canonical across pages. `public/assets/js/app.js` receives only the small set of translated client messages needed for previews, validation and controls.
+
+The local CSS/SVG design is checked against computed foreground/background colors, control boundaries and responsive layouts. Language-specific blank sign-in previews are separated in `docs/images/`; English documentation uses the English preview and Korean documentation uses the Korean preview. See [interface verification](INTERFACE.md).
+
 ## Identity and access
 
 An ordinary employee can manage only personal leave and credentials. Executive membership, looked up by department name, grants the administration workspace. No seed-order department ID is assumed. Every protected request joins the current employee, department and credential record. A deleted/inactive account, a mismatched `auth_version`, or an expired session is denied. Employee department changes and password changes increment the credential version; password change re-establishes the current session and invalidates other sessions.

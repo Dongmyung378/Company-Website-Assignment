@@ -40,20 +40,20 @@ ui_page_start('Delete employee', 'Remove an employee record and retain an audit 
 ?>
 <?php if ($message !== '') ui_notice($message, $messageType); ?>
 <section class="panel" aria-labelledby="before-deletion-title">
-    <div class="panel-header"><div><p class="eyebrow">Employee administration</p><h2 id="before-deletion-title">Review before deleting</h2></div><span class="badge badge-danger">Permanent action</span></div>
-    <p>Deleting an employee removes their active record and account access. Confirm the employee ID before you continue.</p>
-    <p class="muted">The deletion log records the employee, your administrator account, the time, and the reason you provide.</p>
-    <div class="form-actions"><a class="button button-secondary" href="list_employees.php">Find employee ID</a><a class="button button-quiet" href="delete_records.php">View deletion history</a></div>
+    <div class="panel-header"><div><p class="eyebrow"><?php echo e(ui_t('Employee administration')); ?></p><h2 id="before-deletion-title"><?php echo e(ui_t('Review before deleting')); ?></h2></div><span class="badge badge-danger"><?php echo e(ui_t('Permanent action')); ?></span></div>
+    <p><?php echo e(ui_t('Deleting an employee removes their active record and account access. This action cannot be undone. Confirm the employee ID before you continue.')); ?></p>
+    <p class="muted"><?php echo e(ui_t('The deletion log records the employee, your administrator account, the time, and the reason you provide.')); ?></p>
+    <div class="form-actions"><a class="button button-secondary" href="list_employees.php"><?php echo e(ui_t('Find employee ID')); ?></a><a class="button button-quiet" href="delete_records.php"><?php echo e(ui_t('View deletion history')); ?></a></div>
 </section>
 <section class="panel" aria-labelledby="delete-title">
-    <div class="panel-header"><div><h2 id="delete-title">Employee to remove</h2><p class="muted">Fields marked * are required.</p></div></div>
-    <form method="POST" action="" data-confirm="Permanently delete this employee and remove their account access? Check the employee ID before continuing.">
+    <div class="panel-header"><div><h2 id="delete-title"><?php echo e(ui_t('Employee to remove')); ?></h2><p class="muted"><?php echo e(ui_t('Fields marked * are required.')); ?></p></div></div>
+    <form method="POST" action="" data-confirm="<?php echo e(ui_t('Permanently delete this employee and remove their account access? Check the employee ID before continuing.')); ?>">
         <?php echo csrf_field(); ?>
         <div class="form-grid">
-            <div class="field"><label for="employee_id">Employee ID *</label><input type="number" id="employee_id" name="employee_id" min="1" max="2147483647" step="1" placeholder="Enter the exact employee ID" required></div>
-            <div class="field"><label for="deleted_reason">Reason for deletion</label><input type="text" id="deleted_reason" name="deleted_reason" maxlength="255" placeholder="e.g. Employment ended" aria-describedby="reason-hint"><small id="reason-hint" class="muted">Optional. Up to 255 characters, saved in the deletion log.</small></div>
+            <div class="field"><label for="employee_id"><?php echo e(ui_t('Employee ID *')); ?></label><input type="number" id="employee_id" name="employee_id" min="1" max="2147483647" step="1" placeholder="<?php echo e(ui_t('Enter the exact employee ID')); ?>" required></div>
+            <div class="field"><label for="deleted_reason"><?php echo e(ui_t('Reason for deletion')); ?></label><input type="text" id="deleted_reason" name="deleted_reason" maxlength="255" placeholder="<?php echo e(ui_t('e.g. Employment ended')); ?>" aria-describedby="reason-hint"><small id="reason-hint" class="muted"><?php echo e(ui_t('Optional. Up to 255 characters, saved in the deletion log.')); ?></small></div>
         </div>
-        <div class="form-actions"><button type="submit" class="button button-danger">Delete employee</button><a href="admin_main.php" class="button button-secondary">Cancel</a></div>
+        <div class="form-actions"><button type="submit" class="button button-danger"><?php echo e(ui_t('Delete employee')); ?></button><a href="admin_main.php" class="button button-secondary"><?php echo e(ui_t('Cancel')); ?></a></div>
     </form>
 </section>
 <?php ui_page_end(); ?>

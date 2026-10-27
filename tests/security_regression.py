@@ -309,6 +309,8 @@ def main():
         auth_checks.run(sys.modules[__name__])
         import ui_checks
         ui_checks.run(sys.modules[__name__])
+        import language_checks
+        language_checks.run(sys.modules[__name__])
     except Exception as error:
         check('Regression suite completes without harness errors', False, error_type=type(error).__name__)
         raise

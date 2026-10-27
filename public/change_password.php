@@ -53,16 +53,16 @@ if ($method === 'POST') {
     }
 }
 ?>
-<?php ui_page_start('Change Password', 'Keep your employee account secure with a personal passphrase.', ['current' => $current]); ?>
+<?php ui_page_start('Change password', 'Keep your employee account secure with a personal passphrase.', ['current' => $current]); ?>
 <div class="grid-2">
     <section class="panel" aria-labelledby="password-title">
-        <div class="panel-header"><div><p class="eyebrow">Account security</p><h2 id="password-title">Choose a new passphrase</h2></div><span class="badge badge-neutral">Employee <?php echo e($current['employee_id']); ?></span></div>
+        <div class="panel-header"><div><p class="eyebrow"><?php echo e(ui_t('Account security')); ?></p><h2 id="password-title"><?php echo e(ui_t('Choose a new passphrase')); ?></h2></div><span class="badge badge-neutral"><?php echo e(ui_t('Employee {id}', ['id' => $current['employee_id']])); ?></span></div>
         <?php if ($current['must_change_password']): ?>
             <?php ui_notice('Choose a new passphrase before continuing. Use your temporary password as the current password.', 'info'); ?>
         <?php endif; ?>
         <?php if ($success_msg !== ''): ?>
             <?php ui_notice($success_msg, 'success'); ?>
-            <p><a class="button" href="<?php echo e($backUrl); ?>">Continue to workspace</a></p>
+            <p><a class="button" href="<?php echo e($backUrl); ?>"><?php echo e(ui_t('Continue to workspace')); ?></a></p>
             <script>
                 setTimeout(function() {
                     window.location.href = <?php echo json_encode($backUrl, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
@@ -75,30 +75,30 @@ if ($method === 'POST') {
             <form method="POST" action="" class="form-grid">
                 <?php echo csrf_field(); ?>
                 <div class="field field-full">
-                    <label for="current_password">Current password</label>
+                    <label for="current_password"><?php echo e(ui_t('Current password')); ?></label>
                     <div class="password-field"><input type="password" id="current_password" name="current_password" autocomplete="current-password"<?php echo $current_password_err !== '' ? ' aria-invalid="true" aria-describedby="current-password-error"' : ''; ?> required></div>
-                    <?php if ($current_password_err !== ''): ?><p class="field-hint" id="current-password-error" role="alert"><?php echo e($current_password_err); ?></p><?php endif; ?>
+                    <?php if ($current_password_err !== ''): ?><p class="field-hint" id="current-password-error" role="alert"><?php echo e(ui_t($current_password_err)); ?></p><?php endif; ?>
                 </div>
                 <div class="field field-full">
-                    <label for="new_password">New passphrase</label>
+                    <label for="new_password"><?php echo e(ui_t('New passphrase')); ?></label>
                     <div class="password-field"><input type="password" id="new_password" name="new_password" autocomplete="new-password" minlength="15" aria-describedby="new-password-hint<?php echo $new_password_err !== '' ? ' new-password-error' : ''; ?>"<?php echo $new_password_err !== '' ? ' aria-invalid="true"' : ''; ?> required></div>
-                    <p class="field-hint" id="new-password-hint">Use at least 15 characters and choose a passphrase different from your current password.</p>
-                    <?php if ($new_password_err !== ''): ?><p class="field-hint" id="new-password-error" role="alert"><?php echo e($new_password_err); ?></p><?php endif; ?>
+                    <p class="field-hint" id="new-password-hint"><?php echo e(ui_t('Use at least 15 characters and choose a passphrase different from your current password.')); ?></p>
+                    <?php if ($new_password_err !== ''): ?><p class="field-hint" id="new-password-error" role="alert"><?php echo e(ui_t($new_password_err)); ?></p><?php endif; ?>
                 </div>
                 <div class="field field-full">
-                    <label for="confirm_password">Confirm new passphrase</label>
+                    <label for="confirm_password"><?php echo e(ui_t('Confirm new passphrase')); ?></label>
                     <div class="password-field"><input type="password" id="confirm_password" name="confirm_password" autocomplete="new-password" minlength="15"<?php echo $confirm_password_err !== '' ? ' aria-invalid="true" aria-describedby="confirm-password-error"' : ''; ?> required></div>
-                    <?php if ($confirm_password_err !== ''): ?><p class="field-hint" id="confirm-password-error" role="alert"><?php echo e($confirm_password_err); ?></p><?php endif; ?>
+                    <?php if ($confirm_password_err !== ''): ?><p class="field-hint" id="confirm-password-error" role="alert"><?php echo e(ui_t($confirm_password_err)); ?></p><?php endif; ?>
                 </div>
-                <div class="form-actions field-full"><button type="submit" class="button">Update password</button><?php if (!$current['must_change_password']): ?><a class="button button-secondary" href="<?php echo e($backUrl); ?>">Cancel</a><?php endif; ?></div>
+                <div class="form-actions field-full"><button type="submit" class="button"><?php echo e(ui_t('Update password')); ?></button><?php if (!$current['must_change_password']): ?><a class="button button-secondary" href="<?php echo e($backUrl); ?>"><?php echo e(ui_t('Cancel')); ?></a><?php endif; ?></div>
             </form>
         <?php endif; ?>
     </section>
     <aside class="panel" aria-labelledby="passphrase-help-title">
-        <p class="eyebrow">A little peace of mind</p><h2 id="passphrase-help-title">Make it memorable</h2>
-        <p>A longer passphrase made from several unrelated words is easier to remember. Keep it unique to this account.</p>
-        <p class="muted">After a successful change, your other signed-in sessions are revoked.</p>
-        <a class="button button-quiet" href="logout.php">Sign out of this account</a>
+        <p class="eyebrow"><?php echo e(ui_t('Passphrase guidance')); ?></p><h2 id="passphrase-help-title"><?php echo e(ui_t('Create a secure passphrase')); ?></h2>
+        <p><?php echo e(ui_t('Use a long passphrase that is unique to this account. Several unrelated words can be easier to remember.')); ?></p>
+        <p class="muted"><?php echo e(ui_t('After a successful change, your other signed-in sessions are revoked.')); ?></p>
+        <a class="button button-quiet" href="logout.php"><?php echo e(ui_t('Sign out of this account')); ?></a>
     </aside>
 </div>
 <?php ui_page_end(); ?>

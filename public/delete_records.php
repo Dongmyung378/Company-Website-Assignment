@@ -9,7 +9,7 @@ try {
         require_csrf();
         if (input_string($_POST, 'action') !== 'purge_expired') {
             http_response_code(422);
-            exit('Select a valid records action.');
+            exit(e(ui_t('Select a valid records action.')));
         }
         $conn->query("DELETE FROM delete_employee_logs WHERE deleted_time <= DATE_SUB(NOW(), INTERVAL 3 YEAR)");
         $cleanup_message = 'Expired deletion records were removed.';
@@ -38,27 +38,27 @@ try {
     $conn->close();
 }
 ?>
-<?php ui_page_start('Deleted Employee Records', 'Review employee deletion history and manage the three-year retention period.', ['current' => $current]); ?>
+<?php ui_page_start('Employee deletion records', 'Review employee deletion history and manage the three-year retention period.', ['current' => $current]); ?>
 <?php if (isset($cleanup_message)): ?><?php ui_notice($cleanup_message, 'success'); ?><?php endif; ?>
 <section class="panel" aria-labelledby="retention-title">
-    <div class="panel-header"><div><p class="eyebrow">Record retention</p><h2 id="retention-title">Three-year archive cleanup</h2></div><span class="badge badge-warning">Permanent action</span></div>
-    <p>Deletion records dated three or more years ago are eligible for removal. Review the history below before clearing expired records.</p>
-    <form method="POST" action="delete_records.php" data-confirm="Permanently remove all employee deletion records dated three or more years ago? This action cannot be undone.">
+    <div class="panel-header"><div><p class="eyebrow"><?php echo e(ui_t('Record retention')); ?></p><h2 id="retention-title"><?php echo e(ui_t('Three-year archive cleanup')); ?></h2></div><span class="badge badge-warning"><?php echo e(ui_t('Permanent action')); ?></span></div>
+    <p><?php echo e(ui_t('Deletion records dated three or more years ago are eligible for removal. Review the history below before clearing expired records.')); ?></p>
+    <form method="POST" action="delete_records.php" data-confirm="<?php echo e(ui_t('Permanently remove all employee deletion records dated three or more years ago? This action cannot be undone.')); ?>">
         <?php echo csrf_field(); ?>
         <input type="hidden" name="action" value="purge_expired">
-        <div class="form-actions"><button type="submit" class="button button-danger">Remove expired records</button><span class="field-hint">This permanently removes eligible archive records.</span></div>
+        <div class="form-actions"><button type="submit" class="button button-danger"><?php echo e(ui_t('Remove expired records')); ?></button><span class="field-hint"><?php echo e(ui_t('This permanently removes eligible archive records.')); ?></span></div>
     </form>
 </section>
 <?php if (isset($error_message)): ?>
     <?php ui_notice($error_message, 'error'); ?>
 <?php else: ?>
     <section class="panel" aria-labelledby="deletion-history-title">
-        <div class="panel-header"><div><p class="eyebrow">Employee history</p><h2 id="deletion-history-title">Deletion records</h2><p class="muted">Most recent deletions appear first. Eligibility follows the three-year retention rule.</p></div><span class="badge badge-neutral"><?php echo $result->num_rows; ?> records</span></div>
+        <div class="panel-header"><div><p class="eyebrow"><?php echo e(ui_t('Employee history')); ?></p><h2 id="deletion-history-title"><?php echo e(ui_t('Deletion records')); ?></h2><p class="muted"><?php echo e(ui_t('Most recent deletions appear first. Eligibility follows the three-year retention rule.')); ?></p></div><span class="badge badge-neutral"><?php echo e(ui_t('{count} records', ['count' => $result->num_rows])); ?></span></div>
         <?php if ($result->num_rows > 0): ?>
-            <div class="table-scroll"><table class="data-table"><caption class="sr-only">Deleted employee records and retention status</caption><thead><tr><th scope="col">Employee ID</th><th scope="col">Employee</th><th scope="col">Salary</th><th scope="col">Department</th><th scope="col">Position</th><th scope="col">Date of birth</th><th scope="col">NIN</th><th scope="col">Deleted by ID</th><th scope="col">Deleted by</th><th scope="col">Reason</th><th scope="col">Deleted at</th><th scope="col">Cleanup eligible</th></tr></thead><tbody>
-            <?php while ($row = $result->fetch_assoc()): ?><tr><td><?php echo e($row['employee_id']); ?></td><td><strong><?php echo e($row['employee_name']); ?></strong></td><td>£<?php echo e($row['employee_salary']); ?></td><td><?php echo e($row['employee_department']); ?></td><td><?php echo e($row['employee_position']); ?></td><td><?php echo e($row['employee_dob']); ?></td><td><?php echo e($row['employee_nin']); ?></td><td><?php echo e($row['deleted_by_id']); ?></td><td><?php echo e($row['deleted_by_name']); ?></td><td><?php echo e($row['reason']); ?></td><td><?php echo e($row['deleted_time']); ?></td><td><span class="badge <?php echo $row['over_three_years'] === 'Yes' ? 'badge-warning' : 'badge-neutral'; ?>"><?php echo e($row['over_three_years']); ?></span></td></tr><?php endwhile; ?>
+            <div class="table-scroll"><table class="data-table"><caption class="sr-only"><?php echo e(ui_t('Deleted employee records and retention status')); ?></caption><thead><tr><th scope="col"><?php echo e(ui_t('Employee ID')); ?></th><th scope="col"><?php echo e(ui_t('Employee')); ?></th><th scope="col"><?php echo e(ui_t('Salary')); ?></th><th scope="col"><?php echo e(ui_t('Department')); ?></th><th scope="col"><?php echo e(ui_t('Position')); ?></th><th scope="col"><?php echo e(ui_t('Date of birth')); ?></th><th scope="col"><?php echo e(ui_t('NIN')); ?></th><th scope="col"><?php echo e(ui_t('Deleted by ID')); ?></th><th scope="col"><?php echo e(ui_t('Deleted by')); ?></th><th scope="col"><?php echo e(ui_t('Reason')); ?></th><th scope="col"><?php echo e(ui_t('Deleted at')); ?></th><th scope="col"><?php echo e(ui_t('Cleanup eligible')); ?></th></tr></thead><tbody>
+            <?php while ($row = $result->fetch_assoc()): ?><tr><td><?php echo e($row['employee_id']); ?></td><td><strong><?php echo e($row['employee_name']); ?></strong></td><td>£<?php echo e($row['employee_salary']); ?></td><td><?php echo e(ui_t($row['employee_department'])); ?></td><td><?php echo e(ui_t($row['employee_position'])); ?></td><td><?php echo e($row['employee_dob']); ?></td><td><?php echo e($row['employee_nin']); ?></td><td><?php echo e($row['deleted_by_id']); ?></td><td><?php echo e($row['deleted_by_name']); ?></td><td><?php echo e($row['reason']); ?></td><td><?php echo e($row['deleted_time']); ?></td><td><span class="badge <?php echo $row['over_three_years'] === 'Yes' ? 'badge-warning' : 'badge-neutral'; ?>"><?php echo e(ui_t($row['over_three_years'])); ?></span></td></tr><?php endwhile; ?>
             </tbody></table></div>
-        <?php else: ?><div class="empty-state"><h3>No deletion records</h3><p>Employee deletion history will appear here when records are available.</p></div><?php endif; ?>
+        <?php else: ?><div class="empty-state"><h3><?php echo e(ui_t('No deletion records')); ?></h3><p><?php echo e(ui_t('Employee deletion history will appear here when records are available.')); ?></p></div><?php endif; ?>
     </section>
 <?php endif; ?>
 <?php ui_page_end(); ?>

@@ -71,31 +71,31 @@ if (!$holiday_balance) {
 $formValue = static function (string $key, string $default = ''): string {
     return isset($_POST[$key]) && is_string($_POST[$key]) ? $_POST[$key] : $default;
 };
-ui_page_start('Request leave', 'Plan your time away and send a request for approval.', ['current' => $current]);
+ui_page_start('Leave request', 'Plan your time away and send a request for approval.', ['current' => $current]);
 ?>
 <?php if ($message !== '') ui_notice($message, $messageType); ?>
 <?php if ($employee_data && $holiday_balance): ?>
     <div class="stat-grid">
         <?php foreach ($leaveColumns as $label => $column): ?>
-            <section class="stat-card"><p class="stat-label"><?php echo e($label); ?> leave</p><p class="stat-value"><?php echo e($holiday_balance[$column]); ?><small> days</small></p><p class="stat-note">Available balance</p></section>
+            <section class="stat-card"><p class="stat-label"><?php echo e(ui_t($label . ' leave')); ?></p><p class="stat-value"><?php echo e($holiday_balance[$column]); ?><small> <?php echo e(ui_t('days')); ?></small></p><p class="stat-note"><?php echo e(ui_t('Available balance')); ?></p></section>
         <?php endforeach; ?>
     </div>
     <section class="panel" aria-labelledby="request-title">
-        <div class="panel-header"><div><p class="eyebrow">For <?php echo e($employee_data['name']); ?></p><h2 id="request-title">Your leave request</h2><p class="muted">Fields marked * are required. Your request is sent to an administrator for review.</p></div><a class="button button-secondary" href="check_my_holiday.php">View my requests</a></div>
+        <div class="panel-header"><div><p class="eyebrow"><?php echo e(ui_t('For {name}', ['name' => $employee_data['name']])); ?></p><h2 id="request-title"><?php echo e(ui_t('Request details')); ?></h2><p class="muted"><?php echo e(ui_t('Fields marked * are required. Your request is sent to an administrator for review.')); ?></p></div><a class="button button-secondary" href="check_my_holiday.php"><?php echo e(ui_t('View my requests')); ?></a></div>
         <form method="POST" action="" data-leave-form>
             <?php echo csrf_field(); ?>
             <div class="form-grid">
-                <div class="field field-full"><label for="leave_type">Leave type *</label><select id="leave_type" name="leave_type" required><?php foreach ($leaveColumns as $label => $column): ?><option value="<?php echo e($label); ?>" data-balance="<?php echo e($holiday_balance[$column]); ?>" <?php echo $formValue('leave_type', 'Annual') === $label ? 'selected' : ''; ?>><?php echo e($label); ?> leave (<?php echo e($holiday_balance[$column]); ?> days available)</option><?php endforeach; ?></select></div>
-                <div class="field"><label for="start_date">Start date *</label><input type="date" id="start_date" name="start_date" min="1000-01-01" value="<?php echo e($formValue('start_date')); ?>" aria-describedby="date-hint" required></div>
-                <div class="field"><label for="end_date">End date *</label><input type="date" id="end_date" name="end_date" min="1000-01-01" value="<?php echo e($formValue('end_date')); ?>" aria-describedby="date-hint" required></div>
-                <div class="field field-full"><p id="date-hint" class="muted">Leave is counted in calendar days, including both dates and weekends. A request for the same start and end date uses 1 day.</p><output data-leave-preview aria-live="polite">Select your dates to preview the number of days.</output></div>
-                <div class="field field-full"><label for="reason">Reason for leave</label><textarea id="reason" name="reason" rows="4" maxlength="16384" placeholder="Add any context that will help your administrator." aria-describedby="reason-hint"><?php echo e($formValue('reason')); ?></textarea><small id="reason-hint" class="muted">Optional. Keep your note brief.</small></div>
+                <div class="field field-full"><label for="leave_type"><?php echo e(ui_t('Leave type *')); ?></label><select id="leave_type" name="leave_type" required><?php foreach ($leaveColumns as $label => $column): ?><option value="<?php echo e($label); ?>" data-balance="<?php echo e($holiday_balance[$column]); ?>" <?php echo $formValue('leave_type', 'Annual') === $label ? 'selected' : ''; ?>><?php echo e(ui_t('{type} ({count} days available)', ['type' => ui_t($label . ' leave'), 'count' => $holiday_balance[$column]])); ?></option><?php endforeach; ?></select></div>
+                <div class="field"><label for="start_date"><?php echo e(ui_t('Start date *')); ?></label><input type="date" id="start_date" name="start_date" min="1000-01-01" value="<?php echo e($formValue('start_date')); ?>" aria-describedby="date-hint" required></div>
+                <div class="field"><label for="end_date"><?php echo e(ui_t('End date *')); ?></label><input type="date" id="end_date" name="end_date" min="1000-01-01" value="<?php echo e($formValue('end_date')); ?>" aria-describedby="date-hint" required></div>
+                <div class="field field-full"><p id="date-hint" class="muted"><?php echo e(ui_t('Leave is counted in calendar days, including both dates and weekends. A request for the same start and end date uses 1 day.')); ?></p><output data-leave-preview aria-live="polite"><?php echo e(ui_t('Select your dates to preview the number of days.')); ?></output></div>
+                <div class="field field-full"><label for="reason"><?php echo e(ui_t('Reason for leave')); ?></label><textarea id="reason" name="reason" rows="4" maxlength="16384" placeholder="<?php echo e(ui_t('Add any context that will help your administrator.')); ?>" aria-describedby="reason-hint"><?php echo e($formValue('reason')); ?></textarea><small id="reason-hint" class="muted"><?php echo e(ui_t('Optional. Keep your note brief.')); ?></small></div>
             </div>
-            <div class="form-actions"><button type="submit" name="request_holiday" class="button">Submit request</button><a href="<?php echo e($backUrl); ?>" class="button button-secondary">Cancel</a></div>
-            <p class="muted">Pending requests do not reduce your balance. The available balance is checked again when a request is approved.</p>
+            <div class="form-actions"><button type="submit" name="request_holiday" class="button"><?php echo e(ui_t('Submit request')); ?></button><a href="<?php echo e($backUrl); ?>" class="button button-secondary"><?php echo e(ui_t('Cancel')); ?></a></div>
+            <p class="muted"><?php echo e(ui_t('Pending requests do not reduce your balance. The available balance is checked again when a request is approved.')); ?></p>
         </form>
     </section>
 <?php else: ?>
-    <section class="panel empty-state"><h2>Leave balance unavailable</h2><p class="muted">An administrator needs to check your leave balance before you can submit a request.</p><a class="button button-secondary" href="<?php echo e($backUrl); ?>">Back to overview</a></section>
+    <section class="panel empty-state"><h2><?php echo e(ui_t('Leave balance unavailable')); ?></h2><p class="muted"><?php echo e(ui_t('An administrator needs to check your leave balance before you can submit a request.')); ?></p><a class="button button-secondary" href="<?php echo e($backUrl); ?>"><?php echo e(ui_t('Back to overview')); ?></a></section>
 <?php endif; ?>
 <?php ui_page_end(); ?>

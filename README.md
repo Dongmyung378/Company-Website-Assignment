@@ -1,7 +1,7 @@
 <p align="right"><strong>English</strong> | <a href="README.ko.md">한국어</a></p>
 
 <div align="center">
-  <img src="public/assets/images/company-illustration.jpg" alt="Kilburnazon company illustration" width="760">
+  <img src="public/assets/images/brand-mark.svg" alt="Kilburnazon" width="56">
   <h1>Kilburnazon People Operations</h1>
   <p>A server-rendered PHP and MySQL employee operations application.</p>
 </div>
@@ -22,6 +22,14 @@ The project keeps its original framework-free page structure, business features,
 | Deletion | A transaction-owning stored procedure records a full-width snapshot before employee removal |
 
 Authorization follows Executive department membership. A separate permissions model would suit a larger HR system. Payroll preserves the coursework calculation; it is not a legal payroll or tax engine.
+
+## Interface language
+
+**English is the default** for the application and this repository. Use the **한국어** control in the page header to switch to Korean; choose **English** to switch back. The preference is remembered across pages and sign-in. Unsaved form entries are protected by a confirmation before changing language.
+
+The [Korean overview](README.ko.md) and matching Korean guides are provided separately. Proper names and stored business values remain intact; CSV exports keep their original English headers. The Korean interface uses reviewed HR terminology rather than literal word substitution.
+
+<img src="docs/images/employee-portal.en.png" alt="English employee portal sign-in with the English and Korean language selector" width="1050">
 
 ## Using the workspace
 
@@ -70,7 +78,7 @@ python tests/security_regression.py
 | --- | --- |
 | `public/` | The existing 18 PHP endpoints and assets; the only web root |
 | `config/` | Environment loading, connection, current-account guards, CSRF, sessions and security helpers |
-| `lib/` | Employee and leave workflow validation |
+| `lib/` | Workflow validation, shared layout and English/Korean display helpers |
 | `database/` | Fictional seeds, schema, migrations, triggers and the deletion procedure |
 | `scripts/` | CLI-only setup, migration and runtime-user provisioning |
 | `tests/` | HTTP and database regressions for an explicitly disposable database |

@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
         if ($invalidRows) {
-            $message = $invalidRows . ' approved requests contain invalid stored dates or leave types and could not be included. Contact the administrator.';
+            $message = ui_t('{count} approved requests contain invalid stored dates or leave types and could not be included. Contact the administrator.', ['count' => $invalidRows]);
         } elseif (!$holiday_data) {
             $message = 'No approved holiday requests found for the selected month.';
         }
@@ -61,36 +61,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
-<?php ui_page_start('Monthly Holiday Report', 'Review approved leave and department totals for a selected month.', ['current' => $current]); ?>
+<?php ui_page_start('Monthly leave report', 'Review approved leave and department totals for a selected month.', ['current' => $current]); ?>
 <section class="panel" aria-labelledby="holiday-filters-title">
-    <div class="panel-header"><div><p class="eyebrow">Report filters</p><h2 id="holiday-filters-title">Choose a month</h2></div><span class="badge badge-success">Approved leave only</span></div>
+    <div class="panel-header"><div><p class="eyebrow"><?php echo e(ui_t('Report filters')); ?></p><h2 id="holiday-filters-title"><?php echo e(ui_t('Choose a month')); ?></h2></div><span class="badge badge-success"><?php echo e(ui_t('Approved leave only')); ?></span></div>
     <form method="POST" action="" class="form-grid">
         <?php echo csrf_field(); ?>
-        <div class="field"><label for="month">Reporting month</label><input type="month" id="month" name="month" value="<?php echo e($month); ?>" min="1000-01" aria-describedby="month-hint" required><p class="field-hint" id="month-hint">Days count both the start and end date, including weekends. Only days within the selected month are included.</p></div>
-        <div class="form-actions"><button type="submit" name="check_holidays" class="button">View report</button><a class="button button-secondary" href="check_absence.php">Reset</a></div>
+        <div class="field"><label for="month"><?php echo e(ui_t('Reporting month')); ?></label><input type="month" id="month" name="month" value="<?php echo e($month); ?>" min="1000-01" aria-describedby="month-hint" required><p class="field-hint" id="month-hint"><?php echo e(ui_t('Days count both the start and end date, including weekends. Only days within the selected month are included.')); ?></p></div>
+        <div class="form-actions"><button type="submit" name="check_holidays" class="button"><?php echo e(ui_t('View report')); ?></button><a class="button button-secondary" href="check_absence.php"><?php echo e(ui_t('Reset')); ?></a></div>
     </form>
 </section>
 <?php if ($message !== ''): ?><?php ui_notice($message, !empty($invalidRows) || http_response_code() >= 400 ? 'warning' : 'info'); ?><?php endif; ?>
 <?php if (!empty($holiday_data)): ?>
-    <div class="stat-grid" aria-label="Holiday summary for <?php echo e($month); ?>">
-        <div class="stat-card"><span class="stat-label">Total leave days</span><strong class="stat-value"><?php echo e($summary['total_days']); ?></strong><span class="stat-note"><?php echo e($month); ?> calendar days</span></div>
-        <div class="stat-card"><span class="stat-label">Annual leave</span><strong class="stat-value"><?php echo e($summary['annual_leave']); ?></strong><span class="stat-note">Days in selected month</span></div>
-        <div class="stat-card"><span class="stat-label">Sick leave</span><strong class="stat-value"><?php echo e($summary['sick_leave']); ?></strong><span class="stat-note">Days in selected month</span></div>
-        <div class="stat-card"><span class="stat-label">Personal leave</span><strong class="stat-value"><?php echo e($summary['personal_leave']); ?></strong><span class="stat-note">Days in selected month</span></div>
+    <div class="stat-grid" aria-label="<?php echo e(ui_t('Leave summary for {month}', ['month' => $month])); ?>">
+        <div class="stat-card"><span class="stat-label"><?php echo e(ui_t('Total leave days')); ?></span><strong class="stat-value"><?php echo e($summary['total_days']); ?></strong><span class="stat-note"><?php echo e(ui_t('Calendar days in {month}', ['month' => $month])); ?></span></div>
+        <div class="stat-card"><span class="stat-label"><?php echo e(ui_t('Annual leave')); ?></span><strong class="stat-value"><?php echo e($summary['annual_leave']); ?></strong><span class="stat-note"><?php echo e(ui_t('Days in selected month')); ?></span></div>
+        <div class="stat-card"><span class="stat-label"><?php echo e(ui_t('Sick leave')); ?></span><strong class="stat-value"><?php echo e($summary['sick_leave']); ?></strong><span class="stat-note"><?php echo e(ui_t('Days in selected month')); ?></span></div>
+        <div class="stat-card"><span class="stat-label"><?php echo e(ui_t('Personal leave')); ?></span><strong class="stat-value"><?php echo e($summary['personal_leave']); ?></strong><span class="stat-note"><?php echo e(ui_t('Days in selected month')); ?></span></div>
     </div>
     <section class="panel" aria-labelledby="holiday-details-title">
-        <div class="panel-header"><div><p class="eyebrow"><?php echo e($month); ?></p><h2 id="holiday-details-title">Approved leave details</h2></div><span class="badge badge-neutral"><?php echo count($holiday_data); ?> requests</span></div>
-        <div class="table-scroll"><table class="data-table"><caption class="sr-only">Approved leave overlapping <?php echo e($month); ?></caption><thead><tr><th scope="col">Employee</th><th scope="col">Department</th><th scope="col">Leave type</th><th scope="col">Start date</th><th scope="col">End date</th><th scope="col">Status</th><th scope="col">Days in month</th></tr></thead><tbody>
-        <?php foreach ($holiday_data as $holiday): ?><tr><td><strong><?php echo e($holiday['name']); ?></strong></td><td><?php echo e($holiday['department_name']); ?></td><td><?php echo e($holiday['leave_type']); ?></td><td><?php echo e($holiday['start_date']); ?></td><td><?php echo e($holiday['end_date']); ?></td><td><span class="badge badge-success"><?php echo e($holiday['status']); ?></span></td><td><strong><?php echo e($holiday['days_in_month']); ?></strong></td></tr><?php endforeach; ?>
+        <div class="panel-header"><div><p class="eyebrow"><?php echo e($month); ?></p><h2 id="holiday-details-title"><?php echo e(ui_t('Approved leave details')); ?></h2></div><span class="badge badge-neutral"><?php echo e(ui_t('{count} requests', ['count' => count($holiday_data)])); ?></span></div>
+        <div class="table-scroll"><table class="data-table"><caption class="sr-only"><?php echo e(ui_t('Approved leave overlapping {month}', ['month' => $month])); ?></caption><thead><tr><th scope="col"><?php echo e(ui_t('Employee')); ?></th><th scope="col"><?php echo e(ui_t('Department')); ?></th><th scope="col"><?php echo e(ui_t('Leave type')); ?></th><th scope="col"><?php echo e(ui_t('Start date')); ?></th><th scope="col"><?php echo e(ui_t('End date')); ?></th><th scope="col"><?php echo e(ui_t('Status')); ?></th><th scope="col"><?php echo e(ui_t('Days in month')); ?></th></tr></thead><tbody>
+        <?php foreach ($holiday_data as $holiday): ?><tr><td><strong><?php echo e($holiday['name']); ?></strong></td><td><?php echo e(ui_t($holiday['department_name'])); ?></td><td><?php echo e(ui_t($holiday['leave_type'])); ?></td><td><?php echo e($holiday['start_date']); ?></td><td><?php echo e($holiday['end_date']); ?></td><td><span class="badge badge-success"><?php echo e(ui_t($holiday['status'])); ?></span></td><td><strong><?php echo e($holiday['days_in_month']); ?></strong></td></tr><?php endforeach; ?>
         </tbody></table></div>
     </section>
     <section class="panel" aria-labelledby="department-leave-title">
-        <div class="panel-header"><div><h2 id="department-leave-title">Leave by department</h2><p class="muted">Average days are calculated across all employees in each department.</p></div></div>
-        <div class="table-scroll"><table class="data-table"><thead><tr><th scope="col">Department</th><th scope="col">Total leave days</th><th scope="col">Average days per employee</th></tr></thead><tbody>
-        <?php foreach ($department_summary as $dept_summary): ?><tr><td><strong><?php echo e($dept_summary['department_name']); ?></strong></td><td><?php echo e($dept_summary['total_days']); ?></td><td><?php echo e($dept_summary['average_days']); ?></td></tr><?php endforeach; ?>
+        <div class="panel-header"><div><h2 id="department-leave-title"><?php echo e(ui_t('Leave by department')); ?></h2><p class="muted"><?php echo e(ui_t('Average days are calculated across all employees in each department.')); ?></p></div></div>
+        <div class="table-scroll"><table class="data-table"><thead><tr><th scope="col"><?php echo e(ui_t('Department')); ?></th><th scope="col"><?php echo e(ui_t('Total leave days')); ?></th><th scope="col"><?php echo e(ui_t('Average days per employee')); ?></th></tr></thead><tbody>
+        <?php foreach ($department_summary as $dept_summary): ?><tr><td><strong><?php echo e(ui_t($dept_summary['department_name'])); ?></strong></td><td><?php echo e($dept_summary['total_days']); ?></td><td><?php echo e($dept_summary['average_days']); ?></td></tr><?php endforeach; ?>
         </tbody></table></div>
     </section>
 <?php else: ?>
-    <section class="panel empty-state"><p class="eyebrow">Monthly overview</p><h2><?php echo $_SERVER['REQUEST_METHOD'] === 'POST' ? 'No leave to display' : 'Your monthly report starts here'; ?></h2><p><?php echo $_SERVER['REQUEST_METHOD'] === 'POST' ? 'Choose another month to review approved leave for a different period.' : 'Choose a reporting month above to see approved leave, totals and department averages.'; ?></p></section>
+    <section class="panel empty-state"><p class="eyebrow"><?php echo e(ui_t('Monthly overview')); ?></p><h2><?php echo e(ui_t($_SERVER['REQUEST_METHOD'] === 'POST' ? 'No leave to display' : 'Select a reporting month')); ?></h2><p><?php echo e(ui_t($_SERVER['REQUEST_METHOD'] === 'POST' ? 'Choose another month to review approved leave for a different period.' : 'Choose a reporting month above to see approved leave, totals and department averages.')); ?></p></section>
 <?php endif; ?>
 <?php ui_page_end(); ?>

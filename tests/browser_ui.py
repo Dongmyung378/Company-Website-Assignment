@@ -23,6 +23,7 @@ import urllib.parse
 import urllib.request
 
 import security_regression as t
+from visual_quality import inspect_visual_quality
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -108,6 +109,8 @@ class Browser:
         self.exceptions = []
         self.posts = []
         self.loader = None
+        self.language = 'en'
+        self.dialogs = 0
         self.call('Page.enable')
         self.call('Network.enable')
         self.call('Runtime.enable')
@@ -141,6 +144,9 @@ class Browser:
                 'script': urllib.parse.urlsplit(details.get('url', '')).path,
                 'line': details.get('lineNumber'),
             })
+        elif method == 'Page.javascriptDialogOpening':
+            self.dialogs += 1
+            self.send('Page.handleJavaScriptDialog', {'accept': False})
         elif method == 'Network.requestWillBeSent':
             request = params['request']
             if request.get('method') == 'POST' and request['url'].startswith(t.BASE + '/'):
@@ -223,6 +229,7 @@ class Browser:
 
     def identity(self, client=None):
         self.call('Network.clearBrowserCookies')
+        self.call('Network.setCookie', {'name': 'ui_language', 'value': self.language, 'url': t.BASE, 'path': '/', 'httpOnly': True, 'sameSite': 'Lax'})
         if client is not None:
             sid = client.sid()
             if not sid:
@@ -279,7 +286,7 @@ class Browser:
         result = self.call('Page.captureScreenshot', {
             'format': 'png', 'captureBeyondViewport': False, 'fromSurface': True,
         })
-        destination = VAR / 'ui-screenshots' / (name + '.png')
+        destination = VAR / 'ui-screenshots' / (self.language + '-' + name + '.png')
         destination.parent.mkdir(parents=True, exist_ok=True)
         destination.write_bytes(base64.b64decode(result['data']))
         RESULT['screenshots'].append(str(destination.relative_to(ROOT)).replace('\\', '/'))
@@ -302,6 +309,7 @@ SNAPSHOT = r'''(() => {
             .some(id => document.getElementById(id)?.textContent.trim()));
     const ids = [...document.querySelectorAll('[id]')].map(node => node.id);
     return {
+        language: document.documentElement.lang,
         h1: document.querySelectorAll('h1').length,
         main: document.querySelectorAll('main').length,
         viewportMeta: document.querySelector('meta[name=viewport]')?.content || '',
@@ -328,13 +336,14 @@ def inspect_page(browser: Browser, label: str, viewport: str, path: str, *, auth
     documents = [item for item in browser.responses if item['type'] == 'Document'
                  and item['path'] == urllib.parse.urlsplit(path).path]
     evidence = {
-        'page': label, 'viewport': viewport, 'path': urllib.parse.urlsplit(path).path,
+        'page': label, 'viewport': viewport, 'locale': browser.language, 'path': urllib.parse.urlsplit(path).path,
         **snapshot, 'resourceErrors': [{'path': item['path'], 'status': item['status']} for item in errors],
         'scriptExceptions': list(browser.exceptions),
         'documentStatus': documents[-1]['status'] if documents else None,
     }
     RESULT['pages'].append(evidence)
-    prefix = viewport + ' ' + label
+    prefix = browser.language + ' ' + viewport + ' ' + label
+    check(prefix + ' selected language', snapshot['language'] == browser.language)
     check(prefix + ' landmarks and viewport', snapshot['h1'] == 1 and snapshot['main'] == 1
           and 'width=device-width' in snapshot['viewportMeta'])
     check(prefix + ' no document overflow', snapshot['documentWidth'] <= snapshot['viewportWidth'] + 1,
@@ -348,6 +357,7 @@ def inspect_page(browser: Browser, label: str, viewport: str, path: str, *, auth
     if not auth:
         check(prefix + ' current navigation', snapshot['sidebar'] and snapshot['activeLinks'] == 1
               and snapshot['sidebarInert'] == (snapshot['viewportWidth'] <= 900))
+    evidence['visualQuality'] = inspect_visual_quality(browser, check, browser.language + ' ' + label, viewport)
 
 
 def password_toggle(browser: Browser, viewport: str):
@@ -393,13 +403,16 @@ def leave_preview(browser: Browser, viewport: str):
     browser.call('Emulation.setTimezoneOverride', {'timezoneId': 'America/New_York'})
     try:
         browser.fill({'#leave_type': 'Annual', '#start_date': '2027-03-13', '#end_date': '2027-03-15'})
-        across_dst = browser.evaluate('document.querySelector("[data-leave-preview]").textContent.startsWith("3 calendar days") && !document.querySelector("#end_date").validity.customError')
+        expected = '총 3일' if browser.language == 'ko' else '3 calendar days'
+        across_dst = browser.evaluate('document.querySelector("[data-leave-preview]").textContent.includes(' + json.dumps(expected) + ') && !document.querySelector("#end_date").validity.customError')
         browser.fill({'#end_date': '2027-03-13'})
-        single_day = browser.evaluate('document.querySelector("[data-leave-preview]").textContent.startsWith("1 calendar day,")')
+        expected = '총 1일' if browser.language == 'ko' else '1 calendar day,'
+        single_day = browser.evaluate('document.querySelector("[data-leave-preview]").textContent.includes(' + json.dumps(expected) + ')')
         browser.fill({'#end_date': '2027-03-12'})
         reversed_dates = browser.evaluate('document.querySelector("#end_date").validity.customError')
         browser.fill({'#start_date': '2027-03-01', '#end_date': '2027-12-31'})
-        insufficient = browser.evaluate('document.querySelector("#end_date").validity.customError && document.querySelector("[data-leave-preview]").textContent.includes("balance")')
+        expected = '사용 가능한' if browser.language == 'ko' else 'balance'
+        insufficient = browser.evaluate('document.querySelector("#end_date").validity.customError && document.querySelector("[data-leave-preview]").textContent.includes(' + json.dumps(expected) + ')')
         check(viewport + ' leave calendar preview is inclusive across DST', across_dst and single_day)
         check(viewport + ' leave preview rejects reversed and insufficient dates', reversed_dates and insufficient)
     finally:
@@ -441,6 +454,30 @@ def browser_login(browser: Browser, user_id: int, password: str):
     browser.submit_and_wait('button[type=submit]', '/main.php')
     check('Real login click follows the CSRF-protected employee redirect',
           browser.evaluate('location.pathname === "/main.php" && document.querySelectorAll("h1").length === 1'))
+
+
+def language_selection(browser: Browser, admin):
+    browser.language = 'en'
+    browser.identity(admin)
+    browser.navigate('/list_employees.php?q=employee')
+    before_dialogs = browser.dialogs
+    browser.submit_and_wait('.language-switch a[lang=ko]', '/list_employees.php')
+    check('Language selector changes to Korean without unnecessary confirmation',
+          browser.dialogs == before_dialogs and browser.evaluate('document.documentElement.lang === "ko" && new URLSearchParams(location.search).get("q") === "employee"'))
+    browser.language = 'ko'
+    browser.navigate('/add_employee.php')
+    check('Browser language preference persists during authenticated navigation',
+          browser.evaluate('document.documentElement.lang === "ko" && !!document.querySelector(".sidebar a[aria-current=page]")'))
+    browser.fill({'#name': 'Unsubmitted language test'})
+    browser.click('.language-switch a[lang=en]')
+    browser.pause(100)
+    check('Language selector warns about unsaved entries and keeps them after cancel',
+          browser.dialogs == before_dialogs + 1 and browser.evaluate('document.documentElement.lang === "ko" && document.querySelector("#name").value === "Unsubmitted language test"'))
+    browser.fill({'#name': ''})
+    browser.submit_and_wait('.language-switch a[lang=en]', '/add_employee.php')
+    browser.language = 'en'
+    check('Language selector restores English without signing out',
+          browser.evaluate('document.documentElement.lang === "en" && !!document.querySelector(".sidebar")'))
 
 
 def run_pages(browser: Browser, admin, user, forced, user_id, role, month):
@@ -497,6 +534,10 @@ def run_pages(browser: Browser, admin, user, forced, user_id, role, month):
 
 def spot_checks(browser: Browser, admin, user):
     cases = [
+        ('compact mobile', 320, 740, [
+            ('login', '/login.php', None), ('admin overview', '/admin_main.php', admin),
+            ('employee directory', '/list_employees.php', admin), ('payroll', '/salary_table.php', admin),
+        ]),
         ('narrow mobile', 360, 800, [
             ('login', '/login.php', None), ('admin overview', '/admin_main.php', admin),
             ('employee directory', '/list_employees.php', admin),
@@ -603,14 +644,17 @@ def main():
             'browser': browser.call('Browser.getVersion').get('product'),
             'php': subprocess.check_output(t.PHP + ['-r', 'echo PHP_VERSION;'], text=True).strip(),
         }
-        run_pages(browser, admin, user, forced, user_id, role, month)
-        spot_checks(browser, admin, user)
-        browser.viewport(1440, 1000, False)
-        search_submit(browser, admin, user_id)
-        browser_login(browser, user_id, password)
+        for language in ['en', 'ko']:
+            browser.language = language
+            run_pages(browser, admin, user, forced, user_id, role, month)
+            spot_checks(browser, admin, user)
+            browser.viewport(1440, 1000, False)
+            search_submit(browser, admin, user_id)
+            browser_login(browser, user_id, password)
+        language_selection(browser, admin)
         standard_pages = [item for item in RESULT['pages'] if item['viewport'] in ('desktop', 'mobile')]
-        check('All 17 rendered pages checked at both viewport sizes', len(standard_pages) == 34)
-        check('Twelve requested screenshots captured', len(RESULT['screenshots']) == 12)
+        check('All 17 rendered pages checked at both viewport sizes in both languages', all(sum(item['locale'] == language for item in standard_pages) == 34 for language in ['en', 'ko']))
+        check('Twenty-four language-specific screenshots captured', len(RESULT['screenshots']) == 24)
         RESULT['status'] = 'complete'
         outcome = 0 if all(item['passed'] for item in RESULT['checks']) else 1
     except Exception as error:

@@ -9,7 +9,7 @@ set_exception_handler(static function (Throwable $error): void {
     if (!headers_sent()) {
         header('Content-Type: text/plain; charset=UTF-8');
     }
-    echo 'Unable to complete this request. Please try again later.';
+    echo function_exists('ui_t') ? ui_t('Unable to complete this request. Please try again later.') : 'Unable to complete this request. Please try again later.';
 });
 
 header('X-Content-Type-Options: nosniff');
@@ -49,7 +49,7 @@ function abort_request(int $status, string $message): never
 {
     http_response_code($status);
     header('Content-Type: text/plain; charset=UTF-8');
-    exit($message);
+    exit(function_exists('ui_t') ? ui_t($message) : $message);
 }
 
 function input_string(array $input, string $key, string $default = ''): string

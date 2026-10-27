@@ -37,34 +37,32 @@ if ($method === 'POST') {
     $error = 'Unable to sign in. Check your details or try again later.';
 }
 ?>
-<?php ui_page_start('Employee Login', 'Your people, connected.', ['auth' => true]); ?>
+<?php ui_page_start('Employee operations sign-in', 'Access your employee services and account.', ['auth' => true]); ?>
 <section class="auth-intro" aria-labelledby="welcome-title">
-    <p class="eyebrow">Your Kilburnazon workspace</p>
-    <h2 id="welcome-title">A better day<br>starts here.</h2>
-    <p>A clear view of your time off, your requests and your everyday employee essentials.</p>
-    <div class="summary-row"><span>01</span><div><strong>Your balance, at a glance</strong><p>See your available days before planning time away.</p></div></div>
-    <div class="summary-row"><span>02</span><div><strong>Every request, easy to follow</strong><p>Track your leave from submission to a decision.</p></div></div>
-    <div class="summary-row"><span>03</span><div><strong>Your account, in your hands</strong><p>Manage your password and sign out when you are done.</p></div></div>
+    <p class="eyebrow"><?php echo e(ui_t('Kilburnazon employee portal')); ?></p>
+    <h2 id="welcome-title"><?php echo e(ui_t('Employee operations')); ?></h2>
+    <p><?php echo e(ui_t('Access your leave balance, requests and account settings in one workspace.')); ?></p>
+    <div class="summary-row"><span>01</span><div><strong><?php echo e(ui_t('Leave balances')); ?></strong><p><?php echo e(ui_t('Check available annual, sick and personal leave.')); ?></p></div></div>
+    <div class="summary-row"><span>02</span><div><strong><?php echo e(ui_t('Request tracking')); ?></strong><p><?php echo e(ui_t('Submit leave requests and review their status.')); ?></p></div></div>
+    <div class="summary-row"><span>03</span><div><strong><?php echo e(ui_t('Account security')); ?></strong><p><?php echo e(ui_t('Change your password and manage your sign-in session.')); ?></p></div></div>
 </section>
 <section class="panel auth-form" aria-labelledby="login-title">
-    <p class="eyebrow">Welcome back</p>
-    <h1 id="login-title">Sign in to your workspace</h1>
-    <p class="muted">Enter your employee ID and password to continue.</p>
-    <?php if ($error !== ''): ?>
-        <?php ui_notice($error, 'error'); ?>
-    <?php endif; ?>
+    <p class="eyebrow"><?php echo e(ui_t('Employee access')); ?></p>
+    <h1 id="login-title"><?php echo e(ui_t('Employee operations sign-in')); ?></h1>
+    <p class="muted"><?php echo e(ui_t('Enter your employee ID and password to continue.')); ?></p>
+    <?php if ($error !== ''): ?><?php ui_notice($error, 'error'); ?><?php endif; ?>
     <form method="POST" action="login.php" class="form-grid">
         <?php echo csrf_field(); ?>
         <div class="field field-full">
-            <label for="employee_id">Employee ID</label>
-            <input type="text" id="employee_id" name="employee_id" placeholder="Enter your employee ID" value="<?php echo e($employee_id); ?>" inputmode="numeric" autocomplete="username" maxlength="10" required>
+            <label for="employee_id"><?php echo e(ui_t('Employee ID')); ?></label>
+            <input type="text" id="employee_id" name="employee_id" placeholder="<?php echo e(ui_t('Enter your employee ID')); ?>" value="<?php echo e($employee_id); ?>" inputmode="numeric" autocomplete="username" maxlength="10" required>
         </div>
         <div class="field field-full">
-            <label for="password">Password</label>
-            <div class="password-field"><input type="password" id="password" name="password" placeholder="Enter your password" autocomplete="current-password" required></div>
+            <label for="password"><?php echo e(ui_t('Password')); ?></label>
+            <div class="password-field"><input type="password" id="password" name="password" placeholder="<?php echo e(ui_t('Enter your password')); ?>" autocomplete="current-password" required></div>
         </div>
-        <div class="form-actions field-full"><button type="submit" class="button">Sign in</button></div>
+        <div class="form-actions field-full"><button type="submit" class="button"><?php echo e(ui_t('Sign in')); ?></button></div>
     </form>
-    <div class="auth-links"><p class="field-hint">First time here? Use the temporary password provided by your administrator. You will be asked to choose a new passphrase.</p><p class="field-hint">Need help signing in? Contact your administrator.</p></div>
+    <div class="auth-links"><p class="field-hint"><?php echo e(ui_t('For your first sign-in, use the temporary password provided by your administrator. You must then choose a new passphrase.')); ?></p><p class="field-hint"><?php echo e(ui_t('For sign-in assistance, contact your administrator.')); ?></p></div>
 </section>
 <?php ui_page_end(); ?>

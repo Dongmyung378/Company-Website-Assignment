@@ -19,42 +19,42 @@ $requests = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 $stmt->close();
 $conn->close();
 
-ui_page_start('A little space for you', 'Welcome back, ' . $current['name'] . '. Manage your time off and keep up with your requests.', [
+ui_page_start('My leave overview', 'View your leave balances, submit requests, and track approval decisions.', [
     'current' => $current,
-    'actions' => '<a class="button" href="holiday_requests.php">+ Request leave</a>',
+    'actions' => '<a class="button" href="holiday_requests.php">' . ui_icon('plus') . e(ui_t('Request leave')) . '</a>',
 ]);
 ?>
 <?php if (!$balance): ?>
-<div class="notice notice-warning" role="status">Your leave balance is unavailable. Please contact your administrator.</div>
+<div class="notice notice-warning" role="status"><?php echo e(ui_t('Your leave balance is unavailable. Please contact your administrator.')); ?></div>
 <?php endif; ?>
 <div class="stat-grid">
     <?php foreach (['annual_leave' => 'Annual leave', 'sick_leave' => 'Sick leave', 'personal_leave' => 'Personal leave'] as $column => $label): ?>
-    <div class="stat-card"><span class="stat-label"><?php echo e($label); ?></span><strong class="stat-value"><?php echo $balance ? e($balance[$column]) : '&mdash;'; ?><small> days</small></strong><span class="stat-note">Available balance</span></div>
+    <div class="stat-card"><span class="stat-label"><?php echo e(ui_t($label)); ?></span><strong class="stat-value"><?php echo $balance ? e($balance[$column]) : '&mdash;'; ?><small> <?php echo e(ui_t('days')); ?></small></strong><span class="stat-note"><?php echo e(ui_t('Available balance')); ?></span></div>
     <?php endforeach; ?>
 </div>
 
 <section class="panel" aria-labelledby="requests-heading">
-    <div class="panel-header"><div><p class="eyebrow">Stay in the loop</p><h2 id="requests-heading">Your latest requests</h2></div><a class="button button-quiet" href="check_my_holiday.php">View all requests</a></div>
+    <div class="panel-header"><div><p class="eyebrow"><?php echo e(ui_t('Leave history')); ?></p><h2 id="requests-heading"><?php echo e(ui_t('Recent leave requests')); ?></h2></div><a class="button button-quiet" href="check_my_holiday.php"><?php echo e(ui_t('View leave history')); ?></a></div>
     <?php if ($requests): ?>
     <div class="table-scroll">
         <table class="data-table">
-            <thead><tr><th scope="col">Leave type</th><th scope="col">Start date</th><th scope="col">End date</th><th scope="col">Status</th><th scope="col">Last updated</th></tr></thead>
+            <thead><tr><th scope="col"><?php echo e(ui_t('Leave type')); ?></th><th scope="col"><?php echo e(ui_t('Start date')); ?></th><th scope="col"><?php echo e(ui_t('End date')); ?></th><th scope="col"><?php echo e(ui_t('Status')); ?></th><th scope="col"><?php echo e(ui_t('Last updated')); ?></th></tr></thead>
             <tbody>
             <?php foreach ($requests as $request): ?>
                 <?php $statusClass = ['Pending' => 'badge-warning', 'Approved' => 'badge-success', 'Rejected' => 'badge-danger'][$request['status']] ?? 'badge-neutral'; ?>
-                <tr><td><strong><?php echo e($request['leave_type']); ?> leave</strong><small class="muted">Request #<?php echo e($request['request_id']); ?></small></td><td><?php echo e($request['start_date']); ?></td><td><?php echo e($request['end_date']); ?></td><td><span class="badge <?php echo $statusClass; ?>"><?php echo e($request['status']); ?></span></td><td><?php echo e($request['updated_at']); ?></td></tr>
+                <tr><td><strong><?php echo e(ui_t($request['leave_type'] . ' leave')); ?></strong><small class="muted"><?php echo e(ui_t('Request #{id}', ['id' => $request['request_id']])); ?></small></td><td><?php echo e($request['start_date']); ?></td><td><?php echo e($request['end_date']); ?></td><td><span class="badge <?php echo $statusClass; ?>"><?php echo e(ui_t($request['status'])); ?></span></td><td><?php echo e($request['updated_at']); ?></td></tr>
             <?php endforeach; ?>
             </tbody>
         </table>
     </div>
     <?php else: ?>
-    <div class="empty-state"><h3>Your next break starts here</h3><p>You have not submitted any leave requests yet.</p><a class="button" href="holiday_requests.php">Request leave</a></div>
+    <div class="empty-state"><h3><?php echo e(ui_t('No leave requests')); ?></h3><p><?php echo e(ui_t('You have not submitted any leave requests yet.')); ?></p><a class="button" href="holiday_requests.php"><?php echo e(ui_t('Request leave')); ?></a></div>
     <?php endif; ?>
 </section>
 
 <div class="grid-2">
-    <a class="action-card" href="holiday_requests.php"><span class="eyebrow">Plan ahead</span><h3>Make time for what matters</h3><p>Choose your leave type and dates, then send a request for review.</p><span>Request leave &rarr;</span></a>
-    <a class="action-card" href="change_password.php"><span class="eyebrow">Your account</span><h3>Keep your account secure</h3><p>Update your password whenever you need to.</p><span>Change password &rarr;</span></a>
+    <a class="action-card" href="holiday_requests.php"><span class="eyebrow"><?php echo e(ui_t('Leave requests')); ?></span><h3><?php echo e(ui_t('Submit a leave request')); ?></h3><p><?php echo e(ui_t('Choose your leave type and dates, then send a request for approval.')); ?></p><span><?php echo e(ui_t('Request leave')); ?> <?php echo ui_icon('arrow'); ?></span></a>
+    <a class="action-card" href="change_password.php"><span class="eyebrow"><?php echo e(ui_t('Account security')); ?></span><h3><?php echo e(ui_t('Change your password')); ?></h3><p><?php echo e(ui_t('Verify your current password and choose a new one.')); ?></p><span><?php echo e(ui_t('Change password')); ?> <?php echo ui_icon('arrow'); ?></span></a>
 </div>
-<p class="muted">Leave balances reflect approved requests. Pending requests remain subject to review.</p>
+<p class="muted"><?php echo e(ui_t('Leave balances reflect approved requests. Pending requests remain subject to review.')); ?></p>
 <?php ui_page_end(); ?>
