@@ -1,71 +1,64 @@
 <?php
-require __DIR__ . '/../config/connection.php';
-session_start();
-
-$department = $_SESSION['department'];
-
-if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-    header("Location: login.php");
-    exit();
+require_once __DIR__ . '/../config/bootstrap.php';
+$current = require_login(true);
+$backUrl = $current['department_name'] === 'Executive' ? 'admin_main.php' : 'main.php';
+$current_password_err = $new_password_err = $confirm_password_err = $success_msg = '';
+$method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+if (!in_array($method, ['GET', 'HEAD', 'POST'], true)) {
+    header('Allow: GET, HEAD, POST');
+    abort_request(405, 'Unsupported request method.');
 }
-
-$employee_id = $_SESSION['employee_id'];
-
-$new_password_err = $confirm_password_err = $success_msg = '';
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $new_password = $_POST['new_password'] ?? '';
-    $confirm_password = $_POST['confirm_password'] ?? '';
-
-    if (empty($new_password)) {
-        $new_password_err = 'Enter New Password.';
-    } elseif (strlen($new_password) < 3) {
-        $new_password_err = 'Password length should be longer than 3.';
+if ($method === 'POST') {
+    require_csrf();
+    $currentPassword = input_string($_POST, 'current_password');
+    $newPassword = input_string($_POST, 'new_password');
+    $confirmation = input_string($_POST, 'confirm_password');
+    $new_password_err = password_validation_error($newPassword);
+    if ($newPassword !== $confirmation) {
+        $confirm_password_err = 'The new passwords do not match.';
     }
-
-    if (empty($confirm_password)) {
-        $confirm_password_err = 'Enter Password again.';
-    } elseif ($new_password !== $confirm_password) {
-        $confirm_password_err = 'Incorret Password.';
+    if ($currentPassword === '') {
+        $current_password_err = 'Enter your current password or temporary password.';
+    } elseif ($newPassword === $currentPassword) {
+        $new_password_err = 'Choose a different password from your current password.';
     }
-
-    if (empty($new_password_err) && empty($confirm_password_err)) {
-        $new_password_hash = password_hash($new_password, PASSWORD_DEFAULT);
-
-        $update_stmt = $conn->prepare("UPDATE login SET password_hash = ? WHERE employee_id = ?");
-        $update_stmt->bind_param('si', $new_password_hash, $employee_id);
-
-        if ($update_stmt->execute()) {
-            $success_msg = 'Success and Back to main.';
+    if ($current_password_err === '' && $new_password_err === '' && $confirm_password_err === '') {
+        $rateLimited = false;
+        $verified = company_authenticate((string) $current['employee_id'], $currentPassword, $rateLimited);
+        if ($verified === null) {
+            $current_password_err = 'Unable to verify your current password. Check your details or try again later.';
+            if ($rateLimited) {
+                http_response_code(429);
+                header('Retry-After: 900');
+            }
+        } elseif ((int) $verified['auth_version'] !== (int) $current['auth_version']) {
+            company_login_redirect();
         } else {
-            $new_password_err = 'Please Retry.';
+            $stmt = $conn->prepare('UPDATE login SET password_hash=?,must_change_password=0,auth_version=auth_version+1 WHERE employee_id=? AND auth_version=? AND password_hash=?');
+            $stmt->execute([company_hash_password($newPassword), $current['employee_id'], $current['auth_version'], $verified['password_hash']]);
+            if ($stmt->affected_rows !== 1) {
+                $stmt->close();
+                company_login_redirect();
+            }
+            $stmt->close();
+            $current['auth_version']++;
+            $current['must_change_password'] = 0;
+            company_establish_session($current);
+            $success_msg = 'Your password has been changed. Other signed-in sessions have been revoked.';
         }
-        $update_stmt->close();
     }
-
-    $conn->close();
+    if ($success_msg === '' && http_response_code() !== 429) {
+        http_response_code(422);
+    }
 }
-
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <script>
-        function BackToPage(department) {
-            let url;
-            switch (department) {
-                case '2':
-                    url = 'admin_main.php';
-                    break;
-                default:
-                    url = 'main.php';
-                    break;
-            }
-            window.location.href = url;
-        }
-    </script>
+    <meta charset="UTF-8">
+    <title>Change password</title>
     <style>
         .error {
             color: red;
@@ -109,28 +102,40 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </head>
 
 <body>
-    <button onclick="BackToPage('<?php echo $department; ?>')">Back to Main</button>
+    <?php if (!$current['must_change_password']): ?>
+        <a href="<?php echo e($backUrl); ?>">Back to Main</a>
+    <?php endif; ?>
+    <a href="logout.php">Sign out</a>
     <h1>Change Password!</h1>
+    <?php if ($current['must_change_password']): ?>
+        <p style="text-align:center">Choose a new passphrase before continuing. Use your temporary password as the current password.</p>
+    <?php endif; ?>
     <?php if (!empty($success_msg)): ?>
-        <p class="success"><?php echo htmlspecialchars($success_msg); ?></p>
+        <p class="success"><?php echo e($success_msg); ?> <a href="<?php echo e($backUrl); ?>">Continue</a></p>
         <script>
             setTimeout(function() {
-                BackToPage('<?php echo $department; ?>');
+                window.location.href = <?php echo json_encode($backUrl, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
             }, 1500);
         </script>
     <?php endif; ?>
 
     <form method="POST" action="">
-        <label for="new_password">New Password:</label>
-        <input type="password" name="new_password" required>
+        <?php echo csrf_field(); ?>
+        <label for="current_password">Current Password:</label>
+        <input type="password" id="current_password" name="current_password" autocomplete="current-password" required>
+        <?php if ($current_password_err !== ''): ?>
+            <span class="error"><?php echo e($current_password_err); ?></span>
+        <?php endif; ?>
+        <label for="new_password">New passphrase (at least 15 characters):</label>
+        <input type="password" id="new_password" name="new_password" autocomplete="new-password" minlength="15" required>
         <?php if (!empty($new_password_err)): ?>
-            <span class="error"><?php echo htmlspecialchars($new_password_err); ?></span>
+            <span class="error"><?php echo e($new_password_err); ?></span>
         <?php endif; ?>
 
         <label for="confirm_password">Check Password:</label>
-        <input type="password" name="confirm_password" required>
+        <input type="password" id="confirm_password" name="confirm_password" autocomplete="new-password" minlength="15" required>
         <?php if (!empty($confirm_password_err)): ?>
-            <span class="error"><?php echo htmlspecialchars($confirm_password_err); ?></span>
+            <span class="error"><?php echo e($confirm_password_err); ?></span>
         <?php endif; ?>
 
         <button type="submit">Change Password</button>

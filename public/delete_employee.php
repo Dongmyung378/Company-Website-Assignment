@@ -1,51 +1,36 @@
 <?php
-require __DIR__ . '/../config/connection.php';
-session_start();
-
-if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-    header("Location: login.php");
-    exit();
-}
-if ($_SESSION['department'] !== 2) {
-    header("Location: main.php");
-    exit();
-}
-
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
-$message = '';
+require_once __DIR__ . '/../config/bootstrap.php';
+require_once __DIR__ . '/../lib/business.php';
+$current = require_admin();
+$message = $_SESSION['employee_delete_message'] ?? '';
+unset($_SESSION['employee_delete_message']);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $employee_id = intval($_POST['employee_id']);
-    $deleted_by_id = $_SESSION['employee_id'];
-    $deleted_by_name = $_SESSION['name'];
-    $deleted_reason = $_POST['deleted_reason'] ?? 'No reason provided';
-
+    require_csrf();
     try {
-        $conn->begin_transaction();
-
-        $callProcedureSQL = "CALL delete_employee_with_log(?, ?, ?, ?)";
-        $stmt = $conn->prepare($callProcedureSQL);
-        $stmt->bind_param("iiss", $employee_id, $deleted_by_id, $deleted_by_name, $deleted_reason);
-
-        if ($stmt->execute()) {
-            $conn->commit();
-
-            echo "<script>
-                alert('Employee deleted and log saved successfully.');
-                window.location.href = 'admin_main.php';
-            </script>";
-            exit();
-        } else {
-            throw new Exception("Failed to execute procedure: " . $stmt->error);
+        $employeeId = business_id($_POST, 'employee_id');
+        $deletedById = (int) $current['employee_id'];
+        $deletedByName = $current['name'];
+        $reason = business_text($_POST, 'deleted_reason', 'Reason for deletion', 255, false);
+        $reason = $reason === '' ? 'No reason provided' : $reason;
+        $stmt = $conn->prepare('CALL delete_employee_with_log(?, ?, ?, ?)');
+        $stmt->bind_param('iiss', $employeeId, $deletedById, $deletedByName, $reason);
+        $stmt->execute();
+        $stmt->close();
+        while ($conn->more_results() && $conn->next_result()) {
+            $extra = $conn->store_result();
+            if ($extra instanceof mysqli_result) {
+                $extra->free();
+            }
         }
-    } catch (Exception $e) {
-        $conn->rollback();
-        $message = "Error: " . $e->getMessage();
-        echo $message;
-    } finally {
-        $conn->close();
+        $_SESSION['employee_delete_message'] = 'Employee deleted and log saved successfully.';
+        header('Location: delete_employee.php');
+        exit();
+    } catch (Throwable $error) {
+        if ($error instanceof mysqli_sql_exception && $error->getCode() === 1644) {
+            $error = new WorkflowException('Employee not found or cannot be deleted.', 404);
+        }
+        $message = business_report_failure($error, 'Unable to delete the employee.');
     }
 }
 ?>
@@ -62,22 +47,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <a href="delete_records.php" class="enter-button">Check deleted employees</a>
         <h1>Delete Employee</h1>
         <form method="POST" action="">
+            <?php echo csrf_field(); ?>
             <div class="form-row">
                 <div class="form-group">
                     <label for="employee_id">Employee ID:</label>
-                    <input type="number" id="employee_id" name="employee_id" placeholder="Enter Employee ID" required>
+                    <input type="number" id="employee_id" name="employee_id" min="1" placeholder="Enter Employee ID" required>
                 </div>
                 <div class="form-group">
                     <label for="deleted_reason">Reason for Deletion:</label>
-                    <input type="text" id="deleted_reason" name="deleted_reason" placeholder="Enter Reason">
+                    <input type="text" id="deleted_reason" name="deleted_reason" maxlength="255" placeholder="Enter Reason">
                 </div>
             </div>
             <button type="submit">Delete Employee</button>
         </form>
-        <?php if (!empty($message)): ?>
-            <script>
-                alert("<?php echo htmlspecialchars($message, ENT_QUOTES, 'UTF-8'); ?>");
-            </script>
+        <?php if ($message): ?>
+            <p role="status"><?php echo e($message); ?></p>
         <?php endif; ?>
     </div>
 </body>

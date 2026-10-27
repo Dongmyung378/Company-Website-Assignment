@@ -1,0 +1,273 @@
+{
+  "database": "company_migration_test",
+  "legacy_commit": "02fdfe6b9bdcc57e700c9353fdc155095cf30221",
+  "legacy_seed_count": 197,
+  "retained_employee_count": 196,
+  "rotated_legacy_default_accounts": 195,
+  "pending_and_approved_requests_retained": 2,
+  "audit_logs_retained": 1,
+  "checks": [
+    {
+      "check": "migration database absent before isolated setup",
+      "passed": true
+    },
+    {
+      "check": "legacy setup set_database",
+      "passed": true
+    },
+    {
+      "check": "legacy setup material_table",
+      "passed": true
+    },
+    {
+      "check": "legacy setup get_employees_data",
+      "passed": true
+    },
+    {
+      "check": "legacy setup department_table",
+      "passed": true
+    },
+    {
+      "check": "legacy setup position_table",
+      "passed": true
+    },
+    {
+      "check": "legacy setup office_table",
+      "passed": true
+    },
+    {
+      "check": "legacy setup employee_table",
+      "passed": true
+    },
+    {
+      "check": "legacy setup emergency_table",
+      "passed": true
+    },
+    {
+      "check": "legacy setup holiday_tables",
+      "passed": true
+    },
+    {
+      "check": "legacy setup set_holiday",
+      "passed": true
+    },
+    {
+      "check": "legacy setup delete_employee_logs",
+      "passed": true
+    },
+    {
+      "check": "legacy setup login_table",
+      "passed": true
+    },
+    {
+      "check": "legacy setup set_triggers_and_procedure",
+      "passed": true
+    },
+    {
+      "check": "legacy seed has197 employees",
+      "passed": true
+    },
+    {
+      "check": "legacy mutation fixtures retained196 employees and1auditlog",
+      "passed": true
+    },
+    {
+      "check": "legacy mutation fixtures retained196 employees and1auditlog",
+      "passed": true
+    },
+    {
+      "check": "current migration exits0",
+      "passed": true
+    },
+    {
+      "check": "preserved materials",
+      "passed": true
+    },
+    {
+      "check": "preserved employees",
+      "passed": true
+    },
+    {
+      "check": "preserved department",
+      "passed": true
+    },
+    {
+      "check": "preserved position",
+      "passed": true
+    },
+    {
+      "check": "preserved office",
+      "passed": true
+    },
+    {
+      "check": "preserved emergency_table",
+      "passed": true
+    },
+    {
+      "check": "preserved holiday_balance",
+      "passed": true
+    },
+    {
+      "check": "preserved holiday_requests",
+      "passed": true
+    },
+    {
+      "check": "preserved delete_employee_logs",
+      "passed": true
+    },
+    {
+      "check": "nondefault password hash preserved",
+      "passed": true
+    },
+    {
+      "check": "nondefault account not unnecessarily forced to change",
+      "passed": true
+    },
+    {
+      "check": "migrated employee IDs unchanged",
+      "passed": true
+    },
+    {
+      "check": "exactly one private credential export",
+      "passed": true
+    },
+    {
+      "check": "only legacy default accounts rotated",
+      "passed": true
+    },
+    {
+      "check": "temporary passwords are unique and never default",
+      "passed": true
+    },
+    {
+      "check": "all exported credentials match migrated hashes",
+      "passed": true
+    },
+    {
+      "check": "all default accounts forced to change and revoke old versions",
+      "passed": true
+    },
+    {
+      "check": "all migrated row versions initialized1",
+      "passed": true
+    },
+    {
+      "check": "AUTO_INCREMENT added under existing foreign keys",
+      "passed": true
+    },
+    {
+      "check": "audit fields widened without historical truncation",
+      "passed": true
+    },
+    {
+      "check": "migrate rerun exits0",
+      "passed": true
+    },
+    {
+      "check": "migrate rerun preserves all account state",
+      "passed": true
+    },
+    {
+      "check": "migrate rerun preserves all data and history",
+      "passed": true
+    },
+    {
+      "check": "migrate rerun does not resurrect deleted employee",
+      "passed": true
+    },
+    {
+      "check": "migrate rerun creates no replacement credentials",
+      "passed": true
+    },
+    {
+      "check": "setup rerun exits0",
+      "passed": true
+    },
+    {
+      "check": "setup rerun preserves all account state",
+      "passed": true
+    },
+    {
+      "check": "setup rerun preserves all data and history",
+      "passed": true
+    },
+    {
+      "check": "setup rerun does not resurrect deleted employee",
+      "passed": true
+    },
+    {
+      "check": "setup rerun creates no replacement credentials",
+      "passed": true
+    },
+    {
+      "check": "all eight original foreign-key constraints retained",
+      "passed": true,
+      "detail": {
+        "employees": 3,
+        "position": 1,
+        "emergency_table": 1,
+        "holiday_balance": 1,
+        "holiday_requests": 1,
+        "login": 1
+      }
+    }
+  ],
+  "foreign_keys": [
+    {
+      "TABLE_NAME": "emergency_table",
+      "CONSTRAINT_NAME": "emergency_table_ibfk_1",
+      "REFERENCED_TABLE_NAME": "employees",
+      "UPDATE_RULE": "CASCADE",
+      "DELETE_RULE": "CASCADE"
+    },
+    {
+      "TABLE_NAME": "employees",
+      "CONSTRAINT_NAME": "employees_ibfk_1",
+      "REFERENCED_TABLE_NAME": "department",
+      "UPDATE_RULE": "CASCADE",
+      "DELETE_RULE": "CASCADE"
+    },
+    {
+      "TABLE_NAME": "employees",
+      "CONSTRAINT_NAME": "employees_ibfk_2",
+      "REFERENCED_TABLE_NAME": "office",
+      "UPDATE_RULE": "CASCADE",
+      "DELETE_RULE": "CASCADE"
+    },
+    {
+      "TABLE_NAME": "employees",
+      "CONSTRAINT_NAME": "employees_ibfk_3",
+      "REFERENCED_TABLE_NAME": "position",
+      "UPDATE_RULE": "CASCADE",
+      "DELETE_RULE": "CASCADE"
+    },
+    {
+      "TABLE_NAME": "holiday_balance",
+      "CONSTRAINT_NAME": "holiday_balance_ibfk_1",
+      "REFERENCED_TABLE_NAME": "employees",
+      "UPDATE_RULE": "NO ACTION",
+      "DELETE_RULE": "CASCADE"
+    },
+    {
+      "TABLE_NAME": "holiday_requests",
+      "CONSTRAINT_NAME": "holiday_requests_ibfk_1",
+      "REFERENCED_TABLE_NAME": "employees",
+      "UPDATE_RULE": "NO ACTION",
+      "DELETE_RULE": "CASCADE"
+    },
+    {
+      "TABLE_NAME": "login",
+      "CONSTRAINT_NAME": "login_ibfk_1",
+      "REFERENCED_TABLE_NAME": "employees",
+      "UPDATE_RULE": "CASCADE",
+      "DELETE_RULE": "CASCADE"
+    },
+    {
+      "TABLE_NAME": "position",
+      "CONSTRAINT_NAME": "position_ibfk_1",
+      "REFERENCED_TABLE_NAME": "department",
+      "UPDATE_RULE": "CASCADE",
+      "DELETE_RULE": "CASCADE"
+    }
+  ]
+}

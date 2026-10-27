@@ -1,115 +1,64 @@
 <?php
-session_start();
-require __DIR__ . '/../config/connection.php';
-
-if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-    header("Location: login.php");
-    exit();
-}
-
-// check this employee`s department is executive
-if ($_SESSION['department'] !== 2) {
-    header("Location: main.php");
-    exit();
-}
-
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
+require_once __DIR__ . '/../config/bootstrap.php';
+require_once __DIR__ . '/../lib/business.php';
+$current = require_admin();
 $month = date('Y-m');
 $holiday_data = [];
-$summary = [
-    'total_days' => 0,
-    'annual_leave' => 0,
-    'sick_leave' => 0,
-    'personal_leave' => 0,
-];
+$summary = ['total_days' => 0, 'annual_leave' => 0, 'sick_leave' => 0, 'personal_leave' => 0];
 $department_summary = [];
 $message = '';
 
-// 월별 휴가 조회
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['check_holidays'])) {
-    $month = $_POST['month'];
-
-    // 선택한 월의 승인된 휴가 내역 조회
-    $getHolidaySQL = "
-        SELECT e.name, e.department_id, d.department_name, hr.leave_type, hr.start_date, hr.end_date, hr.status
-        FROM holiday_requests hr
-        JOIN employees e ON hr.employee_id = e.employee_id
-        JOIN department d ON e.department_id = d.department_id
-        WHERE DATE_FORMAT(hr.start_date, '%Y-%m') = ? AND hr.status = 'Approved'
-        ORDER BY hr.start_date
-    ";
-    $stmt = $conn->prepare($getHolidaySQL);
-    $stmt->bind_param("s", $month);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            $holiday_data[] = $row;
-
-            // 휴가 일수 계산
-            $start_date = strtotime($row['start_date']);
-            $end_date = strtotime($row['end_date']);
-            $holiday_days = ($end_date - $start_date) / (60 * 60 * 24) + 1;
-
-            // 총 휴가 일수
-            $summary['total_days'] += $holiday_days;
-
-            // 휴가 유형별 일수 계산
-            switch ($row['leave_type']) {
-                case 'Annual':
-                    $summary['annual_leave'] += $holiday_days;
-                    break;
-                case 'Sick':
-                    $summary['sick_leave'] += $holiday_days;
-                    break;
-                case 'Personal':
-                    $summary['personal_leave'] += $holiday_days;
-                    break;
-            }
-
-            // 부서별 휴가 일수 계산
-            $department_id = $row['department_id'];
-            $department_name = $row['department_name'];
-            if (!isset($department_summary[$department_id])) {
-                $department_summary[$department_id] = [
-                    'department_name' => $department_name,
-                    'total_days' => 0,
-                ];
-            }
-            $department_summary[$department_id]['total_days'] += $holiday_days;
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_csrf();
+    try {
+        $month = input_string($_POST, 'month');
+        if (!preg_match('/^[0-9]{4}-(?:0[1-9]|1[0-2])$/D', $month) || !valid_date($month . '-01') || $month < '1000-01') {
+            throw new WorkflowException('Select a valid month in YYYY-MM format.');
         }
-    } else {
-        $message = "No approved holiday requests found for the selected month.";
-    }
-
-    // 부서별 평균 휴가일 계산
-    foreach ($department_summary as $department_id => &$dept_summary) {
-        // 부서 전체 직원 수 조회
-        $getDeptEmployeeCountSQL = "
-            SELECT COUNT(*) as employee_count
-            FROM employees
-            WHERE department_id = ?
-        ";
-        $stmt = $conn->prepare($getDeptEmployeeCountSQL);
-        $stmt->bind_param("i", $department_id);
+        $firstDay = valid_date($month . '-01');
+        $monthStart = $firstDay->format('Y-m-d');
+        $monthEnd = $firstDay->modify('last day of this month')->format('Y-m-d');
+        $stmt = $conn->prepare("SELECT e.name, e.department_id, d.department_name, hr.leave_type, hr.start_date, hr.end_date, hr.status FROM holiday_requests hr JOIN employees e ON hr.employee_id = e.employee_id JOIN department d ON e.department_id = d.department_id WHERE hr.start_date <= ? AND hr.end_date >= ? AND hr.status = 'Approved' ORDER BY hr.start_date, hr.request_id");
+        $stmt->bind_param('ss', $monthEnd, $monthStart);
         $stmt->execute();
-        $stmt->bind_result($employee_count);
-        $stmt->fetch();
-        $stmt->close();
-
-        // 부서별 평균 휴가일 계산
-        if ($employee_count > 0) {
-            $dept_summary['average_days'] = round($dept_summary['total_days'] / $employee_count, 2);
-        } else {
-            $dept_summary['average_days'] = 0;
+        $result = $stmt->get_result();
+        $invalidRows = 0;
+        $leaveColumns = ['Annual' => 'annual_leave', 'Sick' => 'sick_leave', 'Personal' => 'personal_leave'];
+        while ($row = $result->fetch_assoc()) {
+            if (!valid_date($row['start_date']) || !valid_date($row['end_date'])
+                || $row['start_date'] < '1000-01-01' || $row['end_date'] < $row['start_date']
+                || !isset($leaveColumns[$row['leave_type']])) {
+                $invalidRows++;
+                continue;
+            }
+            $days = calendar_days(max($monthStart, $row['start_date']), min($monthEnd, $row['end_date']));
+            $row['days_in_month'] = $days;
+            $holiday_data[] = $row;
+            $summary['total_days'] += $days;
+            $summary[$leaveColumns[$row['leave_type']]] += $days;
+            $departmentId = (int) $row['department_id'];
+            if (!isset($department_summary[$departmentId])) {
+                $department_summary[$departmentId] = ['department_name' => $row['department_name'], 'total_days' => 0, 'average_days' => 0];
+            }
+            $department_summary[$departmentId]['total_days'] += $days;
         }
+        $stmt->close();
+        $counts = $conn->query('SELECT department_id, COUNT(*) AS employee_count FROM employees GROUP BY department_id');
+        while ($count = $counts->fetch_assoc()) {
+            $departmentId = (int) $count['department_id'];
+            if (isset($department_summary[$departmentId])) {
+                $department_summary[$departmentId]['average_days'] = round($department_summary[$departmentId]['total_days'] / (int) $count['employee_count'], 2);
+            }
+        }
+        if ($invalidRows) {
+            $message = $invalidRows . ' approved requests contain invalid stored dates or leave types and could not be included. Contact the administrator.';
+        } elseif (!$holiday_data) {
+            $message = 'No approved holiday requests found for the selected month.';
+        }
+    } catch (Throwable $error) {
+        $message = business_report_failure($error, 'Unable to load the monthly holiday report.');
     }
 }
-
-$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -167,13 +116,14 @@ $conn->close();
     <h2>Monthly Holiday Report</h2>
 
     <form method="POST" action="">
+        <?php echo csrf_field(); ?>
         <label for="month">Select Month:</label>
-        <input type="month" name="month" value="<?php echo $month; ?>" required>
+        <input type="month" name="month" value="<?php echo e($month); ?>" required>
         <button type="submit" name="check_holidays">Check Holidays</button>
     </form>
 
     <?php if ($message): ?>
-        <p style="color: red;"><?php echo htmlspecialchars($message); ?></p>
+        <p style="color: red;"><?php echo e($message); ?></p>
     <?php endif; ?>
 
     <?php if (!empty($holiday_data)): ?>
@@ -186,15 +136,17 @@ $conn->close();
                 <th>Start Date</th>
                 <th>End Date</th>
                 <th>Status</th>
+                <th>Days in Selected Month</th>
             </tr>
             <?php foreach ($holiday_data as $holiday): ?>
                 <tr>
-                    <td><?php echo htmlspecialchars($holiday['name']); ?></td>
-                    <td><?php echo htmlspecialchars($holiday['department_name']); ?></td>
-                    <td><?php echo $holiday['leave_type']; ?></td>
-                    <td><?php echo $holiday['start_date']; ?></td>
-                    <td><?php echo $holiday['end_date']; ?></td>
-                    <td><?php echo $holiday['status']; ?></td>
+                    <td><?php echo e($holiday['name']); ?></td>
+                    <td><?php echo e($holiday['department_name']); ?></td>
+                    <td><?php echo e($holiday['leave_type']); ?></td>
+                    <td><?php echo e($holiday['start_date']); ?></td>
+                    <td><?php echo e($holiday['end_date']); ?></td>
+                    <td><?php echo e($holiday['status']); ?></td>
+                    <td><?php echo e($holiday['days_in_month']); ?></td>
                 </tr>
             <?php endforeach; ?>
         </table>
@@ -213,10 +165,10 @@ $conn->close();
                 <th>Department Name</th>
                 <th>Average Days</th>
             </tr>
-            <?php foreach ($department_summary as &$dept_summary): ?>
+            <?php foreach ($department_summary as $dept_summary): ?>
                 <tr>
-                    <td><?php echo htmlspecialchars($dept_summary['department_name']); ?></td>
-                    <td><?php echo htmlspecialchars($dept_summary['average_days']); ?> days</td>
+                    <td><?php echo e($dept_summary['department_name']); ?></td>
+                    <td><?php echo e($dept_summary['average_days']); ?> days</td>
                 </tr>
             <?php endforeach; ?>
         </table>

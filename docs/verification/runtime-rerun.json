@@ -1,0 +1,44 @@
+{
+  "checks": [
+    {
+      "name": "setup.php re-execution succeeds without PHP diagnostics",
+      "passed": true
+    },
+    {
+      "name": "setup.php preserves passwords and versions",
+      "passed": true
+    },
+    {
+      "name": "setup.php preserves runtime grants and procedure execution",
+      "passed": true
+    },
+    {
+      "name": "setup.php does not drop and recreate the current routine",
+      "passed": true
+    },
+    {
+      "name": "migrate.php re-execution succeeds without PHP diagnostics",
+      "passed": true
+    },
+    {
+      "name": "migrate.php preserves passwords and versions",
+      "passed": true
+    },
+    {
+      "name": "migrate.php preserves runtime grants and procedure execution",
+      "passed": true
+    },
+    {
+      "name": "migrate.php does not drop and recreate the current routine",
+      "passed": true
+    },
+    {
+      "name": "All197 seed employees remain after fixture cleanup and reruns",
+      "passed": true
+    },
+    {
+      "name": "Seed employee balances, contacts and logins remain complete",
+      "passed": true
+    }
+  ]
+}

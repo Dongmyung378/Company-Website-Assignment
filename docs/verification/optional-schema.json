@@ -1,0 +1,93 @@
+{
+  "database": "company_migration_test",
+  "extension_tables": 16,
+  "php_runtime": "8.5.12",
+  "mysql_runtime": "8.4.13",
+  "checks": [
+    {
+      "check": "optional setup first exits0",
+      "passed": true
+    },
+    {
+      "check": "optional setup first emits zero PHP diagnostics",
+      "passed": true
+    },
+    {
+      "check": "optional setup first preserves all original records",
+      "passed": true
+    },
+    {
+      "check": "optional setup first preserves all accounts and hashes",
+      "passed": true
+    },
+    {
+      "check": "optional setup first creates no replacement credentials",
+      "passed": true
+    },
+    {
+      "check": "optional setup first retains unchanged routine definition timestamp",
+      "passed": true
+    },
+    {
+      "check": "optional setup first creates all16 extension tables",
+      "passed": true
+    },
+    {
+      "check": "optional setup first leaves all extension tables empty",
+      "passed": true
+    },
+    {
+      "check": "optional setup second exits0",
+      "passed": true
+    },
+    {
+      "check": "optional setup second emits zero PHP diagnostics",
+      "passed": true
+    },
+    {
+      "check": "optional setup second preserves all original records",
+      "passed": true
+    },
+    {
+      "check": "optional setup second preserves all accounts and hashes",
+      "passed": true
+    },
+    {
+      "check": "optional setup second creates no replacement credentials",
+      "passed": true
+    },
+    {
+      "check": "optional setup second retains unchanged routine definition timestamp",
+      "passed": true
+    },
+    {
+      "check": "optional setup second creates all16 extension tables",
+      "passed": true
+    },
+    {
+      "check": "optional setup second leaves all extension tables empty",
+      "passed": true
+    },
+    {
+      "check": "all current source PHP files pass lint",
+      "passed": true,
+      "detail": {
+        "total_php_files": 46,
+        "database_php_files": 18,
+        "cli_script_php_files": 3
+      }
+    },
+    {
+      "check": "fresh setup and current migration logs have zero PHP diagnostics",
+      "passed": true,
+      "detail": {
+        "migration-current-first.log": 0,
+        "migration-current-migrate-rerun.log": 0,
+        "migration-current-setup-rerun.log": 0,
+        "migration-optional-first.log": 0,
+        "migration-optional-second.log": 0,
+        "setup-fresh.log": 0
+      }
+    }
+  ]
+}

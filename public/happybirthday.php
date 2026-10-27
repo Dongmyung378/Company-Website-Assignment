@@ -1,19 +1,6 @@
 <?php
-require __DIR__ . '/../config/connection.php';
-session_start();
-
-if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-    header("Location: login.php");
-    exit();
-}
-
-if ($_SESSION['department'] !== 2) {
-    header("Location: main.php");
-    exit();
-}
-
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+require_once __DIR__ . '/../config/bootstrap.php';
+$current = require_admin();
 
 $today = date('Y-m-d');
 $currentMonth = date('m');
@@ -51,7 +38,9 @@ try {
         $message = "No employee has birthday this month.";
     }
 } catch (Exception $e) {
-    $message = "error: " . $e->getMessage();
+    error_log('Birthday report failed: ' . $e->getMessage());
+    http_response_code(500);
+    $message = 'The birthday report is temporarily unavailable. Please try again later.';
 }
 
 $conn->close();
@@ -108,10 +97,10 @@ $conn->close();
             <tbody>
                 <?php foreach ($passed_birthdays as $employee) : ?>
                     <tr>
-                        <td><?php echo htmlspecialchars($employee['employee_id']); ?></td>
-                        <td><?php echo htmlspecialchars($employee['name']); ?></td>
-                        <td><?php echo htmlspecialchars($employee['department_name']); ?></td>
-                        <td><?php echo htmlspecialchars($employee['formatted_dob']); ?></td>
+                        <td><?php echo e($employee['employee_id']); ?></td>
+                        <td><?php echo e($employee['name']); ?></td>
+                        <td><?php echo e($employee['department_name']); ?></td>
+                        <td><?php echo e($employee['formatted_dob']); ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -134,10 +123,10 @@ $conn->close();
             <tbody>
                 <?php foreach ($upcoming_birthdays as $employee) : ?>
                     <tr>
-                        <td><?php echo htmlspecialchars($employee['employee_id']); ?></td>
-                        <td><?php echo htmlspecialchars($employee['name']); ?></td>
-                        <td><?php echo htmlspecialchars($employee['department_name']); ?></td>
-                        <td><?php echo htmlspecialchars($employee['formatted_dob']); ?></td>
+                        <td><?php echo e($employee['employee_id']); ?></td>
+                        <td><?php echo e($employee['name']); ?></td>
+                        <td><?php echo e($employee['department_name']); ?></td>
+                        <td><?php echo e($employee['formatted_dob']); ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

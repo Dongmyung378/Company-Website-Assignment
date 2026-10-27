@@ -1,16 +1,7 @@
 <?php
-require __DIR__ . '/../config/connection.php';
-session_start();
-
-$department = $_SESSION['department'];
-
-if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-    header("Location: login.php");
-    exit();
-}
-
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+require_once __DIR__ . '/../config/bootstrap.php';
+$current = require_login();
+$department = $current['department_id'];
 
 $employee_id = '';
 $holiday_requests = [];
@@ -51,20 +42,6 @@ $conn->close();
 <html lang="en">
 
 <head>
-    <script>
-        function BackToPage(department) {
-            let url;
-            switch (department) {
-                case '2':
-                    url = 'admin_main.php';
-                    break;
-                default:
-                    url = 'main.php';
-                    break;
-            }
-            window.location.href = url;
-        }
-    </script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -125,7 +102,7 @@ $conn->close();
         <h2>Check Your Holiday Request Status</h2>
 
         <?php if ($message): ?>
-            <p class="message"><?php echo htmlspecialchars($message); ?></p>
+            <p class="message"><?php echo e($message); ?></p>
         <?php endif; ?>
 
         <?php if (!empty($holiday_requests)): ?>
@@ -144,13 +121,13 @@ $conn->close();
                 <tbody>
                     <?php foreach ($holiday_requests as $request): ?>
                         <tr>
-                            <td><?php echo $request['request_id']; ?></td>
-                            <td><?php echo $request['leave_type']; ?></td>
-                            <td><?php echo $request['start_date']; ?></td>
-                            <td><?php echo $request['end_date']; ?></td>
-                            <td><?php echo htmlspecialchars($request['reason'] ?: 'No reason provided'); ?></td>
-                            <td><?php echo $request['status']; ?></td>
-                            <td><?php echo $request['updated_at']; ?></td>
+                            <td><?php echo e($request['request_id']); ?></td>
+                            <td><?php echo e($request['leave_type']); ?></td>
+                            <td><?php echo e($request['start_date']); ?></td>
+                            <td><?php echo e($request['end_date']); ?></td>
+                            <td><?php echo e($request['reason'] ?: 'No reason provided'); ?></td>
+                            <td><?php echo e($request['status']); ?></td>
+                            <td><?php echo e($request['updated_at']); ?></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -158,7 +135,7 @@ $conn->close();
         <?php endif; ?>
 
         <div class="buttons">
-            <button onclick="BackToPage('<?php echo $department; ?>')">Back to Main</button>
+            <a href="<?php echo $current['department_name'] === 'Executive' ? 'admin_main.php' : 'main.php'; ?>">Back to Main</a>
         </div>
     </div>
 </body>

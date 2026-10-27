@@ -1,160 +1,71 @@
-<p align="right">
-  <strong>English</strong> · <a href="README.ko.md">한국어</a>
-</p>
+<p align="right"><strong>English</strong> | <a href="README.ko.md">한국어</a></p>
 
 <div align="center">
   <img src="public/assets/images/company-illustration.jpg" alt="Kilburnazon company illustration" width="760">
   <h1>Kilburnazon People Operations</h1>
-  <p>A role-based employee operations platform built with PHP and MySQL.</p>
-  <p>
-    <img src="https://img.shields.io/badge/PHP-8.x-777BB4?logo=php&logoColor=white" alt="PHP 8.x">
-    <img src="https://img.shields.io/badge/MySQL-8.x-4479A1?logo=mysql&logoColor=white" alt="MySQL 8.x">
-    <img src="https://img.shields.io/badge/Architecture-Server--rendered-176B48" alt="Server-rendered architecture">
-  </p>
+  <p>A server-rendered PHP and MySQL employee operations application.</p>
 </div>
 
-## Overview
+## What it does
 
-Kilburnazon People Operations brings employee records, leave workflows, attendance reporting, payroll views, and audit history into one browser-based application. It was designed around two distinct user journeys: a focused self-service experience for employees and a broader operations workspace for the Executive department.
+Employees can request annual, sick or personal leave, check their request history and change their password. Executive users maintain employee and emergency-contact records, approve leave, review monthly absence and birthdays, export payroll reports and inspect deletion records. The supplied 197 employee records are fictional coursework data.
 
-This portfolio version organizes the original coursework into clear application, asset, configuration, database, and documentation boundaries while preserving its lightweight, framework-free PHP approach.
+The project keeps its original framework-free page structure, business features, dataset and Git history. Shared security checks and regression tests support the same workflows. The historical implementation remains in Git history rather than a second executable application.
 
-## What the project demonstrates
+| Workflow | Implementation |
+| --- | --- |
+| Sign-in | Individual temporary credentials, mandatory first password change, failure throttling and renewed session IDs |
+| Access control | Each request reloads current Executive membership and verifies the account credential version |
+| Employee records | Automatic IDs, atomic employee/contact/account creation, and stale-update version checks |
+| Leave | Session-owned requests and calendar-day counting; locked approval deducts sufficient balance once |
+| Reports | Monthly overlap calculation, annual/quarterly/monthly payroll, and formula-neutralized CSV text |
+| Deletion | A transaction-owning stored procedure records a full-width snapshot before employee removal |
 
-| Area | Implementation | Value |
-| --- | --- | --- |
-| Access control | Session authentication with role-based redirects | Separates employee self-service from administrative operations |
-| People operations | Employee CRUD, searchable directory, and emergency contacts | Centralizes core workforce records |
-| Leave workflow | Request, balance tracking, approval, rejection, and personal history | Models a complete request lifecycle |
-| Reporting | Monthly absence summaries, department breakdowns, and payroll exports | Turns operational data into usable views |
-| Data integrity | Foreign keys, triggers, a stored procedure, and deletion audit logs | Keeps related records consistent and traceable |
-| Secure credentials | `password_hash()` and `password_verify()` | Avoids storing passwords in plain text |
-
-## Product flows
-
-### Employee workspace
-
-- Sign in with an employee ID and password.
-- Submit annual, sick, or personal leave requests.
-- Review request history and approval status.
-- Change the account password securely.
-
-### Executive workspace
-
-- Create, search, inspect, update, and remove employee records.
-- Approve or reject leave requests and update balances.
-- Review monthly absence and department summaries.
-- Explore annual, quarterly, and monthly salary views and export CSV data.
-- See upcoming birthdays and retained deletion records.
-
-> The current authorization rule treats `department_id = 2` as the Executive role. This is documented as a deliberate constraint of the coursework data model; a dedicated roles table is the recommended production evolution.
-
-## Architecture
-
-```mermaid
-flowchart LR
-    Browser[Browser] --> Pages[Server-rendered PHP pages]
-    Pages --> Session[PHP session + role checks]
-    Pages --> Connection[Shared database connection]
-    Connection --> MySQL[(MySQL)]
-    MySQL --> Core[Employee and organization data]
-    MySQL --> Leave[Leave balances and requests]
-    MySQL --> Audit[Login and deletion audit data]
-```
-
-The application intentionally uses a compact server-rendered architecture. Page controllers validate the session, execute MySQLi queries, and render HTML in a single request. Shared connection settings live under `config/`, and database initialization is isolated under `database/`.
-
-For a deeper technical walkthrough, see [Architecture notes](docs/ARCHITECTURE.md).
-
-## Repository structure
-
-```text
-.
-├── config/
-│   ├── database.php            # Environment-aware DB settings
-│   └── connection.php          # Shared MySQLi connection
-├── database/
-│   ├── seeds/                  # Fictional employee seed data
-│   ├── setup/                  # Schema and initialization scripts
-│   └── README.md               # Database setup guide
-├── docs/
-│   └── ARCHITECTURE.md         # System and data-flow decisions
-└── public/                     # Only web-accessible directory
-    ├── assets/                 # Styles and static images
-    ├── index.php               # Application entry redirect
-    ├── login.php               # Authentication entry point
-    ├── main.php                # Employee dashboard
-    ├── admin_main.php          # Executive dashboard
-    └── *.php                   # Feature pages
-```
+Authorization follows Executive department membership. A separate permissions model would suit a larger HR system. Payroll preserves the coursework calculation; it is not a legal payroll or tax engine.
 
 ## Run locally
 
-### Requirements
+Use supported, patched PHP and MySQL releases. The validation baseline is **PHP 8.5.12, Windows package 8.5.12-1**, with MySQLi, and **MySQL 8.4.13 LTS**. Windows package rebuild suffixes are not shown by `php -v`; obtain the latest vendor-patched package. See the dated [security and verification notes](docs/SECURITY.md).
 
-- PHP 8.x with the `mysqli` extension
-- MySQL 8.x
-- A local server such as PHP's built-in server, XAMPP, or WAMP
+1. Clone this repository and prepare a local MySQL server. Copy `.env.example` to `.env` at the repository root. Use separate, nonempty credentials for the trusted schema account (`DB_SETUP_*`) and restricted application account (`DB_*`). Runtime root and empty passwords are rejected. Process environment variables override `.env`.
+2. Follow the [database guide](database/README.md) to initialize fictional data, create the runtime user and migrate an existing installation without reseeding it.
+3. Start the local development server from the repository root:
 
-### 1. Configure the database
+   ~~~sh
+   php -d session.upload_progress.enabled=0 -d display_errors=0 -S 127.0.0.1:8000 -t public
+   ~~~
 
-The defaults target `127.0.0.1:3307`, use the `root` user with no password, and create `company_db`. Override any value with environment variables:
+4. Open [http://127.0.0.1:8000](http://127.0.0.1:8000). Setup prints the path to a **private, ignored credentials JSON**. Use the employee ID and its unique temporary password from that local file, then choose a passphrase of at least 15 characters. There is no shared default password. An administrator creating an employee receives the temporary password once on the creation screen.
 
-| Variable | Default |
+PHP's built-in server is for local development. Real deployment requires HTTPS with **only `public/`** as the web root. Keep `.env`, `var/`, database scripts and tests private. Set `APP_ORIGIN` to the exact origin and configure any TLS proxy correctly. Set `session.upload_progress.enabled=0` in server startup configuration, not only inside a request. This educational project's checks do not certify a production HR deployment.
+
+## Verify the application
+
+The harness needs Python 3.10+ and a **disposable database whose name ends in `_test`**. Use a separate environment or shell: tests create and remove synthetic fixtures and must never target a live database.
+
+~~~sh
+# Use a disposable DB_NAME=company_regression_test and a NEW DB_USER=company_regression_app.
+# Set a distinct DB_PASSWORD and the trusted DB_SETUP_* credentials first.
+php scripts/setup.php
+php scripts/create-runtime-user.php
+python tests/security_regression.py
+~~~
+
+`PHP_BIN` selects a PHP executable. `PHP_ARGS_JSON` optionally supplies a JSON array of PHP options, including extension settings for portable runtimes. Ignored `var/` contains results and server logs. The harness starts its own loopback HTTP server and stops it after the run. See [verification details](docs/SECURITY.md) for coverage, results and limitations.
+
+## Repository map
+
+| Path | Purpose |
 | --- | --- |
-| `DB_HOST` | `127.0.0.1` |
-| `DB_PORT` | `3307` |
-| `DB_USER` | `root` |
-| `DB_PASSWORD` | empty |
-| `DB_NAME` | `company_db` |
+| `public/` | The existing 18 PHP endpoints and assets; the only web root |
+| `config/` | Environment loading, connection, current-account guards, CSRF, sessions and security helpers |
+| `lib/` | Employee and leave workflow validation |
+| `database/` | Fictional seeds, schema, migrations, triggers and the deletion procedure |
+| `scripts/` | CLI-only setup, migration and runtime-user provisioning |
+| `tests/` | HTTP and database regressions for an explicitly disposable database |
+| `docs/` | [Architecture](docs/ARCHITECTURE.md) and [security/verification](docs/SECURITY.md), both with Korean versions |
+| `var/` | Ignored private credentials, logs and test output; never publish it |
 
-PowerShell example for the standard MySQL port:
+`login` stores credential hashes. `login_attempts` contains expiring failure-throttling records, not a permanent successful-login audit. `delete_employee_logs` records employee deletions. Removing records older than three years is an explicit CSRF-protected action; viewing the report never deletes data.
 
-```powershell
-$env:DB_PORT = "3306"
-```
-
-macOS/Linux example:
-
-```bash
-export DB_PORT=3306
-```
-
-### 2. Initialize the schema
-
-Follow the one-time sequence in the [database setup guide](database/README.md). It creates the database, imports fictional seed data, prepares leave and login records, and installs the required trigger and stored procedure.
-
-### 3. Start the application
-
-Serve only the public document root so configuration and setup scripts cannot be requested from the browser:
-
-```bash
-php -S 127.0.0.1:8000 -t public
-```
-
-### 4. Sign in
-
-Open [http://127.0.0.1:8000](http://127.0.0.1:8000). Seeded accounts initially use password `0000`; change it after the first login.
-
-## Key engineering decisions
-
-- **Prepared statements for user-driven queries:** Employee lookup, authentication, and update flows bind values instead of interpolating request data.
-- **Database-backed invariants:** Foreign keys connect organization and employee records, while triggers provision default leave and login rows for new employees.
-- **Auditable deletion:** A stored procedure snapshots essential employee and operator details before removal.
-- **Portable configuration:** Runtime environment variables replace duplicated, machine-specific database settings.
-- **Deliberately modest stack:** The project demonstrates PHP, SQL, sessions, and relational modeling without hiding those mechanics behind a framework.
-
-## Next iterations
-
-- Replace the department-based role rule with explicit roles and permissions.
-- Add CSRF tokens, stricter request validation, and production-safe error logging.
-- Convert ordered setup scripts into versioned migrations and an idempotent seed command.
-- Add integration tests for authentication, leave approvals, and audit logging.
-- Extract shared layouts and domain services as the feature set grows.
-
-## Notes
-
-- This is a local development and learning project, not a production HR system.
-- All people in `database/seeds/employees.csv` are fictional.
-- The initial password and default connection values must not be used in production.
-- Optional commerce and delivery tables are retained as an extension exercise and are not used by the current UI.
+Optional commerce/delivery exercises remain separate from the employee UI. All earlier commits remain in the [repository history](https://github.com/Dongmyung378/Company-Website-Assignment/commits/main/).

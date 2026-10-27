@@ -1,24 +1,17 @@
 <?php
-require __DIR__ . '/../config/connection.php';
-session_start();
-
-if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-    header("Location: login.php");
-    exit();
-}
-
-if ($_SESSION['department'] !== 2) {
-    header("Location: main.php");
-    exit();
-}
-
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+require_once __DIR__ . '/../config/bootstrap.php';
+$current = require_admin();
 
 try {
-    $delete_query = "DELETE FROM delete_employee_logs WHERE deleted_time <= DATE_SUB(NOW(), INTERVAL 3 YEAR)";
-    if (!$conn->query($delete_query)) {
-        throw new Exception("Error deleting old records: " . $conn->error);
+    // A report GET must never delete data. Retain the original three-year cleanup as an explicit protected action.
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        require_csrf();
+        if (input_string($_POST, 'action') !== 'purge_expired') {
+            http_response_code(422);
+            exit('Select a valid records action.');
+        }
+        $conn->query("DELETE FROM delete_employee_logs WHERE deleted_time <= DATE_SUB(NOW(), INTERVAL 3 YEAR)");
+        $cleanup_message = 'Expired deletion records were removed.';
     }
 
     $query = "
@@ -37,7 +30,9 @@ try {
         throw new Exception("Error fetching deleted employee records: " . $conn->error);
     }
 } catch (Exception $e) {
-    $error_message = $e->getMessage();
+    error_log('Deletion record report failed: ' . $e->getMessage());
+    http_response_code(500);
+    $error_message = 'Deletion records are temporarily unavailable. Please try again later.';
 } finally {
     $conn->close();
 }
@@ -103,9 +98,15 @@ try {
 <body>
     <a href="admin_main.php" class="back-button">Back to Main</a>
     <h2>Deleted Employee Records</h2>
+    <form method="POST" action="delete_records.php">
+        <?php echo csrf_field(); ?>
+        <input type="hidden" name="action" value="purge_expired">
+        <button type="submit">Remove records older than three years</button>
+    </form>
+    <?php if (isset($cleanup_message)): ?><p><?php echo e($cleanup_message); ?></p><?php endif; ?>
 
     <?php if (isset($error_message)): ?>
-        <p class="no-records"><?php echo htmlspecialchars($error_message); ?></p>
+        <p class="no-records"><?php echo e($error_message); ?></p>
     <?php else: ?>
         <table>
             <thead>
@@ -128,18 +129,18 @@ try {
                 <?php if ($result->num_rows > 0): ?>
                     <?php while ($row = $result->fetch_assoc()): ?>
                         <tr>
-                            <td><?php echo htmlspecialchars($row['employee_id']); ?></td>
-                            <td><?php echo htmlspecialchars($row['employee_name']); ?></td>
-                            <td><?php echo htmlspecialchars($row['employee_salary']); ?></td>
-                            <td><?php echo htmlspecialchars($row['employee_department']); ?></td>
-                            <td><?php echo htmlspecialchars($row['employee_position']); ?></td>
-                            <td><?php echo htmlspecialchars($row['employee_dob']); ?></td>
-                            <td><?php echo htmlspecialchars($row['employee_nin']); ?></td>
-                            <td><?php echo htmlspecialchars($row['deleted_by_id']); ?></td>
-                            <td><?php echo htmlspecialchars($row['deleted_by_name']); ?></td>
-                            <td><?php echo htmlspecialchars($row['reason']); ?></td>
-                            <td><?php echo htmlspecialchars($row['deleted_time']); ?></td>
-                            <td><?php echo htmlspecialchars($row['over_three_years']); ?></td>
+                            <td><?php echo e($row['employee_id']); ?></td>
+                            <td><?php echo e($row['employee_name']); ?></td>
+                            <td><?php echo e($row['employee_salary']); ?></td>
+                            <td><?php echo e($row['employee_department']); ?></td>
+                            <td><?php echo e($row['employee_position']); ?></td>
+                            <td><?php echo e($row['employee_dob']); ?></td>
+                            <td><?php echo e($row['employee_nin']); ?></td>
+                            <td><?php echo e($row['deleted_by_id']); ?></td>
+                            <td><?php echo e($row['deleted_by_name']); ?></td>
+                            <td><?php echo e($row['reason']); ?></td>
+                            <td><?php echo e($row['deleted_time']); ?></td>
+                            <td><?php echo e($row['over_three_years']); ?></td>
                         </tr>
                     <?php endwhile; ?>
                 <?php else: ?>

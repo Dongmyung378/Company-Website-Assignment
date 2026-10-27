@@ -12,3 +12,10 @@ tmp/
 Thumbs.db
 .idea/
 .vscode/
+
+# Private credentials, sessions, and application logs
+/var/
+
+# Python regression cache
+__pycache__/
+*.py[cod]

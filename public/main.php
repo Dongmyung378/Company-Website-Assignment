@@ -1,17 +1,10 @@
 <?php
-session_start();
-
-// Check login
-if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-    header("Location: login.php");
-    exit();
+require_once __DIR__ . '/../config/bootstrap.php';
+$current = require_login();
+if ($current['department_name'] === 'Executive') {
+    header('Location: admin_main.php');
+    exit;
 }
-// check this employee`s department is executive
-if ($_SESSION['department'] === 2) {
-    header("Location: admin_main.php");
-    exit();
-}
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -75,7 +68,7 @@ if ($_SESSION['department'] === 2) {
 
 <body>
     <div class="container">
-        <h1>Welcome, <?php echo htmlspecialchars($_SESSION['name']); ?>!</h1>
+        <h1>Welcome, <?php echo e($_SESSION['name']); ?>!</h1>
         <h2>Have a lovely day!</h2>
         <div>
             <a href="holiday_requests.php" class="button">Holiday Request</a>

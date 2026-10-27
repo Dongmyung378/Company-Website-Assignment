@@ -1,19 +1,6 @@
 <?php
-require __DIR__ . '/../config/connection.php';
-session_start();
-
-if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-    header("Location: login.php");
-    exit();
-}
-
-if ($_SESSION['department'] !== 2) {
-    header("Location: main.php");
-    exit();
-}
-
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+require_once __DIR__ . '/../config/bootstrap.php';
+$current = require_admin();
 
 $departments = $conn->query("SELECT department_id, department_name FROM department WHERE department_name != 'Executive' ORDER BY department_name ASC");
 $positions = $conn->query("
@@ -24,11 +11,28 @@ $positions = $conn->query("
     ORDER BY p.position_name ASC
 ");
 
-$selected_department = $_GET['department'] ?? '';
-$selected_position = $_GET['position'] ?? '';
-$min_amount = $_GET['min_amount'] ?? '';
-$max_amount = $_GET['max_amount'] ?? '';
-$view_type = $_GET['view_type'] ?? 'annual'; // default value
+$selected_department = input_string($_GET, 'department');
+$selected_position = input_string($_GET, 'position');
+$min_amount = input_string($_GET, 'min_amount');
+$max_amount = input_string($_GET, 'max_amount');
+$view_type = input_string($_GET, 'view_type', 'annual');
+foreach ([$selected_department, $selected_position] as $id) {
+    if ($id !== '' && (!ctype_digit($id) || (int) $id < 1 || (int) $id > 2147483647)) {
+        http_response_code(422);
+        exit('Select a valid department or position.');
+    }
+}
+foreach ([$min_amount, $max_amount] as $amount) {
+    if ($amount !== '' && (!preg_match('/^\d{1,12}(?:\.\d{1,2})?$/D', $amount))) {
+        http_response_code(422);
+        exit('Salary limits must be non-negative amounts with at most two decimal places.');
+    }
+}
+if (!in_array($view_type, ['annual', 'monthly', 'quarterly'], true)
+    || ($min_amount !== '' && $max_amount !== '' && (float) $min_amount > (float) $max_amount)) {
+    http_response_code(422);
+    exit('Select a valid report period and salary range.');
+}
 $order_by = 'net_salary DESC';
 
 // base condition
@@ -150,7 +154,7 @@ foreach ($department_totals as $department_name => $total) {
 }
 
 // check CSV export query
-if (isset($_GET['export_csv']) && $_GET['export_csv'] == '1') {
+if (input_string($_GET, 'export_csv') === '1') {
     header('Content-Type: text/csv; charset=utf-8');
     header('Content-Disposition: attachment; filename=salary_report.csv');
 
@@ -170,7 +174,7 @@ if (isset($_GET['export_csv']) && $_GET['export_csv'] == '1') {
         'Insurance',
         'Retirement',
         'Net Salary (' . ucfirst($view_type) . ')'
-    ]);
+    ], ',', '"', '');
 
     // data export 
     foreach ($data as $row) {
@@ -202,9 +206,9 @@ if (isset($_GET['export_csv']) && $_GET['export_csv'] == '1') {
 
         fputcsv($output, [
             $row['employee_id'],
-            $row['name'],
-            $row['department_name'],
-            $row['position_name'],
+            csv_safe_text($row['name']),
+            csv_safe_text($row['department_name']),
+            csv_safe_text($row['position_name']),
             number_format($base_salary),
             number_format($bonus),
             number_format($incentives),
@@ -212,7 +216,7 @@ if (isset($_GET['export_csv']) && $_GET['export_csv'] == '1') {
             number_format($insurance),
             number_format($retirement),
             number_format($net_salary)
-        ]);
+        ], ',', '"', '');
     }
 
     fclose($output);
@@ -238,7 +242,7 @@ if (isset($_GET['export_csv']) && $_GET['export_csv'] == '1') {
             $departments->data_seek(0);
             while ($row = $departments->fetch_assoc()): ?>
                 <option value="<?php echo $row['department_id']; ?>" <?php if ($selected_department == $row['department_id']) echo 'selected'; ?>>
-                    <?php echo htmlspecialchars($row['department_name']); ?>
+                    <?php echo e($row['department_name']); ?>
                 </option>
             <?php endwhile; ?>
         </select>
@@ -251,16 +255,16 @@ if (isset($_GET['export_csv']) && $_GET['export_csv'] == '1') {
             $positions->data_seek(0);
             while ($row = $positions->fetch_assoc()): ?>
                 <option value="<?php echo $row['position_id']; ?>" <?php if ($selected_position == $row['position_id']) echo 'selected'; ?>>
-                    <?php echo htmlspecialchars($row['position_name']); ?>
+                    <?php echo e($row['position_name']); ?>
                 </option>
             <?php endwhile; ?>
         </select>
 
         <label for="min_amount">Minimum Amount:</label>
-        <input type="number" step="0.01" name="min_amount" value="<?php echo htmlspecialchars($min_amount); ?>">
+        <input type="number" step="0.01" name="min_amount" value="<?php echo e($min_amount); ?>">
 
         <label for="max_amount">Maximum Amount:</label>
-        <input type="number" step="0.01" name="max_amount" value="<?php echo htmlspecialchars($max_amount); ?>">
+        <input type="number" step="0.01" name="max_amount" value="<?php echo e($max_amount); ?>">
 
         <label for="view_type">View Type:</label>
         <select name="view_type">
@@ -287,7 +291,7 @@ if (isset($_GET['export_csv']) && $_GET['export_csv'] == '1') {
         <ul>
             <?php foreach ($department_totals as $department_name => $total): ?>
                 <li>
-                    <?php echo htmlspecialchars($department_name); ?>:
+                    <?php echo e($department_name); ?>:
                     Total: £<?php echo number_format($total); ?>,
                     Average Net Salary: £<?php echo number_format($department_averages[$department_name]); ?>
                 </li>
@@ -311,9 +315,9 @@ if (isset($_GET['export_csv']) && $_GET['export_csv'] == '1') {
             <?php foreach ($data as $row): ?>
                 <tr>
                     <td><?php echo $row['employee_id']; ?></td>
-                    <td><?php echo htmlspecialchars($row['name']); ?></td>
-                    <td><?php echo htmlspecialchars($row['department_name']); ?></td>
-                    <td><?php echo htmlspecialchars($row['position_name']); ?></td>
+                    <td><?php echo e($row['name']); ?></td>
+                    <td><?php echo e($row['department_name']); ?></td>
+                    <td><?php echo e($row['position_name']); ?></td>
                     <td>
                         £<?php
                             if ($view_type == 'annual') {

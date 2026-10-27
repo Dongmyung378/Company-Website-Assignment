@@ -1,0 +1,7 @@
+*.php text eol=lf
+*.py text eol=lf
+*.md text eol=lf
+*.ini text eol=lf
+.env.example text eol=lf
+.gitignore text eol=lf
+.gitattributes text eol=lf

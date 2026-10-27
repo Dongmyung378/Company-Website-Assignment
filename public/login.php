@@ -1,48 +1,40 @@
 <?php
-require __DIR__ . '/../config/connection.php';
-session_start();
+require_once __DIR__ . '/../config/bootstrap.php';
 
 $error = '';
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $employee_id = trim($_POST['employee_id']);
-    $password = trim($_POST['password']);
-
-    if (!empty($employee_id) && !empty($password)) {
-        $sql = "SELECT e.employee_id, e.department_id, e.name, l.password_hash 
-                FROM employees e 
-                INNER JOIN login l ON e.employee_id = l.employee_id 
-                WHERE e.employee_id = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("i", $employee_id);
-        $stmt->execute();
-        $stmt->bind_result($id, $department, $name, $password_hash);
-        $stmt->fetch();
-
-        if ($id && password_verify($password, $password_hash)) {
-            $_SESSION['logged_in'] = true;
-            $_SESSION['employee_id'] = $id;
-            $_SESSION['name'] = $name;
-            $_SESSION['department'] = $department;
-
-            if ($department === 2) {
-                header("Location: admin_main.php");
-                exit();
-            } else {
-                header("Location: main.php");
-                exit();
-            }
-        } else {
-            $error = "Invalid Employee ID or Password. Please try again.";
-        }
-
-        $stmt->close();
-    } else {
-        $error = "Please enter both Employee ID and Password.";
-    }
+$employee_id = '';
+$method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+if (!in_array($method, ['GET', 'HEAD', 'POST'], true)) {
+    header('Allow: GET, HEAD, POST');
+    abort_request(405, 'Unsupported request method.');
 }
-
-$conn->close();
+if (($_SESSION['logged_in'] ?? false) === true) {
+    $current = require_login(true);
+    header('Location: ' . ($current['must_change_password'] ? 'change_password.php' : ($current['department_name'] === 'Executive' ? 'admin_main.php' : 'main.php')));
+    exit();
+}
+if ($method === 'POST') {
+    require_csrf();
+    $employee_id = trim(input_string($_POST, 'employee_id'));
+    $password = input_string($_POST, 'password');
+    $rateLimited = false;
+    $employee = company_authenticate($employee_id, $password, $rateLimited);
+    if ($employee !== null) {
+        if (password_needs_rehash($employee['password_hash'], company_password_algorithm())) {
+            $stmt = $conn->prepare('UPDATE login SET password_hash=? WHERE employee_id=? AND password_hash=?');
+            $stmt->execute([company_hash_password($password), $employee['employee_id'], $employee['password_hash']]);
+            $stmt->close();
+        }
+        company_establish_session($employee);
+        header('Location: ' . ((int) $employee['must_change_password'] === 1 ? 'change_password.php' : ($employee['department_name'] === 'Executive' ? 'admin_main.php' : 'main.php')));
+        exit();
+    }
+    if ($rateLimited) {
+        http_response_code(429);
+        header('Retry-After: 900');
+    }
+    $error = 'Unable to sign in. Check your details or try again later.';
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -119,12 +111,13 @@ $conn->close();
     <div class="login-container">
         <h2>Employee Login</h2>
         <form method="POST" action="login.php">
-            <input type="text" name="employee_id" placeholder="Enter Employee ID" required>
-            <input type="password" name="password" placeholder="Enter Password" required>
+            <?php echo csrf_field(); ?>
+            <input type="text" name="employee_id" placeholder="Enter Employee ID" value="<?php echo e($employee_id); ?>" inputmode="numeric" autocomplete="username" maxlength="10" required>
+            <input type="password" name="password" placeholder="Enter Password" autocomplete="current-password" required>
             <button type="submit" class="button">Login</button>
         </form>
         <?php if (isset($error) && !empty($error)): ?>
-            <p class="error"><?php echo htmlspecialchars($error); ?></p>
+            <p class="error"><?php echo e($error); ?></p>
         <?php endif; ?>
     </div>
 </body>

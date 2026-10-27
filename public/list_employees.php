@@ -1,23 +1,18 @@
 <?php
-require __DIR__ . '/../config/connection.php';
-session_start();
+require_once __DIR__ . '/../config/bootstrap.php';
+$current = require_admin();
 
-if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-    header("Location: login.php");
-    exit();
+$employee_id = input_string($_GET, 'employee_id');
+$department = input_string($_GET, 'department');
+$position = input_string($_GET, 'position');
+$office = input_string($_GET, 'office');
+$hired_date = input_string($_GET, 'hired_date');
+if (($employee_id !== '' && (!ctype_digit($employee_id) || (int) $employee_id < 1 || (int) $employee_id > 2147483647))
+    || ($hired_date !== '' && valid_date($hired_date) === null)
+    || strlen($department) > 400 || strlen($position) > 400 || strlen($office) > 400) {
+    http_response_code(422);
+    exit('Enter valid employee filters.');
 }
-
-// check this employee`s department is executive
-if ($_SESSION['department'] !== 2) {
-    header("Location: main.php");
-    exit();
-}
-
-$employee_id = isset($_GET['employee_id']) ? trim($_GET['employee_id']) : '';
-$department = isset($_GET['department']) ? trim($_GET['department']) : '';
-$position = isset($_GET['position']) ? trim($_GET['position']) : '';
-$office = isset($_GET['office']) ? trim($_GET['office']) : '';
-$hired_date = isset($_GET['hired_date']) ? trim($_GET['hired_date']) : '';
 
 function fetchDistinctValues($conn, $column, $table)
 {
@@ -28,7 +23,7 @@ function fetchDistinctValues($conn, $column, $table)
         while ($row = $result->fetch_assoc()) {
             $value = $row[$column];
             if (!empty($value)) {
-                $values[] = htmlspecialchars($value);
+                $values[] = $value;
             }
         }
     }
@@ -114,7 +109,7 @@ if ($stmt) {
     $stmt->execute();
     $result = $stmt->get_result();
 } else {
-    die("Failed to prepare statement: " . $conn->error);
+    throw new RuntimeException('Unable to prepare the employee directory.');
 }
 
 $stmt->close();
@@ -136,15 +131,15 @@ $conn->close();
         <div class="form-row">
             <div class="form-group">
                 <label for="employee_id">Employee ID:</label>
-                <input type="text" name="employee_id" placeholder="Search by Employee ID" value="<?php echo htmlspecialchars($employee_id); ?>">
+                <input type="text" name="employee_id" placeholder="Search by Employee ID" value="<?php echo e($employee_id); ?>">
             </div>
         </div>
 
         <select name="department">
             <option value="">All Departments</option>
             <?php foreach ($departments as $dept): ?>
-                <option value="<?php echo $dept; ?>" <?php if ($dept === $department) echo 'selected'; ?>>
-                    <?php echo $dept; ?>
+                <option value="<?php echo e($dept); ?>" <?php if ($dept === $department) echo 'selected'; ?>>
+                    <?php echo e($dept); ?>
                 </option>
             <?php endforeach; ?>
         </select>
@@ -152,8 +147,8 @@ $conn->close();
         <select name="position">
             <option value="">All Positions</option>
             <?php foreach ($positions as $pos): ?>
-                <option value="<?php echo $pos; ?>" <?php if ($pos === $position) echo 'selected'; ?>>
-                    <?php echo $pos; ?>
+                <option value="<?php echo e($pos); ?>" <?php if ($pos === $position) echo 'selected'; ?>>
+                    <?php echo e($pos); ?>
                 </option>
             <?php endforeach; ?>
         </select>
@@ -161,29 +156,29 @@ $conn->close();
         <select name="office">
             <option value="">All Offices</option>
             <?php foreach ($offices as $off): ?>
-                <option value="<?php echo $off; ?>" <?php if ($off === $office) echo 'selected'; ?>>
-                    <?php echo $off; ?>
+                <option value="<?php echo e($off); ?>" <?php if ($off === $office) echo 'selected'; ?>>
+                    <?php echo e($off); ?>
                 </option>
             <?php endforeach; ?>
         </select>
 
-        <input type="date" name="hired_date" value="<?php echo htmlspecialchars($hired_date); ?>">
+        <input type="date" name="hired_date" value="<?php echo e($hired_date); ?>">
 
         <button type="submit">Search</button>
-        <button type="button" onclick="window.location.href='<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>'">Reset</button>
+        <button type="button" onclick="window.location.href='list_employees.php'">Reset</button>
     </form>
 
     <div id="employee-list">
         <?php if ($result && $result->num_rows > 0): ?>
             <?php while ($row = $result->fetch_assoc()): ?>
                 <a href="employee_detail.php?id=<?php echo $row['employee_id']; ?>" class="card">
-                    <img src="assets/images/default-avatar.jpg" alt="Photo of <?php echo htmlspecialchars($row['name']); ?>">
-                    <h3><?php echo htmlspecialchars($row['name']); ?></h3>
-                    <p><strong>Department:</strong> <?php echo htmlspecialchars($row['department_name']); ?></p>
-                    <p><strong>Position:</strong> <?php echo htmlspecialchars($row['position_name']); ?></p>
-                    <p><strong>Office:</strong> <?php echo htmlspecialchars($row['office_name']); ?></p>
-                    <p><strong>Email:</strong> <?php echo htmlspecialchars($row['email']); ?></p>
-                    <p><strong>Start Date:</strong> <?php echo htmlspecialchars($row['hired_date']); ?></p>
+                    <img src="assets/images/default-avatar.jpg" alt="Photo of <?php echo e($row['name']); ?>">
+                    <h3><?php echo e($row['name']); ?></h3>
+                    <p><strong>Department:</strong> <?php echo e($row['department_name']); ?></p>
+                    <p><strong>Position:</strong> <?php echo e($row['position_name']); ?></p>
+                    <p><strong>Office:</strong> <?php echo e($row['office_name']); ?></p>
+                    <p><strong>Email:</strong> <?php echo e($row['email']); ?></p>
+                    <p><strong>Start Date:</strong> <?php echo e($row['hired_date']); ?></p>
                 </a>
             <?php endwhile; ?>
         <?php else: ?>

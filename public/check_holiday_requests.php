@@ -1,82 +1,70 @@
 <?php
-require __DIR__ . '/../config/connection.php';
-session_start();
+require_once __DIR__ . '/../config/bootstrap.php';
+require_once __DIR__ . '/../lib/business.php';
+$current = require_admin();
+$message = $_SESSION['holiday_decision_message'] ?? '';
+unset($_SESSION['holiday_decision_message']);
+$leaveColumns = ['Annual' => 'annual_leave', 'Sick' => 'sick_leave', 'Personal' => 'personal_leave'];
 
-if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-    header("Location: login.php");
-    exit();
-}
-
-// check this employee`s department is executive
-if ($_SESSION['department'] !== 2) {
-    header("Location: main.php");
-    exit();
-}
-
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
-$message = '';
-
-$getRequestsSQL = "
-    SELECT hr.request_id, hr.employee_id, e.name, hr.leave_type, hr.start_date, hr.end_date, hr.reason, hr.status
-    FROM holiday_requests hr
-    JOIN employees e ON hr.employee_id = e.employee_id
-    WHERE hr.status = 'Pending'
-";
-$result = $conn->query($getRequestsSQL);
-
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_status'])) {
-    $request_id = $_POST['request_id'];
-    $new_status = $_POST['status'];
-    $leave_type = $_POST['leave_type'];
-    $employee_id = $_POST['employee_id'];
-    $date_diff = intval($_POST['date_diff']);
-
-    $updateStatusSQL = "UPDATE holiday_requests SET status = ?, updated_at = NOW() WHERE request_id = ?";
-    $stmt = $conn->prepare($updateStatusSQL);
-    $stmt->bind_param("si", $new_status, $request_id);
-
-    if ($stmt->execute()) {
-        $message = "Holiday request updated successfully.";
-
-        if ($new_status === 'Approved') {
-            $leave_column = '';
-            switch ($leave_type) {
-                case 'Annual':
-                    $leave_column = 'annual_leave';
-                    break;
-                case 'Sick':
-                    $leave_column = 'sick_leave';
-                    break;
-                case 'Personal':
-                    $leave_column = 'personal_leave';
-                    break;
-            }
-
-            $updateBalanceSQL = "
-                UPDATE holiday_balance
-                SET $leave_column = GREATEST($leave_column - ?, 0)
-                WHERE employee_id = ?
-            ";
-            $stmt = $conn->prepare($updateBalanceSQL);
-            $stmt->bind_param("ii", $date_diff, $employee_id);
-            $stmt->execute();
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_csrf();
+    $transaction = false;
+    try {
+        $requestId = business_id($_POST, 'request_id', 'Request ID');
+        $decision = input_string($_POST, 'status');
+        if (!in_array($decision, ['Approved', 'Rejected'], true)) {
+            throw new WorkflowException('Select Approve or Reject.');
         }
-
+        $conn->begin_transaction();
+        $transaction = true;
+        $stmt = $conn->prepare('SELECT employee_id, leave_type, start_date, end_date, status FROM holiday_requests WHERE request_id = ? FOR UPDATE');
+        $stmt->bind_param('i', $requestId);
+        $stmt->execute();
+        $request = $stmt->get_result()->fetch_assoc();
         $stmt->close();
-
-        echo "<script>
-            alert('$message');
-            window.location.href = 'check_holiday_requests.php';
-        </script>";
+        if (!$request) {
+            throw new WorkflowException('Holiday request not found.', 404);
+        }
+        if ($request['status'] !== 'Pending') {
+            throw new WorkflowException('This request has already been processed. Refresh the list.', 409);
+        }
+        if ($decision === 'Approved') {
+            $column = $leaveColumns[$request['leave_type']] ?? null;
+            if (!$column || !valid_date($request['start_date']) || !valid_date($request['end_date'])
+                || $request['start_date'] < '1000-01-01' || $request['end_date'] < $request['start_date']) {
+                throw new WorkflowException('This request contains invalid leave data and cannot be approved.', 409);
+            }
+            $days = calendar_days($request['start_date'], $request['end_date']);
+            $employeeId = (int) $request['employee_id'];
+            // Only fixed column names from the allowlist above enter SQL.
+            $stmt = $conn->prepare("UPDATE holiday_balance SET $column = $column - ? WHERE employee_id = ? AND $column >= ?");
+            $stmt->bind_param('iii', $days, $employeeId, $days);
+            $stmt->execute();
+            if ($stmt->affected_rows !== 1) {
+                throw new WorkflowException('The employee has insufficient leave balance. The request remains pending.', 409);
+            }
+            $stmt->close();
+        }
+        $stmt = $conn->prepare("UPDATE holiday_requests SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE request_id = ? AND status = 'Pending'");
+        $stmt->bind_param('si', $decision, $requestId);
+        $stmt->execute();
+        if ($stmt->affected_rows !== 1) {
+            throw new WorkflowException('This request was processed by another administrator.', 409);
+        }
+        $stmt->close();
+        $conn->commit();
+        $transaction = false;
+        $_SESSION['holiday_decision_message'] = 'Holiday request updated successfully.';
+        header('Location: check_holiday_requests.php');
         exit();
-    } else {
-        $message = "Error updating holiday request status.";
+    } catch (Throwable $error) {
+        if ($transaction) {
+            $conn->rollback();
+        }
+        $message = business_report_failure($error, 'Unable to update the holiday request.');
     }
 }
-
-$conn->close();
+$result = $conn->query("SELECT hr.request_id, hr.employee_id, e.name, hr.leave_type, hr.start_date, hr.end_date, hr.reason, hr.status FROM holiday_requests hr JOIN employees e ON hr.employee_id = e.employee_id WHERE hr.status = 'Pending' ORDER BY hr.start_date, hr.request_id");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -85,7 +73,7 @@ $conn->close();
     <h2>Holiday Requests</h2>
 
     <?php if ($message): ?>
-        <p style="color: red;"><?php echo htmlspecialchars($message); ?></p>
+        <p style="color: red;"><?php echo e($message); ?></p>
     <?php endif; ?>
 
     <?php if ($result && $result->num_rows > 0): ?>
@@ -106,23 +94,20 @@ $conn->close();
                 $request_id = $row['request_id'];
                 $employee_id = $row['employee_id'];
                 $leave_type = $row['leave_type'];
-                $date_diff = (strtotime($row['end_date']) - strtotime($row['start_date'])) / (60 * 60 * 24) + 1;
                 ?>
                 <tr>
-                    <td><?php echo $request_id; ?></td>
-                    <td><?php echo $employee_id; ?></td>
-                    <td><?php echo htmlspecialchars($row['name']); ?></td>
-                    <td><?php echo $leave_type; ?></td>
-                    <td><?php echo $row['start_date']; ?></td>
-                    <td><?php echo $row['end_date']; ?></td>
-                    <td><?php echo htmlspecialchars($row['reason']); ?></td>
-                    <td><?php echo $row['status']; ?></td>
+                    <td><?php echo e($request_id); ?></td>
+                    <td><?php echo e($employee_id); ?></td>
+                    <td><?php echo e($row['name']); ?></td>
+                    <td><?php echo e($leave_type); ?></td>
+                    <td><?php echo e($row['start_date']); ?></td>
+                    <td><?php echo e($row['end_date']); ?></td>
+                    <td><?php echo e($row['reason']); ?></td>
+                    <td><?php echo e($row['status']); ?></td>
                     <td>
                         <form method="POST" action="">
-                            <input type="hidden" name="request_id" value="<?php echo $request_id; ?>">
-                            <input type="hidden" name="leave_type" value="<?php echo $leave_type; ?>">
-                            <input type="hidden" name="employee_id" value="<?php echo $employee_id; ?>">
-                            <input type="hidden" name="date_diff" value="<?php echo $date_diff; ?>">
+                            <?php echo csrf_field(); ?>
+                            <input type="hidden" name="request_id" value="<?php echo e($request_id); ?>">
                             <select name="status" required>
                                 <option value="Approved">Approve</option>
                                 <option value="Rejected">Reject</option>

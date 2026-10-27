@@ -1,17 +1,6 @@
 <?php
-require __DIR__ . '/../config/connection.php';
-session_start();
-
-// Check login
-if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-    header("Location: login.php");
-    exit();
-}
-// check this employee`s department is executive
-if ($_SESSION['department'] !== 2) {
-    header("Location: main.php");
-    exit();
-}
+require_once __DIR__ . '/../config/bootstrap.php';
+$current = require_admin();
 
 $sql = "SELECT employees.name
         FROM holiday_requests
@@ -145,7 +134,7 @@ $conn->close();
 
 <body>
     <div class="container">
-        <h1>Welcome, <?php echo htmlspecialchars($_SESSION['name']); ?>!</h1>
+        <h1>Welcome, <?php echo e($_SESSION['name']); ?>!</h1>
         <h2>Employee Management System</h2>
         <div>
             <a href="add_employee.php" class="button3">Add Employee</a>

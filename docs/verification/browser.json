@@ -1,0 +1,31 @@
+{
+  "checks": [
+    {
+      "name": "browser_XSS_blocked_salary",
+      "passed": true,
+      "evidence": {
+        "marker": null,
+        "actual_url": "http://127.0.0.1:18037/salary_table.php?view_type=%3Cscript%3Ewindow.__companyAuditMarker%3D%22salary%22%3C/script%3E"
+      }
+    },
+    {
+      "name": "browser_XSS_blocked_absence",
+      "passed": true,
+      "evidence": {
+        "marker": null,
+        "actual_url": "http://127.0.0.1:18037/check_absence.php"
+      }
+    },
+    {
+      "name": "browser_XSS_blocked_leave",
+      "passed": true,
+      "evidence": {
+        "marker": null,
+        "actual_url": "http://127.0.0.1:18037/holiday_requests.php"
+      }
+    }
+  ],
+  "limitations": [],
+  "browser_stopped": true,
+  "server_stopped": true
+}
