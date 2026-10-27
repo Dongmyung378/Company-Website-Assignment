@@ -1,0 +1,190 @@
+[
+  {
+    "file": "config/bootstrap.php",
+    "passed": true
+  },
+  {
+    "file": "config/connection.php",
+    "passed": true
+  },
+  {
+    "file": "config/database.php",
+    "passed": true
+  },
+  {
+    "file": "config/environment.php",
+    "passed": true
+  },
+  {
+    "file": "database/extension_schema.php",
+    "passed": true
+  },
+  {
+    "file": "database/objects.php",
+    "passed": true
+  },
+  {
+    "file": "database/schema.php",
+    "passed": true
+  },
+  {
+    "file": "database/setup_support.php",
+    "passed": true
+  },
+  {
+    "file": "database/setup/delete_employee_logs.php",
+    "passed": true
+  },
+  {
+    "file": "database/setup/department_table.php",
+    "passed": true
+  },
+  {
+    "file": "database/setup/emergency_table.php",
+    "passed": true
+  },
+  {
+    "file": "database/setup/employee_table.php",
+    "passed": true
+  },
+  {
+    "file": "database/setup/extra_tables.php",
+    "passed": true
+  },
+  {
+    "file": "database/setup/get_employees_data.php",
+    "passed": true
+  },
+  {
+    "file": "database/setup/holiday_tables.php",
+    "passed": true
+  },
+  {
+    "file": "database/setup/login_table.php",
+    "passed": true
+  },
+  {
+    "file": "database/setup/material_table.php",
+    "passed": true
+  },
+  {
+    "file": "database/setup/office_table.php",
+    "passed": true
+  },
+  {
+    "file": "database/setup/position_table.php",
+    "passed": true
+  },
+  {
+    "file": "database/setup/set_database.php",
+    "passed": true
+  },
+  {
+    "file": "database/setup/set_holiday.php",
+    "passed": true
+  },
+  {
+    "file": "database/setup/set_triggers_and_procedure.php",
+    "passed": true
+  },
+  {
+    "file": "lib/business.php",
+    "passed": true
+  },
+  {
+    "file": "lib/ui.php",
+    "passed": true
+  },
+  {
+    "file": "public/add_employee.php",
+    "passed": true
+  },
+  {
+    "file": "public/admin_main.php",
+    "passed": true
+  },
+  {
+    "file": "public/change_password.php",
+    "passed": true
+  },
+  {
+    "file": "public/check_absence.php",
+    "passed": true
+  },
+  {
+    "file": "public/check_holiday_requests.php",
+    "passed": true
+  },
+  {
+    "file": "public/check_my_holiday.php",
+    "passed": true
+  },
+  {
+    "file": "public/delete_employee.php",
+    "passed": true
+  },
+  {
+    "file": "public/delete_records.php",
+    "passed": true
+  },
+  {
+    "file": "public/employee_detail.php",
+    "passed": true
+  },
+  {
+    "file": "public/happybirthday.php",
+    "passed": true
+  },
+  {
+    "file": "public/holiday_requests.php",
+    "passed": true
+  },
+  {
+    "file": "public/index.php",
+    "passed": true
+  },
+  {
+    "file": "public/list_employees.php",
+    "passed": true
+  },
+  {
+    "file": "public/login.php",
+    "passed": true
+  },
+  {
+    "file": "public/logout.php",
+    "passed": true
+  },
+  {
+    "file": "public/main.php",
+    "passed": true
+  },
+  {
+    "file": "public/salary_table.php",
+    "passed": true
+  },
+  {
+    "file": "public/update_employee.php",
+    "passed": true
+  },
+  {
+    "file": "scripts/create-runtime-user.php",
+    "passed": true
+  },
+  {
+    "file": "scripts/migrate.php",
+    "passed": true
+  },
+  {
+    "file": "scripts/setup.php",
+    "passed": true
+  },
+  {
+    "file": "tests/db.php",
+    "passed": true
+  },
+  {
+    "file": "tests/helper_checks.php",
+    "passed": true
+  }
+]

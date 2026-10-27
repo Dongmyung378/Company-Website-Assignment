@@ -23,6 +23,17 @@ The project keeps its original framework-free page structure, business features,
 
 Authorization follows Executive department membership. A separate permissions model would suit a larger HR system. Payroll preserves the coursework calculation; it is not a legal payroll or tax engine.
 
+## Using the workspace
+
+Every page uses the same navigation, typography and responsive layout. The administrator overview shows current employee counts and pending requests without interrupting alerts. Employees see their own balances and recent leave decisions.
+
+- Search the directory by name or email, combine department/position/office filters, and browse 12 employees per page. Search treats percent signs and underscores literally; filters remain in page links.
+- Open an employee profile and choose **Edit employee** to load the matching record. Position choices follow the selected department; the server still verifies the assignment and record version.
+- Preview inclusive calendar days and the balance remaining after approval before submitting leave. This is a preview; the server and administrator approval remain authoritative.
+- Show or hide password fields, receive confirmation before destructive actions, and avoid duplicate form submission. Tables scroll inside their panels on small screens.
+
+See [interface and verification notes](docs/INTERFACE.md). The visual changes do not replace authorization, CSRF, transactions, payroll formulas or the initial Git history.
+
 ## Run locally
 
 Use supported, patched PHP and MySQL releases. The validation baseline is **PHP 8.5.12, Windows package 8.5.12-1**, with MySQLi, and **MySQL 8.4.13 LTS**. Windows package rebuild suffixes are not shown by `php -v`; obtain the latest vendor-patched package. See the dated [security and verification notes](docs/SECURITY.md).

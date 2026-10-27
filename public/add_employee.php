@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../config/bootstrap.php';
 require_once __DIR__ . '/../lib/business.php';
+require_once __DIR__ . '/../lib/ui.php';
 $current = require_admin();
 $message = '';
 $created = $_SESSION['employee_created'] ?? null;
@@ -39,127 +40,53 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $departments = $conn->query('SELECT department_id, department_name FROM department ORDER BY department_name ASC');
-$positions = $conn->query('SELECT position_id, position_name FROM position ORDER BY position_name ASC');
+$positions = $conn->query('SELECT position_id, position_name, department_id FROM position ORDER BY position_name ASC');
 $offices = $conn->query('SELECT office_id, office_name FROM office ORDER BY office_name ASC');
+$formValue = static function (string $key, string $default = ''): string {
+    return isset($_POST[$key]) && is_string($_POST[$key]) ? $_POST[$key] : $default;
+};
+ui_page_start('Add employee', 'Create an employee profile and a secure first sign-in.', ['current' => $current]);
 ?>
-<!DOCTYPE html>
-<html>
-
-<head>
-    <link rel="stylesheet" href="assets/css/add-employee.css">
-</head>
-
-<body>
-    <div class="form-container">
-        <div class="back-button-container">
-            <a href="admin_main.php" class="back-button">Back to Main</a>
+<?php if ($message !== '') ui_notice($message, 'error'); ?>
+<?php if (is_array($created)): ?>
+    <section class="panel" aria-labelledby="created-title">
+        <div class="panel-header"><div><p class="eyebrow">Account ready</p><h2 id="created-title">Employee added successfully</h2></div><span class="badge badge-success">Created</span></div>
+        <p>Employee ID: <strong><?php echo e($created['employee_id']); ?></strong></p>
+        <p>Temporary password (shown once): <code><?php echo e($created['temporary_password']); ?></code></p>
+        <p class="muted">Share this password privately with the employee. They must change it when signing in. It will disappear when you leave or refresh this page.</p>
+        <a class="button button-secondary" href="employee_detail.php?id=<?php echo e($created['employee_id']); ?>">View employee profile</a>
+    </section>
+<?php endif; ?>
+<form method="POST" action="">
+    <?php echo csrf_field(); ?>
+    <section class="panel" aria-labelledby="employee-details-title">
+        <div class="panel-header"><div><p class="eyebrow">01 / Employee details</p><h2 id="employee-details-title">Personal information</h2><p class="muted">Fields marked * are required. Company email is generated from the employee's name.</p></div></div>
+        <div class="form-grid">
+            <div class="field"><label for="name">Full name *</label><input type="text" id="name" name="name" maxlength="100" value="<?php echo e($formValue('name')); ?>" autocomplete="name" required><small class="muted">Up to 100 characters; the generated email must also fit 100 characters.</small></div>
+            <div class="field"><label for="dob">Date of birth *</label><input type="date" id="dob" name="dob" min="1000-01-01" max="<?php echo e(date('Y-m-d')); ?>" value="<?php echo e($formValue('dob')); ?>" required></div>
+            <div class="field"><label for="salary">Annual salary (£) *</label><input type="text" id="salary" name="salary" inputmode="decimal" maxlength="15" pattern="(?:0|[1-9][0-9]{0,11})(?:\.[0-9]{1,2})?" value="<?php echo e($formValue('salary')); ?>" placeholder="e.g. 35000.00" aria-describedby="salary-hint" required><small id="salary-hint" class="muted">A nonnegative amount, up to 12 whole digits and 2 decimal places.</small></div>
+            <div class="field"><label for="hired_date">Hire date *</label><input type="date" id="hired_date" name="hired_date" min="1000-01-01" value="<?php echo e($formValue('hired_date')); ?>" aria-describedby="hired-date-hint" required><small id="hired-date-hint" class="muted">Must be on or after the employee's date of birth.</small></div>
+            <div class="field"><label for="home_address">Home address *</label><input type="text" id="home_address" name="home_address" maxlength="255" value="<?php echo e($formValue('home_address')); ?>" autocomplete="street-address" required></div>
+            <div class="field"><label for="nin">National Insurance number</label><input type="text" id="nin" name="nin" maxlength="50" value="<?php echo e($formValue('nin')); ?>"><small class="muted">Optional. Up to 50 characters.</small></div>
         </div>
-        <h2>Add New Employee</h2>
-        <?php if ($message): ?>
-            <p role="alert"><?php echo e($message); ?></p>
-        <?php endif; ?>
-        <?php if (is_array($created)): ?>
-            <p>Employee added successfully. Employee ID: <strong><?php echo e($created['employee_id']); ?></strong></p>
-            <p>Temporary password (shown once): <code><?php echo e($created['temporary_password']); ?></code></p>
-            <p>The employee must change this password when signing in.</p>
-        <?php endif; ?>
-        <form method="POST" action="">
-            <?php echo csrf_field(); ?>
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="name">Full Name:</label>
-                    <input type="text" name="name" maxlength="100" placeholder="Enter full name" required>
-                </div>
-                <div class="form-group">
-                    <label for="dob">Date of Birth:</label>
-                    <input type="date" name="dob" required>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="salary">Salary (£):</label>
-                    <input type="text" name="salary" maxlength="15" placeholder="Enter salary" required>
-                </div>
-                <div class="form-group">
-                    <label for="hired_date">Hired Date:</label>
-                    <input type="date" name="hired_date" required>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="home_address">Home Address:</label>
-                    <input type="text" name="home_address" maxlength="255" placeholder="Enter home address" required>
-                </div>
-                <div class="form-group">
-                    <label for="nin">NIN:</label>
-                    <input type="text" name="nin" maxlength="50" placeholder="Enter NIN">
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="contract">Contract Type:</label>
-                    <select name="contract" required>
-                        <option value="Full-Time">Full-Time</option>
-                        <option value="Part-Time">Part-Time</option>
-                        <option value="Freelance">Freelance</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="department_id">Department:</label>
-                    <select name="department_id" required>
-                        <option value="">Select Department</option>
-                        <?php while ($row = $departments->fetch_assoc()): ?>
-                            <option value="<?php echo $row['department_id']; ?>"><?php echo e($row['department_name']); ?></option>
-                        <?php endwhile; ?>
-                    </select>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="position_id">Position:</label>
-                    <select name="position_id" required>
-                        <option value="">Select Position</option>
-                        <?php while ($row = $positions->fetch_assoc()): ?>
-                            <option value="<?php echo $row['position_id']; ?>"><?php echo e($row['position_name']); ?></option>
-                        <?php endwhile; ?>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="office_id">Office:</label>
-                    <select name="office_id" required>
-                        <option value="">Select Office</option>
-                        <?php while ($row = $offices->fetch_assoc()): ?>
-                            <option value="<?php echo $row['office_id']; ?>"><?php echo e($row['office_name']); ?></option>
-                        <?php endwhile; ?>
-                    </select>
-                </div>
-            </div>
-
-            <h3>Emergency Contact Information</h3>
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="emergency_name">Emergency Contact Name:</label>
-                    <input type="text" name="emergency_name" maxlength="100" placeholder="Enter emergency contact name">
-                </div>
-                <div class="form-group">
-                    <label for="emergency_relationship">Relationship:</label>
-                    <input type="text" name="emergency_relationship" maxlength="50" placeholder="Enter relationship">
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="emergency_phone">Phone Number:</label>
-                    <input type="text" name="emergency_phone" maxlength="50" placeholder="Enter phone number">
-                </div>
-            </div>
-
-            <button type="submit">Add Employee</button>
-        </form>
-    </div>
-</body>
-
-</html>
+    </section>
+    <section class="panel" aria-labelledby="assignment-title">
+        <div class="panel-header"><div><p class="eyebrow">02 / Assignment</p><h2 id="assignment-title">Role and workplace</h2></div></div>
+        <div class="form-grid">
+            <div class="field"><label for="contract">Contract type *</label><select id="contract" name="contract" required><?php foreach (['Full-Time', 'Part-Time', 'Freelance'] as $contract): ?><option value="<?php echo e($contract); ?>" <?php echo $formValue('contract', 'Full-Time') === $contract ? 'selected' : ''; ?>><?php echo e($contract); ?></option><?php endforeach; ?></select></div>
+            <div class="field"><label for="department_id">Department *</label><select id="department_id" name="department_id" required><option value="">Select a department</option><?php while ($row = $departments->fetch_assoc()): ?><option value="<?php echo e($row['department_id']); ?>" <?php echo $formValue('department_id') === (string) $row['department_id'] ? 'selected' : ''; ?>><?php echo e($row['department_name']); ?></option><?php endwhile; ?></select></div>
+            <div class="field"><label for="position_id">Position *</label><select id="position_id" name="position_id" data-department-select="department_id" aria-describedby="position-hint" required><option value="">Select a position</option><?php while ($row = $positions->fetch_assoc()): ?><option value="<?php echo e($row['position_id']); ?>" data-department-id="<?php echo e($row['department_id']); ?>" <?php echo $formValue('position_id') === (string) $row['position_id'] ? 'selected' : ''; ?>><?php echo e($row['position_name']); ?></option><?php endwhile; ?></select><small id="position-hint" class="muted">Choose a department first to see its positions.</small></div>
+            <div class="field"><label for="office_id">Office *</label><select id="office_id" name="office_id" required><option value="">Select an office</option><?php while ($row = $offices->fetch_assoc()): ?><option value="<?php echo e($row['office_id']); ?>" <?php echo $formValue('office_id') === (string) $row['office_id'] ? 'selected' : ''; ?>><?php echo e($row['office_name']); ?></option><?php endwhile; ?></select></div>
+        </div>
+    </section>
+    <section class="panel" aria-labelledby="emergency-title">
+        <div class="panel-header"><div><p class="eyebrow">03 / Emergency contact</p><h2 id="emergency-title">Someone we can reach</h2><p class="muted">These details are optional.</p></div></div>
+        <div class="form-grid">
+            <div class="field"><label for="emergency_name">Contact name</label><input type="text" id="emergency_name" name="emergency_name" maxlength="100" value="<?php echo e($formValue('emergency_name')); ?>"></div>
+            <div class="field"><label for="emergency_relationship">Relationship</label><input type="text" id="emergency_relationship" name="emergency_relationship" maxlength="50" value="<?php echo e($formValue('emergency_relationship')); ?>"></div>
+            <div class="field"><label for="emergency_phone">Phone number</label><input type="tel" id="emergency_phone" name="emergency_phone" maxlength="50" value="<?php echo e($formValue('emergency_phone')); ?>"></div>
+        </div>
+        <div class="form-actions"><button type="submit" class="button">Create employee</button><a href="admin_main.php" class="button button-secondary">Cancel</a></div>
+    </section>
+</form>
+<?php ui_page_end(); ?>

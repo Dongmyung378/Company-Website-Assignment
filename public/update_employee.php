@@ -1,9 +1,11 @@
 <?php
 require_once __DIR__ . '/../config/bootstrap.php';
 require_once __DIR__ . '/../lib/business.php';
+require_once __DIR__ . '/../lib/ui.php';
 $current = require_admin();
 $employee_data = null;
 $message = $_SESSION['employee_update_message'] ?? '';
+$messageType = 'success';
 unset($_SESSION['employee_update_message'], $_SESSION['employee_data']);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -84,126 +86,67 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $conn->rollback();
         }
         $message = business_report_failure($error, 'Unable to update the employee.');
+        $messageType = 'error';
+    }
+} elseif (array_key_exists('employee_id', $_GET)) {
+    try {
+        $employeeId = business_id($_GET, 'employee_id');
+        $stmt = $conn->prepare('SELECT e.*, ec.emergency_name, ec.emergency_relationship, ec.emergency_phone FROM employees e LEFT JOIN emergency_table ec ON e.employee_id = ec.employee_id WHERE e.employee_id = ?');
+        $stmt->bind_param('i', $employeeId);
+        $stmt->execute();
+        $employee_data = $stmt->get_result()->fetch_assoc();
+        $stmt->close();
+        if (!$employee_data) {
+            throw new WorkflowException('Employee not found.', 404);
+        }
+    } catch (Throwable $error) {
+        $message = business_report_failure($error, 'Unable to load the employee.');
+        $messageType = 'error';
     }
 }
 $departments = $conn->query('SELECT department_id, department_name FROM department ORDER BY department_name ASC');
-$positions = $conn->query('SELECT position_id, position_name FROM position ORDER BY position_name ASC');
+$positions = $conn->query('SELECT position_id, position_name, department_id FROM position ORDER BY position_name ASC');
 $offices = $conn->query('SELECT office_id, office_name FROM office ORDER BY office_name ASC');
+ui_page_start('Update employee', 'Find a colleague and keep their employee record current.', ['current' => $current]);
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <link rel="stylesheet" href="assets/css/update-employee.css">
-</head>
-
-<body>
-    <div class="container">
-        <button class="btn-back" onclick="window.location.href='admin_main.php'">Back to Main</button>
-        <h2>Update Employee Information</h2>
-
-        <?php if ($message): ?>
-            <div class="message"><?php echo e($message); ?></div>
-        <?php endif; ?>
-
-        <form method="POST" action="" class="search-form">
-            <?php echo csrf_field(); ?>
-            <div class="form-group">
-                <label for="employee_id">Enter Employee ID:</label>
-                <input type="text" name="employee_id" placeholder="e.g., 12345678" required>
-                <button type="submit" name="search_employee" class="btn-search">Search</button>
+<?php if ($message !== '') ui_notice($message, $messageType); ?>
+<section class="panel" aria-labelledby="find-employee-title">
+    <div class="panel-header"><div><p class="eyebrow">Find a record</p><h2 id="find-employee-title">Search by employee ID</h2><p class="muted">You can also open a record from the employee directory.</p></div><a class="button button-secondary" href="list_employees.php">Browse directory</a></div>
+    <form method="POST" action="">
+        <?php echo csrf_field(); ?>
+        <div class="form-grid"><div class="field"><label for="search_employee_id">Employee ID *</label><input type="number" id="search_employee_id" name="employee_id" min="1" max="2147483647" step="1" value="<?php echo e($employee_data['employee_id'] ?? ''); ?>" placeholder="e.g. 1001" required></div></div>
+        <div class="form-actions"><button type="submit" name="search_employee" class="button">Find employee</button></div>
+    </form>
+</section>
+<?php if ($employee_data): ?>
+    <form method="POST" action="">
+        <?php echo csrf_field(); ?>
+        <input type="hidden" name="row_version" value="<?php echo e($employee_data['row_version']); ?>">
+        <input type="hidden" name="employee_id" value="<?php echo e($employee_data['employee_id']); ?>">
+        <section class="panel" aria-labelledby="profile-title">
+            <div class="panel-header"><div><p class="eyebrow">Employee #<?php echo e($employee_data['employee_id']); ?></p><h2 id="profile-title"><?php echo e($employee_data['name']); ?></h2><p class="muted"><?php echo e($employee_data['email']); ?></p></div><a class="button button-quiet" href="employee_detail.php?id=<?php echo e($employee_data['employee_id']); ?>">View full profile</a></div>
+            <div class="form-grid">
+                <div class="field"><label for="name">Full name *</label><input type="text" id="name" name="name" maxlength="100" value="<?php echo e($employee_data['name']); ?>" autocomplete="name" required></div>
+                <div class="field"><label for="salary_increase">Salary adjustment (%)</label><input type="number" id="salary_increase" step="0.01" name="salary_increase" min="-100" max="10000" placeholder="0" aria-describedby="salary-hint"><small id="salary-hint" class="muted">Current salary: £<?php echo e(is_numeric($employee_data['salary']) ? number_format((float) $employee_data['salary'], 2) : $employee_data['salary']); ?>. Leave blank to keep it; use a negative percentage to reduce it.</small></div>
+                <div class="field"><label for="home_address">Home address *</label><input type="text" id="home_address" name="home_address" maxlength="255" value="<?php echo e($employee_data['home_address']); ?>" autocomplete="street-address" required></div>
+                <div class="field"><label for="contract">Contract type *</label><select id="contract" name="contract" required><?php foreach (['Full-Time', 'Part-Time', 'Freelance'] as $contract): ?><option value="<?php echo e($contract); ?>" <?php echo $employee_data['contract'] === $contract ? 'selected' : ''; ?>><?php echo e($contract); ?></option><?php endforeach; ?></select></div>
+                <div class="field"><label for="department_id">Department *</label><select id="department_id" name="department_id" required><?php while ($row = $departments->fetch_assoc()): ?><option value="<?php echo e($row['department_id']); ?>" <?php echo (int) $row['department_id'] === (int) $employee_data['department_id'] ? 'selected' : ''; ?>><?php echo e($row['department_name']); ?></option><?php endwhile; ?></select></div>
+                <div class="field"><label for="position_id">Position *</label><select id="position_id" name="position_id" data-department-select="department_id" aria-describedby="position-hint" required><option value="">Select a position</option><?php while ($row = $positions->fetch_assoc()): ?><option value="<?php echo e($row['position_id']); ?>" data-department-id="<?php echo e($row['department_id']); ?>" <?php echo (int) $row['position_id'] === (int) $employee_data['position_id'] ? 'selected' : ''; ?>><?php echo e($row['position_name']); ?></option><?php endwhile; ?></select><small id="position-hint" class="muted">Positions follow the selected department. Check the position after changing departments.</small></div>
+                <div class="field"><label for="office_id">Office *</label><select id="office_id" name="office_id" required><?php while ($row = $offices->fetch_assoc()): ?><option value="<?php echo e($row['office_id']); ?>" <?php echo (int) $row['office_id'] === (int) $employee_data['office_id'] ? 'selected' : ''; ?>><?php echo e($row['office_name']); ?></option><?php endwhile; ?></select></div>
             </div>
-        </form>
-
-        <?php if ($employee_data): ?>
-            <form method="POST" action="" class="update-form">
-                <?php echo csrf_field(); ?>
-                <input type="hidden" name="row_version" value="<?php echo e($employee_data['row_version']); ?>">
-                <input type="hidden" name="employee_id" value="<?php echo $employee_data['employee_id']; ?>">
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Full Name:</label>
-                        <input type="text" name="name" value="<?php echo e($employee_data['name']); ?>" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Salary Increase (%):</label>
-                        <input type="number" step="0.01" name="salary_increase" min="-100" max="10000" placeholder="Enter increase percentage">
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Home Address:</label>
-                        <input type="text" name="home_address" value="<?php echo e($employee_data['home_address']); ?>" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Contract Type:</label>
-                        <select name="contract" required>
-                            <option value="Full-Time" <?php if ($employee_data['contract'] == 'Full-Time') echo 'selected'; ?>>Full-Time</option>
-                            <option value="Part-Time" <?php if ($employee_data['contract'] == 'Part-Time') echo 'selected'; ?>>Part-Time</option>
-                            <option value="Freelance" <?php if ($employee_data['contract'] == 'Freelance') echo 'selected'; ?>>Freelance</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Department:</label>
-                        <select name="department_id" required>
-                            <?php while ($row = $departments->fetch_assoc()): ?>
-                                <option value="<?php echo $row['department_id']; ?>" <?php if ($row['department_id'] == $employee_data['department_id']) echo 'selected'; ?>><?php echo e($row['department_name']); ?></option>
-                            <?php endwhile; ?>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Position:</label>
-                        <select name="position_id" required>
-                            <?php while ($row = $positions->fetch_assoc()): ?>
-                                <option value="<?php echo $row['position_id']; ?>" <?php if ($row['position_id'] == $employee_data['position_id']) echo 'selected'; ?>><?php echo e($row['position_name']); ?></option>
-                            <?php endwhile; ?>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Office:</label>
-                        <select name="office_id" required>
-                            <?php while ($row = $offices->fetch_assoc()): ?>
-                                <option value="<?php echo $row['office_id']; ?>" <?php if ($row['office_id'] == $employee_data['office_id']) echo 'selected'; ?>><?php echo e($row['office_name']); ?></option>
-                            <?php endwhile; ?>
-                        </select>
-                    </div>
-                </div>
-
-                <h3>Emergency Contact Information</h3>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Emergency Contact Name:</label>
-                        <input type="text" name="emergency_name" value="<?php echo e($employee_data['emergency_name'] ?? ''); ?>">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Relationship:</label>
-                        <input type="text" name="emergency_relationship" value="<?php echo e($employee_data['emergency_relationship'] ?? ''); ?>">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Phone Number:</label>
-                        <input type="text" name="emergency_phone" value="<?php echo e($employee_data['emergency_phone'] ?? ''); ?>">
-                    </div>
-                </div>
-
-                <button type="submit" name="update_employee" class="btn-submit">Update Employee</button>
-            </form>
-        <?php endif; ?>
-    </div>
-</body>
-
-</html>
+        </section>
+        <section class="panel" aria-labelledby="emergency-title">
+            <div class="panel-header"><div><p class="eyebrow">Emergency contact</p><h2 id="emergency-title">Someone we can reach</h2><p class="muted">These details are optional. Fields marked * above are required.</p></div></div>
+            <div class="form-grid">
+                <div class="field"><label for="emergency_name">Contact name</label><input type="text" id="emergency_name" name="emergency_name" maxlength="100" value="<?php echo e($employee_data['emergency_name'] ?? ''); ?>"></div>
+                <div class="field"><label for="emergency_relationship">Relationship</label><input type="text" id="emergency_relationship" name="emergency_relationship" maxlength="50" value="<?php echo e($employee_data['emergency_relationship'] ?? ''); ?>"></div>
+                <div class="field"><label for="emergency_phone">Phone number</label><input type="tel" id="emergency_phone" name="emergency_phone" maxlength="50" value="<?php echo e($employee_data['emergency_phone'] ?? ''); ?>"></div>
+            </div>
+            <div class="form-actions"><button type="submit" name="update_employee" class="button">Save changes</button><a href="employee_detail.php?id=<?php echo e($employee_data['employee_id']); ?>" class="button button-secondary">Cancel</a></div>
+            <p class="muted">If another administrator changes this record, search again to load their latest changes before saving.</p>
+        </section>
+    </form>
+<?php else: ?>
+    <section class="panel empty-state"><h2>Choose an employee to get started</h2><p class="muted">Search above to edit personal details, job assignments, salary, and emergency contacts.</p></section>
+<?php endif; ?>
+<?php ui_page_end(); ?>

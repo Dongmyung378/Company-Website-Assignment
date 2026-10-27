@@ -1,0 +1,2366 @@
+{
+  "checks": [
+    {
+      "name": "desktop login landmarks and viewport",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "desktop login no document overflow",
+      "passed": true,
+      "evidence": {
+        "viewport_width": 1440,
+        "document_width": 1440
+      }
+    },
+    {
+      "name": "desktop login named controls and unique IDs",
+      "passed": true,
+      "evidence": {
+        "unnamed_controls": [],
+        "duplicate_ids": []
+      }
+    },
+    {
+      "name": "desktop login no script or resource failures",
+      "passed": true,
+      "evidence": {
+        "resource_error_count": 0,
+        "script_exception_count": 0
+      }
+    },
+    {
+      "name": "desktop password visibility toggle",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "desktop admin overview landmarks and viewport",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "desktop admin overview no document overflow",
+      "passed": true,
+      "evidence": {
+        "viewport_width": 1440,
+        "document_width": 1425
+      }
+    },
+    {
+      "name": "desktop admin overview named controls and unique IDs",
+      "passed": true,
+      "evidence": {
+        "unnamed_controls": [],
+        "duplicate_ids": []
+      }
+    },
+    {
+      "name": "desktop admin overview no script or resource failures",
+      "passed": true,
+      "evidence": {
+        "resource_error_count": 0,
+        "script_exception_count": 0
+      }
+    },
+    {
+      "name": "desktop admin overview current navigation",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "desktop employee overview landmarks and viewport",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "desktop employee overview no document overflow",
+      "passed": true,
+      "evidence": {
+        "viewport_width": 1440,
+        "document_width": 1440
+      }
+    },
+    {
+      "name": "desktop employee overview named controls and unique IDs",
+      "passed": true,
+      "evidence": {
+        "unnamed_controls": [],
+        "duplicate_ids": []
+      }
+    },
+    {
+      "name": "desktop employee overview no script or resource failures",
+      "passed": true,
+      "evidence": {
+        "resource_error_count": 0,
+        "script_exception_count": 0
+      }
+    },
+    {
+      "name": "desktop employee overview current navigation",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "desktop employee directory landmarks and viewport",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "desktop employee directory no document overflow",
+      "passed": true,
+      "evidence": {
+        "viewport_width": 1440,
+        "document_width": 1425
+      }
+    },
+    {
+      "name": "desktop employee directory named controls and unique IDs",
+      "passed": true,
+      "evidence": {
+        "unnamed_controls": [],
+        "duplicate_ids": []
+      }
+    },
+    {
+      "name": "desktop employee directory no script or resource failures",
+      "passed": true,
+      "evidence": {
+        "resource_error_count": 0,
+        "script_exception_count": 0
+      }
+    },
+    {
+      "name": "desktop employee directory current navigation",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "desktop employee profile landmarks and viewport",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "desktop employee profile no document overflow",
+      "passed": true,
+      "evidence": {
+        "viewport_width": 1440,
+        "document_width": 1440
+      }
+    },
+    {
+      "name": "desktop employee profile named controls and unique IDs",
+      "passed": true,
+      "evidence": {
+        "unnamed_controls": [],
+        "duplicate_ids": []
+      }
+    },
+    {
+      "name": "desktop employee profile no script or resource failures",
+      "passed": true,
+      "evidence": {
+        "resource_error_count": 0,
+        "script_exception_count": 0
+      }
+    },
+    {
+      "name": "desktop employee profile current navigation",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "desktop add employee landmarks and viewport",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "desktop add employee no document overflow",
+      "passed": true,
+      "evidence": {
+        "viewport_width": 1440,
+        "document_width": 1425
+      }
+    },
+    {
+      "name": "desktop add employee named controls and unique IDs",
+      "passed": true,
+      "evidence": {
+        "unnamed_controls": [],
+        "duplicate_ids": []
+      }
+    },
+    {
+      "name": "desktop add employee no script or resource failures",
+      "passed": true,
+      "evidence": {
+        "resource_error_count": 0,
+        "script_exception_count": 0
+      }
+    },
+    {
+      "name": "desktop add employee current navigation",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "desktop positions follow selected department",
+      "passed": true,
+      "evidence": {
+        "tested_departments": 5
+      }
+    },
+    {
+      "name": "desktop update employee landmarks and viewport",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "desktop update employee no document overflow",
+      "passed": true,
+      "evidence": {
+        "viewport_width": 1440,
+        "document_width": 1425
+      }
+    },
+    {
+      "name": "desktop update employee named controls and unique IDs",
+      "passed": true,
+      "evidence": {
+        "unnamed_controls": [],
+        "duplicate_ids": []
+      }
+    },
+    {
+      "name": "desktop update employee no script or resource failures",
+      "passed": true,
+      "evidence": {
+        "resource_error_count": 0,
+        "script_exception_count": 0
+      }
+    },
+    {
+      "name": "desktop update employee current navigation",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "desktop employee edit prefill is valid",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "desktop delete employee landmarks and viewport",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "desktop delete employee no document overflow",
+      "passed": true,
+      "evidence": {
+        "viewport_width": 1440,
+        "document_width": 1440
+      }
+    },
+    {
+      "name": "desktop delete employee named controls and unique IDs",
+      "passed": true,
+      "evidence": {
+        "unnamed_controls": [],
+        "duplicate_ids": []
+      }
+    },
+    {
+      "name": "desktop delete employee no script or resource failures",
+      "passed": true,
+      "evidence": {
+        "resource_error_count": 0,
+        "script_exception_count": 0
+      }
+    },
+    {
+      "name": "desktop delete employee current navigation",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "desktop leave approvals landmarks and viewport",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "desktop leave approvals no document overflow",
+      "passed": true,
+      "evidence": {
+        "viewport_width": 1440,
+        "document_width": 1440
+      }
+    },
+    {
+      "name": "desktop leave approvals named controls and unique IDs",
+      "passed": true,
+      "evidence": {
+        "unnamed_controls": [],
+        "duplicate_ids": []
+      }
+    },
+    {
+      "name": "desktop leave approvals no script or resource failures",
+      "passed": true,
+      "evidence": {
+        "resource_error_count": 0,
+        "script_exception_count": 0
+      }
+    },
+    {
+      "name": "desktop leave approvals current navigation",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "desktop absence report landmarks and viewport",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "desktop absence report no document overflow",
+      "passed": true,
+      "evidence": {
+        "viewport_width": 1440,
+        "document_width": 1425
+      }
+    },
+    {
+      "name": "desktop absence report named controls and unique IDs",
+      "passed": true,
+      "evidence": {
+        "unnamed_controls": [],
+        "duplicate_ids": []
+      }
+    },
+    {
+      "name": "desktop absence report no script or resource failures",
+      "passed": true,
+      "evidence": {
+        "resource_error_count": 0,
+        "script_exception_count": 0
+      }
+    },
+    {
+      "name": "desktop absence report current navigation",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "desktop payroll landmarks and viewport",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "desktop payroll no document overflow",
+      "passed": true,
+      "evidence": {
+        "viewport_width": 1440,
+        "document_width": 1425
+      }
+    },
+    {
+      "name": "desktop payroll named controls and unique IDs",
+      "passed": true,
+      "evidence": {
+        "unnamed_controls": [],
+        "duplicate_ids": []
+      }
+    },
+    {
+      "name": "desktop payroll no script or resource failures",
+      "passed": true,
+      "evidence": {
+        "resource_error_count": 0,
+        "script_exception_count": 0
+      }
+    },
+    {
+      "name": "desktop payroll current navigation",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "desktop birthdays landmarks and viewport",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "desktop birthdays no document overflow",
+      "passed": true,
+      "evidence": {
+        "viewport_width": 1440,
+        "document_width": 1425
+      }
+    },
+    {
+      "name": "desktop birthdays named controls and unique IDs",
+      "passed": true,
+      "evidence": {
+        "unnamed_controls": [],
+        "duplicate_ids": []
+      }
+    },
+    {
+      "name": "desktop birthdays no script or resource failures",
+      "passed": true,
+      "evidence": {
+        "resource_error_count": 0,
+        "script_exception_count": 0
+      }
+    },
+    {
+      "name": "desktop birthdays current navigation",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "desktop deletion records landmarks and viewport",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "desktop deletion records no document overflow",
+      "passed": true,
+      "evidence": {
+        "viewport_width": 1440,
+        "document_width": 1440
+      }
+    },
+    {
+      "name": "desktop deletion records named controls and unique IDs",
+      "passed": true,
+      "evidence": {
+        "unnamed_controls": [],
+        "duplicate_ids": []
+      }
+    },
+    {
+      "name": "desktop deletion records no script or resource failures",
+      "passed": true,
+      "evidence": {
+        "resource_error_count": 0,
+        "script_exception_count": 0
+      }
+    },
+    {
+      "name": "desktop deletion records current navigation",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "desktop request leave landmarks and viewport",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "desktop request leave no document overflow",
+      "passed": true,
+      "evidence": {
+        "viewport_width": 1440,
+        "document_width": 1425
+      }
+    },
+    {
+      "name": "desktop request leave named controls and unique IDs",
+      "passed": true,
+      "evidence": {
+        "unnamed_controls": [],
+        "duplicate_ids": []
+      }
+    },
+    {
+      "name": "desktop request leave no script or resource failures",
+      "passed": true,
+      "evidence": {
+        "resource_error_count": 0,
+        "script_exception_count": 0
+      }
+    },
+    {
+      "name": "desktop request leave current navigation",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "desktop leave calendar preview is inclusive across DST",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "desktop leave preview rejects reversed and insufficient dates",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "desktop leave history landmarks and viewport",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "desktop leave history no document overflow",
+      "passed": true,
+      "evidence": {
+        "viewport_width": 1440,
+        "document_width": 1440
+      }
+    },
+    {
+      "name": "desktop leave history named controls and unique IDs",
+      "passed": true,
+      "evidence": {
+        "unnamed_controls": [],
+        "duplicate_ids": []
+      }
+    },
+    {
+      "name": "desktop leave history no script or resource failures",
+      "passed": true,
+      "evidence": {
+        "resource_error_count": 0,
+        "script_exception_count": 0
+      }
+    },
+    {
+      "name": "desktop leave history current navigation",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "desktop change password landmarks and viewport",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "desktop change password no document overflow",
+      "passed": true,
+      "evidence": {
+        "viewport_width": 1440,
+        "document_width": 1440
+      }
+    },
+    {
+      "name": "desktop change password named controls and unique IDs",
+      "passed": true,
+      "evidence": {
+        "unnamed_controls": [],
+        "duplicate_ids": []
+      }
+    },
+    {
+      "name": "desktop change password no script or resource failures",
+      "passed": true,
+      "evidence": {
+        "resource_error_count": 0,
+        "script_exception_count": 0
+      }
+    },
+    {
+      "name": "desktop change password current navigation",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "desktop sign out landmarks and viewport",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "desktop sign out no document overflow",
+      "passed": true,
+      "evidence": {
+        "viewport_width": 1440,
+        "document_width": 1440
+      }
+    },
+    {
+      "name": "desktop sign out named controls and unique IDs",
+      "passed": true,
+      "evidence": {
+        "unnamed_controls": [],
+        "duplicate_ids": []
+      }
+    },
+    {
+      "name": "desktop sign out no script or resource failures",
+      "passed": true,
+      "evidence": {
+        "resource_error_count": 0,
+        "script_exception_count": 0
+      }
+    },
+    {
+      "name": "desktop sign out current navigation",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "desktop forced account shows only password and sign-out navigation",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "mobile login landmarks and viewport",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "mobile login no document overflow",
+      "passed": true,
+      "evidence": {
+        "viewport_width": 390,
+        "document_width": 390
+      }
+    },
+    {
+      "name": "mobile login named controls and unique IDs",
+      "passed": true,
+      "evidence": {
+        "unnamed_controls": [],
+        "duplicate_ids": []
+      }
+    },
+    {
+      "name": "mobile login no script or resource failures",
+      "passed": true,
+      "evidence": {
+        "resource_error_count": 0,
+        "script_exception_count": 0
+      }
+    },
+    {
+      "name": "mobile password visibility toggle",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "mobile admin overview landmarks and viewport",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "mobile admin overview no document overflow",
+      "passed": true,
+      "evidence": {
+        "viewport_width": 390,
+        "document_width": 390
+      }
+    },
+    {
+      "name": "mobile admin overview named controls and unique IDs",
+      "passed": true,
+      "evidence": {
+        "unnamed_controls": [],
+        "duplicate_ids": []
+      }
+    },
+    {
+      "name": "mobile admin overview no script or resource failures",
+      "passed": true,
+      "evidence": {
+        "resource_error_count": 0,
+        "script_exception_count": 0
+      }
+    },
+    {
+      "name": "mobile admin overview current navigation",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "Mobile menu opens and Escape restores inert state and focus",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "mobile employee overview landmarks and viewport",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "mobile employee overview no document overflow",
+      "passed": true,
+      "evidence": {
+        "viewport_width": 390,
+        "document_width": 390
+      }
+    },
+    {
+      "name": "mobile employee overview named controls and unique IDs",
+      "passed": true,
+      "evidence": {
+        "unnamed_controls": [],
+        "duplicate_ids": []
+      }
+    },
+    {
+      "name": "mobile employee overview no script or resource failures",
+      "passed": true,
+      "evidence": {
+        "resource_error_count": 0,
+        "script_exception_count": 0
+      }
+    },
+    {
+      "name": "mobile employee overview current navigation",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "mobile employee directory landmarks and viewport",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "mobile employee directory no document overflow",
+      "passed": true,
+      "evidence": {
+        "viewport_width": 390,
+        "document_width": 390
+      }
+    },
+    {
+      "name": "mobile employee directory named controls and unique IDs",
+      "passed": true,
+      "evidence": {
+        "unnamed_controls": [],
+        "duplicate_ids": []
+      }
+    },
+    {
+      "name": "mobile employee directory no script or resource failures",
+      "passed": true,
+      "evidence": {
+        "resource_error_count": 0,
+        "script_exception_count": 0
+      }
+    },
+    {
+      "name": "mobile employee directory current navigation",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "mobile employee profile landmarks and viewport",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "mobile employee profile no document overflow",
+      "passed": true,
+      "evidence": {
+        "viewport_width": 390,
+        "document_width": 390
+      }
+    },
+    {
+      "name": "mobile employee profile named controls and unique IDs",
+      "passed": true,
+      "evidence": {
+        "unnamed_controls": [],
+        "duplicate_ids": []
+      }
+    },
+    {
+      "name": "mobile employee profile no script or resource failures",
+      "passed": true,
+      "evidence": {
+        "resource_error_count": 0,
+        "script_exception_count": 0
+      }
+    },
+    {
+      "name": "mobile employee profile current navigation",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "mobile add employee landmarks and viewport",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "mobile add employee no document overflow",
+      "passed": true,
+      "evidence": {
+        "viewport_width": 390,
+        "document_width": 390
+      }
+    },
+    {
+      "name": "mobile add employee named controls and unique IDs",
+      "passed": true,
+      "evidence": {
+        "unnamed_controls": [],
+        "duplicate_ids": []
+      }
+    },
+    {
+      "name": "mobile add employee no script or resource failures",
+      "passed": true,
+      "evidence": {
+        "resource_error_count": 0,
+        "script_exception_count": 0
+      }
+    },
+    {
+      "name": "mobile add employee current navigation",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "mobile positions follow selected department",
+      "passed": true,
+      "evidence": {
+        "tested_departments": 5
+      }
+    },
+    {
+      "name": "mobile update employee landmarks and viewport",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "mobile update employee no document overflow",
+      "passed": true,
+      "evidence": {
+        "viewport_width": 390,
+        "document_width": 390
+      }
+    },
+    {
+      "name": "mobile update employee named controls and unique IDs",
+      "passed": true,
+      "evidence": {
+        "unnamed_controls": [],
+        "duplicate_ids": []
+      }
+    },
+    {
+      "name": "mobile update employee no script or resource failures",
+      "passed": true,
+      "evidence": {
+        "resource_error_count": 0,
+        "script_exception_count": 0
+      }
+    },
+    {
+      "name": "mobile update employee current navigation",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "mobile employee edit prefill is valid",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "mobile delete employee landmarks and viewport",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "mobile delete employee no document overflow",
+      "passed": true,
+      "evidence": {
+        "viewport_width": 390,
+        "document_width": 390
+      }
+    },
+    {
+      "name": "mobile delete employee named controls and unique IDs",
+      "passed": true,
+      "evidence": {
+        "unnamed_controls": [],
+        "duplicate_ids": []
+      }
+    },
+    {
+      "name": "mobile delete employee no script or resource failures",
+      "passed": true,
+      "evidence": {
+        "resource_error_count": 0,
+        "script_exception_count": 0
+      }
+    },
+    {
+      "name": "mobile delete employee current navigation",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "mobile leave approvals landmarks and viewport",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "mobile leave approvals no document overflow",
+      "passed": true,
+      "evidence": {
+        "viewport_width": 390,
+        "document_width": 390
+      }
+    },
+    {
+      "name": "mobile leave approvals named controls and unique IDs",
+      "passed": true,
+      "evidence": {
+        "unnamed_controls": [],
+        "duplicate_ids": []
+      }
+    },
+    {
+      "name": "mobile leave approvals no script or resource failures",
+      "passed": true,
+      "evidence": {
+        "resource_error_count": 0,
+        "script_exception_count": 0
+      }
+    },
+    {
+      "name": "mobile leave approvals current navigation",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "mobile absence report landmarks and viewport",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "mobile absence report no document overflow",
+      "passed": true,
+      "evidence": {
+        "viewport_width": 390,
+        "document_width": 390
+      }
+    },
+    {
+      "name": "mobile absence report named controls and unique IDs",
+      "passed": true,
+      "evidence": {
+        "unnamed_controls": [],
+        "duplicate_ids": []
+      }
+    },
+    {
+      "name": "mobile absence report no script or resource failures",
+      "passed": true,
+      "evidence": {
+        "resource_error_count": 0,
+        "script_exception_count": 0
+      }
+    },
+    {
+      "name": "mobile absence report current navigation",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "mobile payroll landmarks and viewport",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "mobile payroll no document overflow",
+      "passed": true,
+      "evidence": {
+        "viewport_width": 390,
+        "document_width": 390
+      }
+    },
+    {
+      "name": "mobile payroll named controls and unique IDs",
+      "passed": true,
+      "evidence": {
+        "unnamed_controls": [],
+        "duplicate_ids": []
+      }
+    },
+    {
+      "name": "mobile payroll no script or resource failures",
+      "passed": true,
+      "evidence": {
+        "resource_error_count": 0,
+        "script_exception_count": 0
+      }
+    },
+    {
+      "name": "mobile payroll current navigation",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "mobile birthdays landmarks and viewport",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "mobile birthdays no document overflow",
+      "passed": true,
+      "evidence": {
+        "viewport_width": 390,
+        "document_width": 390
+      }
+    },
+    {
+      "name": "mobile birthdays named controls and unique IDs",
+      "passed": true,
+      "evidence": {
+        "unnamed_controls": [],
+        "duplicate_ids": []
+      }
+    },
+    {
+      "name": "mobile birthdays no script or resource failures",
+      "passed": true,
+      "evidence": {
+        "resource_error_count": 0,
+        "script_exception_count": 0
+      }
+    },
+    {
+      "name": "mobile birthdays current navigation",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "mobile deletion records landmarks and viewport",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "mobile deletion records no document overflow",
+      "passed": true,
+      "evidence": {
+        "viewport_width": 390,
+        "document_width": 390
+      }
+    },
+    {
+      "name": "mobile deletion records named controls and unique IDs",
+      "passed": true,
+      "evidence": {
+        "unnamed_controls": [],
+        "duplicate_ids": []
+      }
+    },
+    {
+      "name": "mobile deletion records no script or resource failures",
+      "passed": true,
+      "evidence": {
+        "resource_error_count": 0,
+        "script_exception_count": 0
+      }
+    },
+    {
+      "name": "mobile deletion records current navigation",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "mobile request leave landmarks and viewport",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "mobile request leave no document overflow",
+      "passed": true,
+      "evidence": {
+        "viewport_width": 390,
+        "document_width": 390
+      }
+    },
+    {
+      "name": "mobile request leave named controls and unique IDs",
+      "passed": true,
+      "evidence": {
+        "unnamed_controls": [],
+        "duplicate_ids": []
+      }
+    },
+    {
+      "name": "mobile request leave no script or resource failures",
+      "passed": true,
+      "evidence": {
+        "resource_error_count": 0,
+        "script_exception_count": 0
+      }
+    },
+    {
+      "name": "mobile request leave current navigation",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "mobile leave calendar preview is inclusive across DST",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "mobile leave preview rejects reversed and insufficient dates",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "mobile leave history landmarks and viewport",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "mobile leave history no document overflow",
+      "passed": true,
+      "evidence": {
+        "viewport_width": 390,
+        "document_width": 390
+      }
+    },
+    {
+      "name": "mobile leave history named controls and unique IDs",
+      "passed": true,
+      "evidence": {
+        "unnamed_controls": [],
+        "duplicate_ids": []
+      }
+    },
+    {
+      "name": "mobile leave history no script or resource failures",
+      "passed": true,
+      "evidence": {
+        "resource_error_count": 0,
+        "script_exception_count": 0
+      }
+    },
+    {
+      "name": "mobile leave history current navigation",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "mobile change password landmarks and viewport",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "mobile change password no document overflow",
+      "passed": true,
+      "evidence": {
+        "viewport_width": 390,
+        "document_width": 390
+      }
+    },
+    {
+      "name": "mobile change password named controls and unique IDs",
+      "passed": true,
+      "evidence": {
+        "unnamed_controls": [],
+        "duplicate_ids": []
+      }
+    },
+    {
+      "name": "mobile change password no script or resource failures",
+      "passed": true,
+      "evidence": {
+        "resource_error_count": 0,
+        "script_exception_count": 0
+      }
+    },
+    {
+      "name": "mobile change password current navigation",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "mobile sign out landmarks and viewport",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "mobile sign out no document overflow",
+      "passed": true,
+      "evidence": {
+        "viewport_width": 390,
+        "document_width": 390
+      }
+    },
+    {
+      "name": "mobile sign out named controls and unique IDs",
+      "passed": true,
+      "evidence": {
+        "unnamed_controls": [],
+        "duplicate_ids": []
+      }
+    },
+    {
+      "name": "mobile sign out no script or resource failures",
+      "passed": true,
+      "evidence": {
+        "resource_error_count": 0,
+        "script_exception_count": 0
+      }
+    },
+    {
+      "name": "mobile sign out current navigation",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "mobile forced account shows only password and sign-out navigation",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "narrow mobile login landmarks and viewport",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "narrow mobile login no document overflow",
+      "passed": true,
+      "evidence": {
+        "viewport_width": 360,
+        "document_width": 360
+      }
+    },
+    {
+      "name": "narrow mobile login named controls and unique IDs",
+      "passed": true,
+      "evidence": {
+        "unnamed_controls": [],
+        "duplicate_ids": []
+      }
+    },
+    {
+      "name": "narrow mobile login no script or resource failures",
+      "passed": true,
+      "evidence": {
+        "resource_error_count": 0,
+        "script_exception_count": 0
+      }
+    },
+    {
+      "name": "narrow mobile admin overview landmarks and viewport",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "narrow mobile admin overview no document overflow",
+      "passed": true,
+      "evidence": {
+        "viewport_width": 360,
+        "document_width": 360
+      }
+    },
+    {
+      "name": "narrow mobile admin overview named controls and unique IDs",
+      "passed": true,
+      "evidence": {
+        "unnamed_controls": [],
+        "duplicate_ids": []
+      }
+    },
+    {
+      "name": "narrow mobile admin overview no script or resource failures",
+      "passed": true,
+      "evidence": {
+        "resource_error_count": 0,
+        "script_exception_count": 0
+      }
+    },
+    {
+      "name": "narrow mobile admin overview current navigation",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "narrow mobile employee directory landmarks and viewport",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "narrow mobile employee directory no document overflow",
+      "passed": true,
+      "evidence": {
+        "viewport_width": 360,
+        "document_width": 360
+      }
+    },
+    {
+      "name": "narrow mobile employee directory named controls and unique IDs",
+      "passed": true,
+      "evidence": {
+        "unnamed_controls": [],
+        "duplicate_ids": []
+      }
+    },
+    {
+      "name": "narrow mobile employee directory no script or resource failures",
+      "passed": true,
+      "evidence": {
+        "resource_error_count": 0,
+        "script_exception_count": 0
+      }
+    },
+    {
+      "name": "narrow mobile employee directory current navigation",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "narrow mobile request leave landmarks and viewport",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "narrow mobile request leave no document overflow",
+      "passed": true,
+      "evidence": {
+        "viewport_width": 360,
+        "document_width": 360
+      }
+    },
+    {
+      "name": "narrow mobile request leave named controls and unique IDs",
+      "passed": true,
+      "evidence": {
+        "unnamed_controls": [],
+        "duplicate_ids": []
+      }
+    },
+    {
+      "name": "narrow mobile request leave no script or resource failures",
+      "passed": true,
+      "evidence": {
+        "resource_error_count": 0,
+        "script_exception_count": 0
+      }
+    },
+    {
+      "name": "narrow mobile request leave current navigation",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "narrow mobile payroll landmarks and viewport",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "narrow mobile payroll no document overflow",
+      "passed": true,
+      "evidence": {
+        "viewport_width": 360,
+        "document_width": 360
+      }
+    },
+    {
+      "name": "narrow mobile payroll named controls and unique IDs",
+      "passed": true,
+      "evidence": {
+        "unnamed_controls": [],
+        "duplicate_ids": []
+      }
+    },
+    {
+      "name": "narrow mobile payroll no script or resource failures",
+      "passed": true,
+      "evidence": {
+        "resource_error_count": 0,
+        "script_exception_count": 0
+      }
+    },
+    {
+      "name": "narrow mobile payroll current navigation",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "tablet admin overview landmarks and viewport",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "tablet admin overview no document overflow",
+      "passed": true,
+      "evidence": {
+        "viewport_width": 768,
+        "document_width": 768
+      }
+    },
+    {
+      "name": "tablet admin overview named controls and unique IDs",
+      "passed": true,
+      "evidence": {
+        "unnamed_controls": [],
+        "duplicate_ids": []
+      }
+    },
+    {
+      "name": "tablet admin overview no script or resource failures",
+      "passed": true,
+      "evidence": {
+        "resource_error_count": 0,
+        "script_exception_count": 0
+      }
+    },
+    {
+      "name": "tablet admin overview current navigation",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "tablet employee directory landmarks and viewport",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "tablet employee directory no document overflow",
+      "passed": true,
+      "evidence": {
+        "viewport_width": 768,
+        "document_width": 768
+      }
+    },
+    {
+      "name": "tablet employee directory named controls and unique IDs",
+      "passed": true,
+      "evidence": {
+        "unnamed_controls": [],
+        "duplicate_ids": []
+      }
+    },
+    {
+      "name": "tablet employee directory no script or resource failures",
+      "passed": true,
+      "evidence": {
+        "resource_error_count": 0,
+        "script_exception_count": 0
+      }
+    },
+    {
+      "name": "tablet employee directory current navigation",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "Real employee-search click preserves POST action and CSRF",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "Real login click follows the CSRF-protected employee redirect",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "All 17 rendered pages checked at both viewport sizes",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "Twelve requested screenshots captured",
+      "passed": true,
+      "evidence": {}
+    }
+  ],
+  "pages": [
+    {
+      "page": "login",
+      "viewport": "desktop",
+      "path": "/login.php",
+      "h1": 1,
+      "main": 1,
+      "viewportMeta": "width=device-width, initial-scale=1.0",
+      "viewportWidth": 1440,
+      "documentWidth": 1440,
+      "unnamedControls": [],
+      "unnamedButtons": 0,
+      "duplicateIds": [],
+      "sidebar": false,
+      "activeLinks": 0,
+      "sidebarInert": null,
+      "scrollableTables": 0,
+      "layoutWidth": 1440,
+      "resourceErrors": [],
+      "scriptExceptions": [],
+      "documentStatus": 200
+    },
+    {
+      "page": "admin overview",
+      "viewport": "desktop",
+      "path": "/admin_main.php",
+      "h1": 1,
+      "main": 1,
+      "viewportMeta": "width=device-width, initial-scale=1.0",
+      "viewportWidth": 1440,
+      "documentWidth": 1425,
+      "unnamedControls": [],
+      "unnamedButtons": 0,
+      "duplicateIds": [],
+      "sidebar": true,
+      "activeLinks": 1,
+      "sidebarInert": false,
+      "scrollableTables": 0,
+      "layoutWidth": 1425,
+      "resourceErrors": [],
+      "scriptExceptions": [],
+      "documentStatus": 200
+    },
+    {
+      "page": "employee overview",
+      "viewport": "desktop",
+      "path": "/main.php",
+      "h1": 1,
+      "main": 1,
+      "viewportMeta": "width=device-width, initial-scale=1.0",
+      "viewportWidth": 1440,
+      "documentWidth": 1440,
+      "unnamedControls": [],
+      "unnamedButtons": 0,
+      "duplicateIds": [],
+      "sidebar": true,
+      "activeLinks": 1,
+      "sidebarInert": false,
+      "scrollableTables": 0,
+      "layoutWidth": 1440,
+      "resourceErrors": [],
+      "scriptExceptions": [],
+      "documentStatus": 200
+    },
+    {
+      "page": "employee directory",
+      "viewport": "desktop",
+      "path": "/list_employees.php",
+      "h1": 1,
+      "main": 1,
+      "viewportMeta": "width=device-width, initial-scale=1.0",
+      "viewportWidth": 1440,
+      "documentWidth": 1425,
+      "unnamedControls": [],
+      "unnamedButtons": 0,
+      "duplicateIds": [],
+      "sidebar": true,
+      "activeLinks": 1,
+      "sidebarInert": false,
+      "scrollableTables": 0,
+      "layoutWidth": 1425,
+      "resourceErrors": [],
+      "scriptExceptions": [],
+      "documentStatus": 200
+    },
+    {
+      "page": "employee profile",
+      "viewport": "desktop",
+      "path": "/employee_detail.php",
+      "h1": 1,
+      "main": 1,
+      "viewportMeta": "width=device-width, initial-scale=1.0",
+      "viewportWidth": 1440,
+      "documentWidth": 1440,
+      "unnamedControls": [],
+      "unnamedButtons": 0,
+      "duplicateIds": [],
+      "sidebar": true,
+      "activeLinks": 1,
+      "sidebarInert": false,
+      "scrollableTables": 0,
+      "layoutWidth": 1440,
+      "resourceErrors": [],
+      "scriptExceptions": [],
+      "documentStatus": 200
+    },
+    {
+      "page": "add employee",
+      "viewport": "desktop",
+      "path": "/add_employee.php",
+      "h1": 1,
+      "main": 1,
+      "viewportMeta": "width=device-width, initial-scale=1.0",
+      "viewportWidth": 1440,
+      "documentWidth": 1425,
+      "unnamedControls": [],
+      "unnamedButtons": 0,
+      "duplicateIds": [],
+      "sidebar": true,
+      "activeLinks": 1,
+      "sidebarInert": false,
+      "scrollableTables": 0,
+      "layoutWidth": 1425,
+      "resourceErrors": [],
+      "scriptExceptions": [],
+      "documentStatus": 200
+    },
+    {
+      "page": "update employee",
+      "viewport": "desktop",
+      "path": "/update_employee.php",
+      "h1": 1,
+      "main": 1,
+      "viewportMeta": "width=device-width, initial-scale=1.0",
+      "viewportWidth": 1440,
+      "documentWidth": 1425,
+      "unnamedControls": [],
+      "unnamedButtons": 0,
+      "duplicateIds": [],
+      "sidebar": true,
+      "activeLinks": 1,
+      "sidebarInert": false,
+      "scrollableTables": 0,
+      "layoutWidth": 1425,
+      "resourceErrors": [],
+      "scriptExceptions": [],
+      "documentStatus": 200
+    },
+    {
+      "page": "delete employee",
+      "viewport": "desktop",
+      "path": "/delete_employee.php",
+      "h1": 1,
+      "main": 1,
+      "viewportMeta": "width=device-width, initial-scale=1.0",
+      "viewportWidth": 1440,
+      "documentWidth": 1440,
+      "unnamedControls": [],
+      "unnamedButtons": 0,
+      "duplicateIds": [],
+      "sidebar": true,
+      "activeLinks": 1,
+      "sidebarInert": false,
+      "scrollableTables": 0,
+      "layoutWidth": 1440,
+      "resourceErrors": [],
+      "scriptExceptions": [],
+      "documentStatus": 200
+    },
+    {
+      "page": "leave approvals",
+      "viewport": "desktop",
+      "path": "/check_holiday_requests.php",
+      "h1": 1,
+      "main": 1,
+      "viewportMeta": "width=device-width, initial-scale=1.0",
+      "viewportWidth": 1440,
+      "documentWidth": 1440,
+      "unnamedControls": [],
+      "unnamedButtons": 0,
+      "duplicateIds": [],
+      "sidebar": true,
+      "activeLinks": 1,
+      "sidebarInert": false,
+      "scrollableTables": 0,
+      "layoutWidth": 1440,
+      "resourceErrors": [],
+      "scriptExceptions": [],
+      "documentStatus": 200
+    },
+    {
+      "page": "absence report",
+      "viewport": "desktop",
+      "path": "/check_absence.php",
+      "h1": 1,
+      "main": 1,
+      "viewportMeta": "width=device-width, initial-scale=1.0",
+      "viewportWidth": 1440,
+      "documentWidth": 1425,
+      "unnamedControls": [],
+      "unnamedButtons": 0,
+      "duplicateIds": [],
+      "sidebar": true,
+      "activeLinks": 1,
+      "sidebarInert": false,
+      "scrollableTables": 0,
+      "layoutWidth": 1425,
+      "resourceErrors": [],
+      "scriptExceptions": [],
+      "documentStatus": 200
+    },
+    {
+      "page": "payroll",
+      "viewport": "desktop",
+      "path": "/salary_table.php",
+      "h1": 1,
+      "main": 1,
+      "viewportMeta": "width=device-width, initial-scale=1.0",
+      "viewportWidth": 1440,
+      "documentWidth": 1425,
+      "unnamedControls": [],
+      "unnamedButtons": 0,
+      "duplicateIds": [],
+      "sidebar": true,
+      "activeLinks": 1,
+      "sidebarInert": false,
+      "scrollableTables": 0,
+      "layoutWidth": 1425,
+      "resourceErrors": [],
+      "scriptExceptions": [],
+      "documentStatus": 200
+    },
+    {
+      "page": "birthdays",
+      "viewport": "desktop",
+      "path": "/happybirthday.php",
+      "h1": 1,
+      "main": 1,
+      "viewportMeta": "width=device-width, initial-scale=1.0",
+      "viewportWidth": 1440,
+      "documentWidth": 1425,
+      "unnamedControls": [],
+      "unnamedButtons": 0,
+      "duplicateIds": [],
+      "sidebar": true,
+      "activeLinks": 1,
+      "sidebarInert": false,
+      "scrollableTables": 0,
+      "layoutWidth": 1425,
+      "resourceErrors": [],
+      "scriptExceptions": [],
+      "documentStatus": 200
+    },
+    {
+      "page": "deletion records",
+      "viewport": "desktop",
+      "path": "/delete_records.php",
+      "h1": 1,
+      "main": 1,
+      "viewportMeta": "width=device-width, initial-scale=1.0",
+      "viewportWidth": 1440,
+      "documentWidth": 1440,
+      "unnamedControls": [],
+      "unnamedButtons": 0,
+      "duplicateIds": [],
+      "sidebar": true,
+      "activeLinks": 1,
+      "sidebarInert": false,
+      "scrollableTables": 0,
+      "layoutWidth": 1440,
+      "resourceErrors": [],
+      "scriptExceptions": [],
+      "documentStatus": 200
+    },
+    {
+      "page": "request leave",
+      "viewport": "desktop",
+      "path": "/holiday_requests.php",
+      "h1": 1,
+      "main": 1,
+      "viewportMeta": "width=device-width, initial-scale=1.0",
+      "viewportWidth": 1440,
+      "documentWidth": 1425,
+      "unnamedControls": [],
+      "unnamedButtons": 0,
+      "duplicateIds": [],
+      "sidebar": true,
+      "activeLinks": 1,
+      "sidebarInert": false,
+      "scrollableTables": 0,
+      "layoutWidth": 1425,
+      "resourceErrors": [],
+      "scriptExceptions": [],
+      "documentStatus": 200
+    },
+    {
+      "page": "leave history",
+      "viewport": "desktop",
+      "path": "/check_my_holiday.php",
+      "h1": 1,
+      "main": 1,
+      "viewportMeta": "width=device-width, initial-scale=1.0",
+      "viewportWidth": 1440,
+      "documentWidth": 1440,
+      "unnamedControls": [],
+      "unnamedButtons": 0,
+      "duplicateIds": [],
+      "sidebar": true,
+      "activeLinks": 1,
+      "sidebarInert": false,
+      "scrollableTables": 0,
+      "layoutWidth": 1440,
+      "resourceErrors": [],
+      "scriptExceptions": [],
+      "documentStatus": 200
+    },
+    {
+      "page": "change password",
+      "viewport": "desktop",
+      "path": "/change_password.php",
+      "h1": 1,
+      "main": 1,
+      "viewportMeta": "width=device-width, initial-scale=1.0",
+      "viewportWidth": 1440,
+      "documentWidth": 1440,
+      "unnamedControls": [],
+      "unnamedButtons": 0,
+      "duplicateIds": [],
+      "sidebar": true,
+      "activeLinks": 1,
+      "sidebarInert": false,
+      "scrollableTables": 0,
+      "layoutWidth": 1440,
+      "resourceErrors": [],
+      "scriptExceptions": [],
+      "documentStatus": 200
+    },
+    {
+      "page": "sign out",
+      "viewport": "desktop",
+      "path": "/logout.php",
+      "h1": 1,
+      "main": 1,
+      "viewportMeta": "width=device-width, initial-scale=1.0",
+      "viewportWidth": 1440,
+      "documentWidth": 1440,
+      "unnamedControls": [],
+      "unnamedButtons": 0,
+      "duplicateIds": [],
+      "sidebar": true,
+      "activeLinks": 1,
+      "sidebarInert": false,
+      "scrollableTables": 0,
+      "layoutWidth": 1440,
+      "resourceErrors": [],
+      "scriptExceptions": [],
+      "documentStatus": 200
+    },
+    {
+      "page": "login",
+      "viewport": "mobile",
+      "path": "/login.php",
+      "h1": 1,
+      "main": 1,
+      "viewportMeta": "width=device-width, initial-scale=1.0",
+      "viewportWidth": 390,
+      "documentWidth": 390,
+      "unnamedControls": [],
+      "unnamedButtons": 0,
+      "duplicateIds": [],
+      "sidebar": false,
+      "activeLinks": 0,
+      "sidebarInert": null,
+      "scrollableTables": 0,
+      "layoutWidth": 390,
+      "resourceErrors": [],
+      "scriptExceptions": [],
+      "documentStatus": 200
+    },
+    {
+      "page": "admin overview",
+      "viewport": "mobile",
+      "path": "/admin_main.php",
+      "h1": 1,
+      "main": 1,
+      "viewportMeta": "width=device-width, initial-scale=1.0",
+      "viewportWidth": 390,
+      "documentWidth": 390,
+      "unnamedControls": [],
+      "unnamedButtons": 0,
+      "duplicateIds": [],
+      "sidebar": true,
+      "activeLinks": 1,
+      "sidebarInert": true,
+      "scrollableTables": 0,
+      "layoutWidth": 390,
+      "resourceErrors": [],
+      "scriptExceptions": [],
+      "documentStatus": 200
+    },
+    {
+      "page": "employee overview",
+      "viewport": "mobile",
+      "path": "/main.php",
+      "h1": 1,
+      "main": 1,
+      "viewportMeta": "width=device-width, initial-scale=1.0",
+      "viewportWidth": 390,
+      "documentWidth": 390,
+      "unnamedControls": [],
+      "unnamedButtons": 0,
+      "duplicateIds": [],
+      "sidebar": true,
+      "activeLinks": 1,
+      "sidebarInert": true,
+      "scrollableTables": 1,
+      "layoutWidth": 390,
+      "resourceErrors": [],
+      "scriptExceptions": [],
+      "documentStatus": 200
+    },
+    {
+      "page": "employee directory",
+      "viewport": "mobile",
+      "path": "/list_employees.php",
+      "h1": 1,
+      "main": 1,
+      "viewportMeta": "width=device-width, initial-scale=1.0",
+      "viewportWidth": 390,
+      "documentWidth": 390,
+      "unnamedControls": [],
+      "unnamedButtons": 0,
+      "duplicateIds": [],
+      "sidebar": true,
+      "activeLinks": 1,
+      "sidebarInert": true,
+      "scrollableTables": 0,
+      "layoutWidth": 390,
+      "resourceErrors": [],
+      "scriptExceptions": [],
+      "documentStatus": 200
+    },
+    {
+      "page": "employee profile",
+      "viewport": "mobile",
+      "path": "/employee_detail.php",
+      "h1": 1,
+      "main": 1,
+      "viewportMeta": "width=device-width, initial-scale=1.0",
+      "viewportWidth": 390,
+      "documentWidth": 390,
+      "unnamedControls": [],
+      "unnamedButtons": 0,
+      "duplicateIds": [],
+      "sidebar": true,
+      "activeLinks": 1,
+      "sidebarInert": true,
+      "scrollableTables": 0,
+      "layoutWidth": 390,
+      "resourceErrors": [],
+      "scriptExceptions": [],
+      "documentStatus": 200
+    },
+    {
+      "page": "add employee",
+      "viewport": "mobile",
+      "path": "/add_employee.php",
+      "h1": 1,
+      "main": 1,
+      "viewportMeta": "width=device-width, initial-scale=1.0",
+      "viewportWidth": 390,
+      "documentWidth": 390,
+      "unnamedControls": [],
+      "unnamedButtons": 0,
+      "duplicateIds": [],
+      "sidebar": true,
+      "activeLinks": 1,
+      "sidebarInert": true,
+      "scrollableTables": 0,
+      "layoutWidth": 390,
+      "resourceErrors": [],
+      "scriptExceptions": [],
+      "documentStatus": 200
+    },
+    {
+      "page": "update employee",
+      "viewport": "mobile",
+      "path": "/update_employee.php",
+      "h1": 1,
+      "main": 1,
+      "viewportMeta": "width=device-width, initial-scale=1.0",
+      "viewportWidth": 390,
+      "documentWidth": 390,
+      "unnamedControls": [],
+      "unnamedButtons": 0,
+      "duplicateIds": [],
+      "sidebar": true,
+      "activeLinks": 1,
+      "sidebarInert": true,
+      "scrollableTables": 0,
+      "layoutWidth": 390,
+      "resourceErrors": [],
+      "scriptExceptions": [],
+      "documentStatus": 200
+    },
+    {
+      "page": "delete employee",
+      "viewport": "mobile",
+      "path": "/delete_employee.php",
+      "h1": 1,
+      "main": 1,
+      "viewportMeta": "width=device-width, initial-scale=1.0",
+      "viewportWidth": 390,
+      "documentWidth": 390,
+      "unnamedControls": [],
+      "unnamedButtons": 0,
+      "duplicateIds": [],
+      "sidebar": true,
+      "activeLinks": 1,
+      "sidebarInert": true,
+      "scrollableTables": 0,
+      "layoutWidth": 390,
+      "resourceErrors": [],
+      "scriptExceptions": [],
+      "documentStatus": 200
+    },
+    {
+      "page": "leave approvals",
+      "viewport": "mobile",
+      "path": "/check_holiday_requests.php",
+      "h1": 1,
+      "main": 1,
+      "viewportMeta": "width=device-width, initial-scale=1.0",
+      "viewportWidth": 390,
+      "documentWidth": 390,
+      "unnamedControls": [],
+      "unnamedButtons": 0,
+      "duplicateIds": [],
+      "sidebar": true,
+      "activeLinks": 1,
+      "sidebarInert": true,
+      "scrollableTables": 1,
+      "layoutWidth": 390,
+      "resourceErrors": [],
+      "scriptExceptions": [],
+      "documentStatus": 200
+    },
+    {
+      "page": "absence report",
+      "viewport": "mobile",
+      "path": "/check_absence.php",
+      "h1": 1,
+      "main": 1,
+      "viewportMeta": "width=device-width, initial-scale=1.0",
+      "viewportWidth": 390,
+      "documentWidth": 390,
+      "unnamedControls": [],
+      "unnamedButtons": 0,
+      "duplicateIds": [],
+      "sidebar": true,
+      "activeLinks": 1,
+      "sidebarInert": true,
+      "scrollableTables": 2,
+      "layoutWidth": 390,
+      "resourceErrors": [],
+      "scriptExceptions": [],
+      "documentStatus": 200
+    },
+    {
+      "page": "payroll",
+      "viewport": "mobile",
+      "path": "/salary_table.php",
+      "h1": 1,
+      "main": 1,
+      "viewportMeta": "width=device-width, initial-scale=1.0",
+      "viewportWidth": 390,
+      "documentWidth": 390,
+      "unnamedControls": [],
+      "unnamedButtons": 0,
+      "duplicateIds": [],
+      "sidebar": true,
+      "activeLinks": 1,
+      "sidebarInert": true,
+      "scrollableTables": 2,
+      "layoutWidth": 390,
+      "resourceErrors": [],
+      "scriptExceptions": [],
+      "documentStatus": 200
+    },
+    {
+      "page": "birthdays",
+      "viewport": "mobile",
+      "path": "/happybirthday.php",
+      "h1": 1,
+      "main": 1,
+      "viewportMeta": "width=device-width, initial-scale=1.0",
+      "viewportWidth": 390,
+      "documentWidth": 390,
+      "unnamedControls": [],
+      "unnamedButtons": 0,
+      "duplicateIds": [],
+      "sidebar": true,
+      "activeLinks": 1,
+      "sidebarInert": true,
+      "scrollableTables": 1,
+      "layoutWidth": 390,
+      "resourceErrors": [],
+      "scriptExceptions": [],
+      "documentStatus": 200
+    },
+    {
+      "page": "deletion records",
+      "viewport": "mobile",
+      "path": "/delete_records.php",
+      "h1": 1,
+      "main": 1,
+      "viewportMeta": "width=device-width, initial-scale=1.0",
+      "viewportWidth": 390,
+      "documentWidth": 390,
+      "unnamedControls": [],
+      "unnamedButtons": 0,
+      "duplicateIds": [],
+      "sidebar": true,
+      "activeLinks": 1,
+      "sidebarInert": true,
+      "scrollableTables": 0,
+      "layoutWidth": 390,
+      "resourceErrors": [],
+      "scriptExceptions": [],
+      "documentStatus": 200
+    },
+    {
+      "page": "request leave",
+      "viewport": "mobile",
+      "path": "/holiday_requests.php",
+      "h1": 1,
+      "main": 1,
+      "viewportMeta": "width=device-width, initial-scale=1.0",
+      "viewportWidth": 390,
+      "documentWidth": 390,
+      "unnamedControls": [],
+      "unnamedButtons": 0,
+      "duplicateIds": [],
+      "sidebar": true,
+      "activeLinks": 1,
+      "sidebarInert": true,
+      "scrollableTables": 0,
+      "layoutWidth": 390,
+      "resourceErrors": [],
+      "scriptExceptions": [],
+      "documentStatus": 200
+    },
+    {
+      "page": "leave history",
+      "viewport": "mobile",
+      "path": "/check_my_holiday.php",
+      "h1": 1,
+      "main": 1,
+      "viewportMeta": "width=device-width, initial-scale=1.0",
+      "viewportWidth": 390,
+      "documentWidth": 390,
+      "unnamedControls": [],
+      "unnamedButtons": 0,
+      "duplicateIds": [],
+      "sidebar": true,
+      "activeLinks": 1,
+      "sidebarInert": true,
+      "scrollableTables": 1,
+      "layoutWidth": 390,
+      "resourceErrors": [],
+      "scriptExceptions": [],
+      "documentStatus": 200
+    },
+    {
+      "page": "change password",
+      "viewport": "mobile",
+      "path": "/change_password.php",
+      "h1": 1,
+      "main": 1,
+      "viewportMeta": "width=device-width, initial-scale=1.0",
+      "viewportWidth": 390,
+      "documentWidth": 390,
+      "unnamedControls": [],
+      "unnamedButtons": 0,
+      "duplicateIds": [],
+      "sidebar": true,
+      "activeLinks": 1,
+      "sidebarInert": true,
+      "scrollableTables": 0,
+      "layoutWidth": 390,
+      "resourceErrors": [],
+      "scriptExceptions": [],
+      "documentStatus": 200
+    },
+    {
+      "page": "sign out",
+      "viewport": "mobile",
+      "path": "/logout.php",
+      "h1": 1,
+      "main": 1,
+      "viewportMeta": "width=device-width, initial-scale=1.0",
+      "viewportWidth": 390,
+      "documentWidth": 390,
+      "unnamedControls": [],
+      "unnamedButtons": 0,
+      "duplicateIds": [],
+      "sidebar": true,
+      "activeLinks": 1,
+      "sidebarInert": true,
+      "scrollableTables": 0,
+      "layoutWidth": 390,
+      "resourceErrors": [],
+      "scriptExceptions": [],
+      "documentStatus": 200
+    },
+    {
+      "page": "login",
+      "viewport": "narrow mobile",
+      "path": "/login.php",
+      "h1": 1,
+      "main": 1,
+      "viewportMeta": "width=device-width, initial-scale=1.0",
+      "viewportWidth": 360,
+      "documentWidth": 360,
+      "unnamedControls": [],
+      "unnamedButtons": 0,
+      "duplicateIds": [],
+      "sidebar": false,
+      "activeLinks": 0,
+      "sidebarInert": null,
+      "scrollableTables": 0,
+      "layoutWidth": 360,
+      "resourceErrors": [],
+      "scriptExceptions": [],
+      "documentStatus": 200
+    },
+    {
+      "page": "admin overview",
+      "viewport": "narrow mobile",
+      "path": "/admin_main.php",
+      "h1": 1,
+      "main": 1,
+      "viewportMeta": "width=device-width, initial-scale=1.0",
+      "viewportWidth": 360,
+      "documentWidth": 360,
+      "unnamedControls": [],
+      "unnamedButtons": 0,
+      "duplicateIds": [],
+      "sidebar": true,
+      "activeLinks": 1,
+      "sidebarInert": true,
+      "scrollableTables": 0,
+      "layoutWidth": 360,
+      "resourceErrors": [],
+      "scriptExceptions": [],
+      "documentStatus": 200
+    },
+    {
+      "page": "employee directory",
+      "viewport": "narrow mobile",
+      "path": "/list_employees.php",
+      "h1": 1,
+      "main": 1,
+      "viewportMeta": "width=device-width, initial-scale=1.0",
+      "viewportWidth": 360,
+      "documentWidth": 360,
+      "unnamedControls": [],
+      "unnamedButtons": 0,
+      "duplicateIds": [],
+      "sidebar": true,
+      "activeLinks": 1,
+      "sidebarInert": true,
+      "scrollableTables": 0,
+      "layoutWidth": 360,
+      "resourceErrors": [],
+      "scriptExceptions": [],
+      "documentStatus": 200
+    },
+    {
+      "page": "request leave",
+      "viewport": "narrow mobile",
+      "path": "/holiday_requests.php",
+      "h1": 1,
+      "main": 1,
+      "viewportMeta": "width=device-width, initial-scale=1.0",
+      "viewportWidth": 360,
+      "documentWidth": 360,
+      "unnamedControls": [],
+      "unnamedButtons": 0,
+      "duplicateIds": [],
+      "sidebar": true,
+      "activeLinks": 1,
+      "sidebarInert": true,
+      "scrollableTables": 0,
+      "layoutWidth": 360,
+      "resourceErrors": [],
+      "scriptExceptions": [],
+      "documentStatus": 200
+    },
+    {
+      "page": "payroll",
+      "viewport": "narrow mobile",
+      "path": "/salary_table.php",
+      "h1": 1,
+      "main": 1,
+      "viewportMeta": "width=device-width, initial-scale=1.0",
+      "viewportWidth": 360,
+      "documentWidth": 360,
+      "unnamedControls": [],
+      "unnamedButtons": 0,
+      "duplicateIds": [],
+      "sidebar": true,
+      "activeLinks": 1,
+      "sidebarInert": true,
+      "scrollableTables": 2,
+      "layoutWidth": 360,
+      "resourceErrors": [],
+      "scriptExceptions": [],
+      "documentStatus": 200
+    },
+    {
+      "page": "admin overview",
+      "viewport": "tablet",
+      "path": "/admin_main.php",
+      "h1": 1,
+      "main": 1,
+      "viewportMeta": "width=device-width, initial-scale=1.0",
+      "viewportWidth": 768,
+      "documentWidth": 768,
+      "unnamedControls": [],
+      "unnamedButtons": 0,
+      "duplicateIds": [],
+      "sidebar": true,
+      "activeLinks": 1,
+      "sidebarInert": true,
+      "scrollableTables": 0,
+      "layoutWidth": 768,
+      "resourceErrors": [],
+      "scriptExceptions": [],
+      "documentStatus": 200
+    },
+    {
+      "page": "employee directory",
+      "viewport": "tablet",
+      "path": "/list_employees.php",
+      "h1": 1,
+      "main": 1,
+      "viewportMeta": "width=device-width, initial-scale=1.0",
+      "viewportWidth": 768,
+      "documentWidth": 768,
+      "unnamedControls": [],
+      "unnamedButtons": 0,
+      "duplicateIds": [],
+      "sidebar": true,
+      "activeLinks": 1,
+      "sidebarInert": true,
+      "scrollableTables": 0,
+      "layoutWidth": 768,
+      "resourceErrors": [],
+      "scriptExceptions": [],
+      "documentStatus": 200
+    }
+  ],
+  "screenshots": [
+    "var/ui-screenshots/desktop-login.png",
+    "var/ui-screenshots/desktop-dashboard.png",
+    "var/ui-screenshots/desktop-directory.png",
+    "var/ui-screenshots/desktop-add.png",
+    "var/ui-screenshots/desktop-payroll.png",
+    "var/ui-screenshots/desktop-leave.png",
+    "var/ui-screenshots/mobile-login.png",
+    "var/ui-screenshots/mobile-dashboard.png",
+    "var/ui-screenshots/mobile-directory.png",
+    "var/ui-screenshots/mobile-add.png",
+    "var/ui-screenshots/mobile-payroll.png",
+    "var/ui-screenshots/mobile-leave.png"
+  ],
+  "limitations": [
+    "Local headless Edge checks do not certify every browser or production deployment.",
+    "Automated accessible-name and layout checks supplement visual review; they are not a full accessibility audit."
+  ],
+  "runtime": {
+    "http": "http://127.0.0.1:18047",
+    "cdp": "http://127.0.0.1:18049",
+    "database": "company_fixes_test",
+    "browser": "Edg/156.0.4314.42",
+    "php": "8.5.12"
+  },
+  "status": "complete",
+  "browser_stopped": true,
+  "server_stopped": true,
+  "fixtures_cleaned": true,
+  "passed": 219,
+  "total": 219
+}

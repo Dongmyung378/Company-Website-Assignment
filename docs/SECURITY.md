@@ -29,6 +29,8 @@ The application is coursework stored in a repository, not an active deployed HR 
 
 ## Recorded results
 
+These figures record the security update. Subsequent shared-interface and directory improvements have their own [interface verification results](INTERFACE.md); the original evidence files are retained.
+
 | Validation | Result | Evidence |
 | --- | --- | --- |
 | Automated HTTP, workflow, concurrency and helper checks | **83 / 83 passed** | [Regression JSON](verification/regression.json) |

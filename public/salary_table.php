@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../config/bootstrap.php';
+require_once __DIR__ . '/../lib/ui.php';
 $current = require_admin();
 
 $departments = $conn->query("SELECT department_id, department_name FROM department WHERE department_name != 'Executive' ORDER BY department_name ASC");
@@ -223,186 +224,57 @@ if (input_string($_GET, 'export_csv') === '1') {
     exit();
 }
 ?>
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <button onclick="window.location.href='admin_main.php'">Back to Main</button>
-</head>
-
-<body>
-    <h2>Salary Report</h2>
-
-    <form method="GET" action="">
-        <label for="department">Select Department:</label>
-        <select name="department">
-            <option value="">All</option>
-            <?php
-            // pointer reset
-            $departments->data_seek(0);
-            while ($row = $departments->fetch_assoc()): ?>
-                <option value="<?php echo $row['department_id']; ?>" <?php if ($selected_department == $row['department_id']) echo 'selected'; ?>>
-                    <?php echo e($row['department_name']); ?>
-                </option>
+<?php ui_page_start('Salary Report', 'Understand compensation, deductions and net pay across your teams.', ['current' => $current]); ?>
+<section class="panel" aria-labelledby="salary-filters-title">
+    <div class="panel-header"><div><p class="eyebrow">Report filters</p><h2 id="salary-filters-title">Build your salary report</h2><p class="muted">Filter by team and net pay, then export the current report to CSV.</p></div><span class="badge badge-neutral">GBP (£)</span></div>
+    <form method="GET" action="salary_table.php" class="form-grid filter-grid">
+        <div class="field"><label for="department">Department</label><select id="department" name="department"><option value="">All departments</option>
+            <?php $department_label = 'All departments'; $departments->data_seek(0); while ($row = $departments->fetch_assoc()): ?>
+                <?php if ($selected_department == $row['department_id']) $department_label = $row['department_name']; ?>
+                <option value="<?php echo e($row['department_id']); ?>"<?php echo $selected_department == $row['department_id'] ? ' selected' : ''; ?>><?php echo e($row['department_name']); ?></option>
             <?php endwhile; ?>
-        </select>
-
-        <label for="position">Select Position:</label>
-        <select name="position">
-            <option value="">All</option>
-            <?php
-            // pointer reset
-            $positions->data_seek(0);
-            while ($row = $positions->fetch_assoc()): ?>
-                <option value="<?php echo $row['position_id']; ?>" <?php if ($selected_position == $row['position_id']) echo 'selected'; ?>>
-                    <?php echo e($row['position_name']); ?>
-                </option>
+        </select></div>
+        <div class="field"><label for="position">Position</label><select id="position" name="position"><option value="">All positions</option>
+            <?php $position_label = 'All positions'; $positions->data_seek(0); while ($row = $positions->fetch_assoc()): ?>
+                <?php if ($selected_position == $row['position_id']) $position_label = $row['position_name']; ?>
+                <option value="<?php echo e($row['position_id']); ?>"<?php echo $selected_position == $row['position_id'] ? ' selected' : ''; ?>><?php echo e($row['position_name']); ?></option>
             <?php endwhile; ?>
-        </select>
-
-        <label for="min_amount">Minimum Amount:</label>
-        <input type="number" step="0.01" name="min_amount" value="<?php echo e($min_amount); ?>">
-
-        <label for="max_amount">Maximum Amount:</label>
-        <input type="number" step="0.01" name="max_amount" value="<?php echo e($max_amount); ?>">
-
-        <label for="view_type">View Type:</label>
-        <select name="view_type">
-            <option value="annual" <?php if ($view_type == 'annual') echo 'selected'; ?>>Annual</option>
-            <option value="monthly" <?php if ($view_type == 'monthly') echo 'selected'; ?>>Monthly</option>
-            <option value="quarterly" <?php if ($view_type == 'quarterly') echo 'selected'; ?>>Quarterly</option>
-        </select>
-
-        <button type="submit">Filter</button>
-        <button type="submit" name="export_csv" value="1">Export to CSV</button>
+        </select></div>
+        <div class="field"><label for="view_type">Reporting period</label><select id="view_type" name="view_type"><option value="annual"<?php echo $view_type === 'annual' ? ' selected' : ''; ?>>Annual</option><option value="monthly"<?php echo $view_type === 'monthly' ? ' selected' : ''; ?>>Monthly</option><option value="quarterly"<?php echo $view_type === 'quarterly' ? ' selected' : ''; ?>>Quarterly</option></select></div>
+        <div class="field"><label for="min_amount">Minimum net pay (£)</label><input type="number" id="min_amount" step="0.01" min="0" name="min_amount" placeholder="No minimum" value="<?php echo e($min_amount); ?>" aria-describedby="salary-range-hint"></div>
+        <div class="field"><label for="max_amount">Maximum net pay (£)</label><input type="number" id="max_amount" step="0.01" min="0" name="max_amount" placeholder="No maximum" value="<?php echo e($max_amount); ?>" aria-describedby="salary-range-hint"></div>
+        <p id="salary-range-hint" class="field-hint field-full">The pay range applies to net pay for the reporting period you select. Monthly values are annual amounts divided by 12; quarterly values are annual amounts divided by 4.</p>
+        <div class="form-actions field-full"><button type="submit" class="button">Apply filters</button><button type="submit" name="export_csv" value="1" class="button button-secondary">Export CSV</button><a class="button button-quiet" href="salary_table.php">Reset filters</a></div>
     </form>
-
-    <hr>
-
-    <?php if (!empty($data)): ?>
-        <h3>Filtered Results</h3>
-        <ul>
-            <li>Total Salary (<?php echo ucfirst($view_type); ?>): £<?php echo number_format($total_salary); ?></li>
-            <li>Total Net Salary (<?php echo ucfirst($view_type); ?>): £<?php echo number_format($total_net_salary); ?></li>
-            <li>Average Net Salary (<?php echo ucfirst($view_type); ?>): £<?php echo number_format($average_net_salary); ?></li>
-        </ul>
-
-        <h4>Department Totals</h4>
-        <ul>
-            <?php foreach ($department_totals as $department_name => $total): ?>
-                <li>
-                    <?php echo e($department_name); ?>:
-                    Total: £<?php echo number_format($total); ?>,
-                    Average Net Salary: £<?php echo number_format($department_averages[$department_name]); ?>
-                </li>
-            <?php endforeach; ?>
-        </ul>
-
-        <table border="1">
-            <tr>
-                <th>Employee ID</th>
-                <th>Name</th>
-                <th>Department</th>
-                <th>Position</th>
-                <th>Base Salary (<?php echo ucfirst($view_type); ?>)</th>
-                <th>Bonus</th>
-                <th>Incentives</th>
-                <th>Tax</th>
-                <th>Insurance</th>
-                <th>Retirement</th>
-                <th>Net Salary (<?php echo ucfirst($view_type); ?>)</th>
-            </tr>
-            <?php foreach ($data as $row): ?>
-                <tr>
-                    <td><?php echo $row['employee_id']; ?></td>
-                    <td><?php echo e($row['name']); ?></td>
-                    <td><?php echo e($row['department_name']); ?></td>
-                    <td><?php echo e($row['position_name']); ?></td>
-                    <td>
-                        £<?php
-                            if ($view_type == 'annual') {
-                                echo number_format($row['salary']);
-                            } elseif ($view_type == 'monthly') {
-                                echo number_format($row['monthly_base_salary']);
-                            } elseif ($view_type == 'quarterly') {
-                                echo number_format($row['quarterly_base_salary']);
-                            }
-                            ?>
-                    </td>
-                    <td>
-                        £<?php
-                            if ($view_type == 'annual') {
-                                echo number_format($row['bonus']);
-                            } elseif ($view_type == 'monthly') {
-                                echo number_format($row['monthly_bonus']);
-                            } elseif ($view_type == 'quarterly') {
-                                echo number_format($row['quarterly_bonus']);
-                            }
-                            ?>
-                    </td>
-                    <td>
-                        £<?php
-                            if ($view_type == 'annual') {
-                                echo number_format($row['incentives']);
-                            } elseif ($view_type == 'monthly') {
-                                echo number_format($row['monthly_incentives']);
-                            } elseif ($view_type == 'quarterly') {
-                                echo number_format($row['quarterly_incentives']);
-                            }
-                            ?>
-                    </td>
-                    <td>
-                        £<?php
-                            if ($view_type == 'annual') {
-                                echo number_format($row['tax']);
-                            } elseif ($view_type == 'monthly') {
-                                echo number_format($row['monthly_tax']);
-                            } elseif ($view_type == 'quarterly') {
-                                echo number_format($row['quarterly_tax']);
-                            }
-                            ?>
-                    </td>
-                    <td>
-                        £<?php
-                            if ($view_type == 'annual') {
-                                echo number_format($row['insurance']);
-                            } elseif ($view_type == 'monthly') {
-                                echo number_format($row['monthly_insurance']);
-                            } elseif ($view_type == 'quarterly') {
-                                echo number_format($row['quarterly_insurance']);
-                            }
-                            ?>
-                    </td>
-                    <td>
-                        £<?php
-                            if ($view_type == 'annual') {
-                                echo number_format($row['retirement']);
-                            } elseif ($view_type == 'monthly') {
-                                echo number_format($row['monthly_retirement']);
-                            } elseif ($view_type == 'quarterly') {
-                                echo number_format($row['quarterly_retirement']);
-                            }
-                            ?>
-                    </td>
-                    <td>
-                        <strong>
-                            £<?php
-                                if ($view_type == 'annual') {
-                                    echo number_format($row['net_salary']);
-                                } elseif ($view_type == 'monthly') {
-                                    echo number_format($row['monthly_salary']);
-                                } elseif ($view_type == 'quarterly') {
-                                    echo number_format($row['quarterly_salary']);
-                                }
-                                ?>
-                        </strong>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-        </table>
-    <?php else: ?>
-        <p>No employees found or filtered results are empty.</p>
-    <?php endif; ?>
-</body>
-
-</html>
+</section>
+<div class="summary-row report-summary"><span class="badge badge-neutral"><?php echo e(ucfirst($view_type)); ?></span><span class="badge badge-neutral"><?php echo e($department_label); ?></span><span class="badge badge-neutral"><?php echo e($position_label); ?></span><span class="muted"><?php echo $employee_count; ?> employees match your filters</span></div>
+<div class="stat-grid" aria-label="Salary report totals">
+    <div class="stat-card"><span class="stat-label">Employees</span><strong class="stat-value"><?php echo $employee_count; ?></strong><span class="stat-note">In this report</span></div>
+    <div class="stat-card"><span class="stat-label">Total base salary</span><strong class="stat-value">£<?php echo number_format($total_salary); ?></strong><span class="stat-note"><?php echo e(ucfirst($view_type)); ?> compensation</span></div>
+    <div class="stat-card"><span class="stat-label">Total net pay</span><strong class="stat-value">£<?php echo number_format($total_net_salary); ?></strong><span class="stat-note">After deductions</span></div>
+    <div class="stat-card"><span class="stat-label">Average net pay</span><strong class="stat-value">£<?php echo number_format($average_net_salary); ?></strong><span class="stat-note">Per employee, <?php echo e($view_type); ?></span></div>
+</div>
+<?php if ($data): ?>
+    <section class="panel" aria-labelledby="salary-detail-title">
+        <div class="panel-header"><div><p class="eyebrow"><?php echo e(ucfirst($view_type)); ?> report</p><h2 id="salary-detail-title">Employee compensation</h2><p class="muted">Sorted by net pay, highest first. All amounts are shown in pounds.</p></div><span class="badge badge-success"><?php echo $employee_count; ?> employees</span></div>
+        <div class="table-scroll"><table class="data-table"><caption class="sr-only"><?php echo e(ucfirst($view_type)); ?> employee salary breakdown in GBP</caption><thead><tr><th scope="col">Employee ID</th><th scope="col">Employee</th><th scope="col">Department</th><th scope="col">Position</th><th scope="col">Base salary</th><th scope="col">Bonus</th><th scope="col">Incentives</th><th scope="col">Tax</th><th scope="col">Insurance</th><th scope="col">Retirement</th><th scope="col">Net pay</th></tr></thead><tbody>
+        <?php foreach ($data as $row): ?>
+            <?php
+                $prefix = $view_type === 'annual' ? '' : $view_type . '_';
+                $base_key = $view_type === 'annual' ? 'salary' : $prefix . 'base_salary';
+                $net_key = $view_type === 'annual' ? 'net_salary' : $prefix . 'salary';
+            ?>
+            <tr><td><?php echo e($row['employee_id']); ?></td><td><strong><?php echo e($row['name']); ?></strong></td><td><?php echo e($row['department_name']); ?></td><td><?php echo e($row['position_name']); ?></td><td>£<?php echo number_format($row[$base_key]); ?></td><td>£<?php echo number_format($row[$prefix . 'bonus']); ?></td><td>£<?php echo number_format($row[$prefix . 'incentives']); ?></td><td>£<?php echo number_format($row[$prefix . 'tax']); ?></td><td>£<?php echo number_format($row[$prefix . 'insurance']); ?></td><td>£<?php echo number_format($row[$prefix . 'retirement']); ?></td><td><strong>£<?php echo number_format($row[$net_key]); ?></strong></td></tr>
+        <?php endforeach; ?>
+        </tbody></table></div>
+    </section>
+    <section class="panel" aria-labelledby="department-salary-title">
+        <div class="panel-header"><div><h2 id="department-salary-title">Net pay by department</h2><p class="muted">Totals and averages reflect the filters currently applied.</p></div></div>
+        <div class="table-scroll"><table class="data-table"><thead><tr><th scope="col">Department</th><th scope="col">Employees</th><th scope="col">Total net pay</th><th scope="col">Average net pay</th></tr></thead><tbody>
+        <?php foreach ($department_totals as $department_name => $total): ?><tr><td><strong><?php echo e($department_name); ?></strong></td><td><?php echo $department_counts[$department_name]; ?></td><td>£<?php echo number_format($total); ?></td><td>£<?php echo number_format($department_averages[$department_name]); ?></td></tr><?php endforeach; ?>
+        </tbody></table></div>
+    </section>
+<?php else: ?>
+    <section class="panel empty-state"><p class="eyebrow">Salary report</p><h2>No matching employees</h2><p>Try widening the net pay range or choosing another department or position.</p><a class="button button-secondary" href="salary_table.php">Clear filters</a></section>
+<?php endif; ?>
+<?php ui_page_end(); ?>

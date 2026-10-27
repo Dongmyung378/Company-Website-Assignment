@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../config/bootstrap.php';
+require_once __DIR__ . '/../lib/ui.php';
 $current = require_admin();
 
 try {
@@ -37,120 +38,27 @@ try {
     $conn->close();
 }
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            color: #333;
-            margin: 20px;
-        }
-
-        h2 {
-            text-align: center;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-        }
-
-        th,
-        td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f4f4f4;
-        }
-
-        .no-records {
-            text-align: center;
-            color: #888;
-            font-style: italic;
-        }
-
-        .back-button {
-            display: block;
-            margin: 0 auto 20px;
-            padding: 10px 20px;
-            text-align: center;
-            color: #fff;
-            background-color: #f44336;
-            text-decoration: none;
-            border-radius: 5px;
-            width: 150px;
-        }
-
-        .back-button:hover {
-            background-color: #d32f2f;
-        }
-    </style>
-</head>
-
-<body>
-    <a href="admin_main.php" class="back-button">Back to Main</a>
-    <h2>Deleted Employee Records</h2>
-    <form method="POST" action="delete_records.php">
+<?php ui_page_start('Deleted Employee Records', 'Review employee deletion history and manage the three-year retention period.', ['current' => $current]); ?>
+<?php if (isset($cleanup_message)): ?><?php ui_notice($cleanup_message, 'success'); ?><?php endif; ?>
+<section class="panel" aria-labelledby="retention-title">
+    <div class="panel-header"><div><p class="eyebrow">Record retention</p><h2 id="retention-title">Three-year archive cleanup</h2></div><span class="badge badge-warning">Permanent action</span></div>
+    <p>Deletion records dated three or more years ago are eligible for removal. Review the history below before clearing expired records.</p>
+    <form method="POST" action="delete_records.php" data-confirm="Permanently remove all employee deletion records dated three or more years ago? This action cannot be undone.">
         <?php echo csrf_field(); ?>
         <input type="hidden" name="action" value="purge_expired">
-        <button type="submit">Remove records older than three years</button>
+        <div class="form-actions"><button type="submit" class="button button-danger">Remove expired records</button><span class="field-hint">This permanently removes eligible archive records.</span></div>
     </form>
-    <?php if (isset($cleanup_message)): ?><p><?php echo e($cleanup_message); ?></p><?php endif; ?>
-
-    <?php if (isset($error_message)): ?>
-        <p class="no-records"><?php echo e($error_message); ?></p>
-    <?php else: ?>
-        <table>
-            <thead>
-                <tr>
-                    <th>Employee ID</th>
-                    <th>Name</th>
-                    <th>Salary</th>
-                    <th>Department</th>
-                    <th>Position</th>
-                    <th>DOB</th>
-                    <th>NIN</th>
-                    <th>Executor ID</th>
-                    <th>Executor Name</th>
-                    <th>Reason</th>
-                    <th>Deleted Date/Time</th>
-                    <th>3+ Years</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if ($result->num_rows > 0): ?>
-                    <?php while ($row = $result->fetch_assoc()): ?>
-                        <tr>
-                            <td><?php echo e($row['employee_id']); ?></td>
-                            <td><?php echo e($row['employee_name']); ?></td>
-                            <td><?php echo e($row['employee_salary']); ?></td>
-                            <td><?php echo e($row['employee_department']); ?></td>
-                            <td><?php echo e($row['employee_position']); ?></td>
-                            <td><?php echo e($row['employee_dob']); ?></td>
-                            <td><?php echo e($row['employee_nin']); ?></td>
-                            <td><?php echo e($row['deleted_by_id']); ?></td>
-                            <td><?php echo e($row['deleted_by_name']); ?></td>
-                            <td><?php echo e($row['reason']); ?></td>
-                            <td><?php echo e($row['deleted_time']); ?></td>
-                            <td><?php echo e($row['over_three_years']); ?></td>
-                        </tr>
-                    <?php endwhile; ?>
-                <?php else: ?>
-                    <tr>
-                        <td colspan="12" class="no-records">No deleted employee records found.</td>
-                    </tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
-    <?php endif; ?>
-</body>
-
-</html>
+</section>
+<?php if (isset($error_message)): ?>
+    <?php ui_notice($error_message, 'error'); ?>
+<?php else: ?>
+    <section class="panel" aria-labelledby="deletion-history-title">
+        <div class="panel-header"><div><p class="eyebrow">Employee history</p><h2 id="deletion-history-title">Deletion records</h2><p class="muted">Most recent deletions appear first. Eligibility follows the three-year retention rule.</p></div><span class="badge badge-neutral"><?php echo $result->num_rows; ?> records</span></div>
+        <?php if ($result->num_rows > 0): ?>
+            <div class="table-scroll"><table class="data-table"><caption class="sr-only">Deleted employee records and retention status</caption><thead><tr><th scope="col">Employee ID</th><th scope="col">Employee</th><th scope="col">Salary</th><th scope="col">Department</th><th scope="col">Position</th><th scope="col">Date of birth</th><th scope="col">NIN</th><th scope="col">Deleted by ID</th><th scope="col">Deleted by</th><th scope="col">Reason</th><th scope="col">Deleted at</th><th scope="col">Cleanup eligible</th></tr></thead><tbody>
+            <?php while ($row = $result->fetch_assoc()): ?><tr><td><?php echo e($row['employee_id']); ?></td><td><strong><?php echo e($row['employee_name']); ?></strong></td><td>£<?php echo e($row['employee_salary']); ?></td><td><?php echo e($row['employee_department']); ?></td><td><?php echo e($row['employee_position']); ?></td><td><?php echo e($row['employee_dob']); ?></td><td><?php echo e($row['employee_nin']); ?></td><td><?php echo e($row['deleted_by_id']); ?></td><td><?php echo e($row['deleted_by_name']); ?></td><td><?php echo e($row['reason']); ?></td><td><?php echo e($row['deleted_time']); ?></td><td><span class="badge <?php echo $row['over_three_years'] === 'Yes' ? 'badge-warning' : 'badge-neutral'; ?>"><?php echo e($row['over_three_years']); ?></span></td></tr><?php endwhile; ?>
+            </tbody></table></div>
+        <?php else: ?><div class="empty-state"><h3>No deletion records</h3><p>Employee deletion history will appear here when records are available.</p></div><?php endif; ?>
+    </section>
+<?php endif; ?>
+<?php ui_page_end(); ?>

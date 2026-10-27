@@ -1,0 +1,668 @@
+{
+  "checks": [
+    {
+      "name": "F07 session ID rotates on authentication",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "Employee login retains normal workflow",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F07 local cookie is HttpOnly and SameSite Lax",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "All eleven administrator routes reject anonymous clients",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "All eleven administrator routes reject ordinary employees",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "All eleven administrator routes remain available to administrators",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F01 foreign employee ID cannot create a victim leave request",
+      "passed": true,
+      "evidence": {
+        "response_status": 403
+      }
+    },
+    {
+      "name": "Valid employee leave request succeeds",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F06 approval derives owner, leave type and three calendar days from stored request",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F06 approval replay cannot debit twice",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F06 nonexistent request cannot change balances",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F12 overlapping absence days in 2027-01",
+      "passed": true,
+      "evidence": {
+        "expected_days": 1,
+        "employee_row": [
+          "Regression Employee",
+          "Operations",
+          "Annual",
+          "2027-01-31",
+          "2027-02-02",
+          "Approved",
+          "1"
+        ]
+      }
+    },
+    {
+      "name": "F12 overlapping absence days in 2027-02",
+      "passed": true,
+      "evidence": {
+        "expected_days": 2,
+        "employee_row": [
+          "Regression Employee",
+          "Operations",
+          "Annual",
+          "2027-01-31",
+          "2027-02-02",
+          "Approved",
+          "2"
+        ]
+      }
+    },
+    {
+      "name": "F02 untrusted markup rejected at /salary_table.php",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F02 untrusted markup rejected at /check_absence.php",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F02 untrusted markup rejected at /holiday_requests.php",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F02 directory Reset uses a fixed safe URL",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F03 all eight mutation routes reject missing CSRF tokens",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F03 login rejects missing CSRF token",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F03 foreign Origin is rejected even with a valid token",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F03 password change requires the current password",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F05 short replacement password is rejected",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "Valid current-password change succeeds",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F04 changing a password revokes other existing sessions",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F05 first sign-in requires changing the temporary password",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F05 temporary-password account cannot open business pages",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F04 a demoted account loses administrator access on its next request",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F04 a deleted account loses access on its next request",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F08 spreadsheet formula-like text is neutralized in CSV",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F16 CSV export has eleven fields and contains no PHP diagnostics",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F05 repeated failures are throttled",
+      "passed": true,
+      "evidence": {
+        "response_codes": [
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          429
+        ]
+      }
+    },
+    {
+      "name": "F10 employee search forms provide independent record versions",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F10 submitting the first tab updates its exact employee and current salary",
+      "passed": true,
+      "evidence": {
+        "response_status": 302
+      }
+    },
+    {
+      "name": "F10 stale employee form returns conflict without a second raise",
+      "passed": true,
+      "evidence": {
+        "response_status": 409
+      }
+    },
+    {
+      "name": "F13 HTTP employee creation allocates one new employee ID",
+      "passed": true,
+      "evidence": {
+        "response_status": 302,
+        "matching_rows": 1
+      }
+    },
+    {
+      "name": "F05 new employee temporary credential is privately shown only once",
+      "passed": true,
+      "evidence": {
+        "first_response_status": 200,
+        "second_response_status": 200
+      }
+    },
+    {
+      "name": "F13 employee, emergency contact, balance, and login commit together",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F05 HTTP-created employee rejects the former shared default",
+      "passed": true,
+      "evidence": {
+        "response_status": 200
+      }
+    },
+    {
+      "name": "F05 HTTP-created employee completes the first-password-change workflow",
+      "passed": true,
+      "evidence": {
+        "change_response_status": 200,
+        "business_response_status": 200
+      }
+    },
+    {
+      "name": "F14 leave submission rejects impossible and reversed calendar dates",
+      "passed": true,
+      "evidence": {
+        "response_statuses": [
+          400,
+          400
+        ]
+      }
+    },
+    {
+      "name": "F06 insufficient approval leaves its request pending and balance intact",
+      "passed": true,
+      "evidence": {
+        "response_status": 409
+      }
+    },
+    {
+      "name": "F06 rejection is terminal and never debits leave balance",
+      "passed": true,
+      "evidence": {
+        "rejection_response_status": 302,
+        "replay_response_status": 409
+      }
+    },
+    {
+      "name": "F11 HTTP deletion preserves full-width employee and operator snapshots",
+      "passed": true,
+      "evidence": {
+        "response_status": 302,
+        "snapshot_rows": 1,
+        "employee_name_length": 100,
+        "position_name_length": 100,
+        "operator_name_length": 100,
+        "nin_length": 50,
+        "reason_length": 255
+      }
+    },
+    {
+      "name": "F11 successful audited deletion removes only its employee and dependent records",
+      "passed": true,
+      "evidence": {
+        "remaining_child_counts": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "name": "F11 deleting an unknown employee cannot create a misleading audit entry",
+      "passed": true,
+      "evidence": {
+        "response_status": 404,
+        "snapshot_rows": 1
+      }
+    },
+    {
+      "name": "F13 failed contact write rolls back employee, login and leave balance",
+      "passed": true,
+      "evidence": {
+        "counts_before": [
+          208,
+          199,
+          208,
+          208
+        ],
+        "counts_after": [
+          208,
+          199,
+          208,
+          208
+        ]
+      }
+    },
+    {
+      "name": "F09 a workflow SQL failure returns no SQL, paths or stack trace",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F15 the web runtime account cannot create schema objects or administer users",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F15 configuration rejects root runtime",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F15 configuration rejects empty runtime password",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "Concurrency regressions use two PHP processes and independent administrator sessions",
+      "passed": true,
+      "evidence": {
+        "login_response_statuses": [
+          302,
+          302
+        ]
+      }
+    },
+    {
+      "name": "F06 simultaneous HTTP approvals process one pending request only once",
+      "passed": true,
+      "evidence": {
+        "response_statuses": [
+          302,
+          409
+        ],
+        "http_requests_overlapped": true,
+        "charged_days": 4
+      }
+    },
+    {
+      "name": "F06 simultaneous HTTP approvals cannot overdraw a shared leave balance",
+      "passed": true,
+      "evidence": {
+        "response_statuses": [
+          302,
+          409
+        ],
+        "http_requests_overlapped": true,
+        "remaining_days": 1,
+        "approved_requests": 1,
+        "pending_requests": 1
+      }
+    },
+    {
+      "name": "F13 simultaneous HTTP employee creation assigns distinct IDs and complete related rows",
+      "passed": true,
+      "evidence": {
+        "response_statuses": [
+          302,
+          302
+        ],
+        "http_requests_overlapped": true,
+        "created_employees": 2,
+        "distinct_ids": 2,
+        "complete_related_records": true
+      }
+    },
+    {
+      "name": "Concurrency regression secondary PHP server is stopped",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F09 malformed salary query array returns a private 400",
+      "passed": true,
+      "evidence": {
+        "status": 400
+      }
+    },
+    {
+      "name": "F09 malformed holiday POST array returns a private 400",
+      "passed": true,
+      "evidence": {
+        "status": 400
+      }
+    },
+    {
+      "name": "F09 malformed login POST array returns a private 400",
+      "passed": true,
+      "evidence": {
+        "status": 400
+      }
+    },
+    {
+      "name": "F03 GET logout displays confirmation and preserves authentication",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F03 logout POST without a token is rejected without signing out",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "Valid logout POST signs out and clears authenticated access",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F09 unavailable database returns a generic private 503",
+      "passed": true,
+      "evidence": {
+        "status": 503
+      }
+    },
+    {
+      "name": "Owned auxiliary server stopped: unavailable",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F07 idle session expires without activity",
+      "passed": true,
+      "evidence": {
+        "idle_limit_seconds": 1,
+        "status": 302
+      }
+    },
+    {
+      "name": "F07 absolute session expires despite repeated activity",
+      "passed": true,
+      "evidence": {
+        "absolute_limit_seconds": 3,
+        "successful_requests": 8,
+        "status": 302
+      }
+    },
+    {
+      "name": "Owned auxiliary server stopped: expiry",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F14 calendar spring DST dates remain inclusive in UTC",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F14 calendar fall DST dates remain inclusive in UTC",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F14 leap-day range remains inclusive in UTC",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F14 calendar spring DST dates remain inclusive in America/New_York",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F14 calendar fall DST dates remain inclusive in America/New_York",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F14 leap-day range remains inclusive in America/New_York",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F14 calendar spring DST dates remain inclusive in Asia/Seoul",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F14 calendar fall DST dates remain inclusive in Asia/Seoul",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F14 leap-day range remains inclusive in Asia/Seoul",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F14 strict date validation rejects impossible and noncanonical dates",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F14 inclusive calendar handles year boundaries and single days",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F14 reversed calendar date range is rejected",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F08 formula prefixes and leading whitespace or controls are neutralized",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F08 ordinary CSV text stays unchanged",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F16 CSV explicit empty escape round-trips quotes, backslashes, newlines and UTF-8",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F05 password policy rejects short and overlong or NUL-containing inputs",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "F05 valid long passphrase is accepted without trimming significant spaces",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "UI administrator fixture authenticates for directory checks",
+      "passed": true,
+      "evidence": {
+        "response_status": 302
+      }
+    },
+    {
+      "name": "UI directory searches both employee names and work email",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "UI directory treats percent signs as literal search text",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "UI directory treats underscores as literal search text",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "UI directory searches literal exclamation marks without losing results",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "UI directory preserves search text while escaping HTML attribute content",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "UI directory rejects array inputs for every scalar search field",
+      "passed": true,
+      "evidence": {
+        "response_statuses": {
+          "q": 400,
+          "employee_id": 400,
+          "department": 400,
+          "position": 400,
+          "office": 400,
+          "hired_date": 400,
+          "page": 400
+        }
+      }
+    },
+    {
+      "name": "UI directory rejects invalid and out-of-range page numbers",
+      "passed": true,
+      "evidence": {
+        "response_statuses": [
+          422,
+          422,
+          422,
+          422,
+          422
+        ]
+      }
+    },
+    {
+      "name": "UI directory returns twelve employees per page in stable name and ID order",
+      "passed": true,
+      "evidence": {
+        "first_page_count": 12,
+        "second_page_count": 3
+      }
+    },
+    {
+      "name": "UI directory pagination preserves all active search and category filters",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "UI directory clamps a valid oversized page to its final available page",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "UI directory retains the exact employee ID filter alongside new search",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "UI profile edit link loads the intended employee and its current record version",
+      "passed": true,
+      "evidence": {}
+    },
+    {
+      "name": "UI directory, profiles, and direct edit links remain restricted to administrators",
+      "passed": true,
+      "evidence": {
+        "response_statuses": [
+          302,
+          302,
+          302
+        ]
+      }
+    }
+  ],
+  "limitations": [
+    "Loopback HTTP tests do not certify a production deployment or every possible input."
+  ],
+  "runtime": {
+    "php": "8.5.12",
+    "mysql": "8.4.13",
+    "http": "http://127.0.0.1:18037"
+  },
+  "server_stopped": true,
+  "passed": 97,
+  "total": 97
+}

@@ -1,143 +1,53 @@
 <?php
 require_once __DIR__ . '/../config/bootstrap.php';
+require_once __DIR__ . '/../lib/ui.php';
 $current = require_login();
-$department = $current['department_id'];
-
-$employee_id = '';
+$employee_id = (int) $current['employee_id'];
 $holiday_requests = [];
-$message = '';
-
-
-$employee_id = $_SESSION['employee_id'];
-
-if (!empty($employee_id) && is_numeric($employee_id)) {
-    $getRequestsSQL = "
-        SELECT request_id, leave_type, start_date, end_date, reason, status, updated_at
-        FROM holiday_requests
-        WHERE employee_id = ?
-        ORDER BY updated_at DESC
-    ";
-    $stmt = $conn->prepare($getRequestsSQL);
-    $stmt->bind_param("i", $employee_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            $holiday_requests[] = $row;
-        }
-    } else {
-        $message = "No holiday requests found for the given employee ID.";
-    }
-
-    $stmt->close();
-} else {
-    $message = "Invalid employee ID. Please enter a valid number.";
+$stmt = $conn->prepare('SELECT request_id, leave_type, start_date, end_date, reason, status, updated_at FROM holiday_requests WHERE employee_id = ? ORDER BY updated_at DESC, request_id DESC');
+$stmt->bind_param('i', $employee_id);
+$stmt->execute();
+$result = $stmt->get_result();
+while ($row = $result->fetch_assoc()) {
+    $holiday_requests[] = $row;
 }
-
-$conn->close();
+$stmt->close();
+$counts = ['Pending' => 0, 'Approved' => 0, 'Rejected' => 0];
+foreach ($holiday_requests as $request) {
+    if (isset($counts[$request['status']])) {
+        $counts[$request['status']]++;
+    }
+}
+$statusClasses = ['Pending' => 'badge-warning', 'Approved' => 'badge-success', 'Rejected' => 'badge-danger'];
+ui_page_start('My leave', 'Track your time away and the progress of each request.', ['current' => $current]);
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            margin: 0;
-            padding: 0;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        h2 {
-            text-align: center;
-            color: #333333;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th,
-        td {
-            border: 1px solid #dddddd;
-            text-align: center;
-            padding: 10px;
-        }
-
-        th {
-            background-color: #f2f2f2;
-            color: #333333;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-
-        .buttons {
-            text-align: center;
-            margin-top: 20px;
-        }
-    </style>
-</head>
-
-<body>
-    <div class="container">
-        <h2>Check Your Holiday Request Status</h2>
-
-        <?php if ($message): ?>
-            <p class="message"><?php echo e($message); ?></p>
-        <?php endif; ?>
-
-        <?php if (!empty($holiday_requests)): ?>
-            <table>
-                <thead>
+<div class="stat-grid">
+    <section class="stat-card"><p class="stat-label">Awaiting approval</p><p class="stat-value"><?php echo e($counts['Pending']); ?></p><p class="stat-note">Requests with your administrator</p></section>
+    <section class="stat-card"><p class="stat-label">Approved</p><p class="stat-value"><?php echo e($counts['Approved']); ?></p><p class="stat-note">Requests confirmed</p></section>
+    <section class="stat-card"><p class="stat-label">All requests</p><p class="stat-value"><?php echo e(count($holiday_requests)); ?></p><p class="stat-note">Your complete request history</p></section>
+</div>
+<section class="panel" aria-labelledby="history-title">
+    <div class="panel-header"><div><p class="eyebrow">For <?php echo e($current['name']); ?></p><h2 id="history-title">Request history</h2><p class="muted">Calendar days include both dates and weekends. Your balance changes when a request is approved.</p></div><a class="button" href="holiday_requests.php">Request leave</a></div>
+    <?php if ($holiday_requests): ?>
+        <div class="table-scroll"><table class="data-table">
+            <thead><tr><th scope="col">Request</th><th scope="col">Leave type</th><th scope="col">Dates</th><th scope="col">Days</th><th scope="col">Reason</th><th scope="col">Status</th><th scope="col">Last updated</th></tr></thead>
+            <tbody>
+                <?php foreach ($holiday_requests as $request): ?>
+                    <?php $validRequestDates = valid_date($request['start_date']) && valid_date($request['end_date']) && $request['end_date'] >= $request['start_date']; ?>
                     <tr>
-                        <th>Request ID</th>
-                        <th>Leave Type</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-                        <th>Reason</th>
-                        <th>Status</th>
-                        <th>Last Updated</th>
+                        <td>#<?php echo e($request['request_id']); ?></td>
+                        <td><strong><?php echo e($request['leave_type']); ?></strong></td>
+                        <td><time datetime="<?php echo e($request['start_date']); ?>"><?php echo e($request['start_date']); ?></time><br><span class="muted">to</span> <time datetime="<?php echo e($request['end_date']); ?>"><?php echo e($request['end_date']); ?></time></td>
+                        <td><?php echo $validRequestDates ? e(calendar_days($request['start_date'], $request['end_date'])) : 'Unavailable'; ?></td>
+                        <td><?php echo e($request['reason'] ?: 'No reason provided'); ?></td>
+                        <td><span class="badge <?php echo e($statusClasses[$request['status']] ?? 'badge-neutral'); ?>"><?php echo e($request['status']); ?></span></td>
+                        <td><time datetime="<?php echo e(str_replace(' ', 'T', $request['updated_at'])); ?>"><?php echo e($request['updated_at']); ?></time></td>
                     </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($holiday_requests as $request): ?>
-                        <tr>
-                            <td><?php echo e($request['request_id']); ?></td>
-                            <td><?php echo e($request['leave_type']); ?></td>
-                            <td><?php echo e($request['start_date']); ?></td>
-                            <td><?php echo e($request['end_date']); ?></td>
-                            <td><?php echo e($request['reason'] ?: 'No reason provided'); ?></td>
-                            <td><?php echo e($request['status']); ?></td>
-                            <td><?php echo e($request['updated_at']); ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        <?php endif; ?>
-
-        <div class="buttons">
-            <a href="<?php echo $current['department_name'] === 'Executive' ? 'admin_main.php' : 'main.php'; ?>">Back to Main</a>
-        </div>
-    </div>
-</body>
-
-</html>
+                <?php endforeach; ?>
+            </tbody>
+        </table></div>
+    <?php else: ?>
+        <div class="empty-state"><span class="badge badge-neutral">A fresh start</span><h3>No leave requests yet</h3><p class="muted">When you request time away, you can follow its approval status here.</p><a class="button button-secondary" href="holiday_requests.php">Make your first request</a></div>
+    <?php endif; ?>
+</section>
+<?php ui_page_end(); ?>

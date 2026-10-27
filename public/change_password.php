@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../config/bootstrap.php';
+require_once __DIR__ . '/../lib/ui.php';
 $current = require_login(true);
 $backUrl = $current['department_name'] === 'Executive' ? 'admin_main.php' : 'main.php';
 $current_password_err = $new_password_err = $confirm_password_err = $success_msg = '';
@@ -52,94 +53,52 @@ if ($method === 'POST') {
     }
 }
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Change password</title>
-    <style>
-        .error {
-            color: red;
-        }
-
-        .success {
-            text-align: center;
-            font-size: 40px;
-            color: green;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-        }
-
-        form {
-            max-width: 400px;
-            margin: auto;
-        }
-
-        input[type="password"] {
-            width: 100%;
-            padding: 8px;
-            margin: 4px 0;
-        }
-
-        label {
-            display: block;
-            margin-top: 8px;
-        }
-
-        button {
-            padding: 8px 16px;
-            margin-top: 12px;
-        }
-
-        h1 {
-            text-align: center;
-        }
-    </style>
-</head>
-
-<body>
-    <?php if (!$current['must_change_password']): ?>
-        <a href="<?php echo e($backUrl); ?>">Back to Main</a>
-    <?php endif; ?>
-    <a href="logout.php">Sign out</a>
-    <h1>Change Password!</h1>
-    <?php if ($current['must_change_password']): ?>
-        <p style="text-align:center">Choose a new passphrase before continuing. Use your temporary password as the current password.</p>
-    <?php endif; ?>
-    <?php if (!empty($success_msg)): ?>
-        <p class="success"><?php echo e($success_msg); ?> <a href="<?php echo e($backUrl); ?>">Continue</a></p>
-        <script>
-            setTimeout(function() {
-                window.location.href = <?php echo json_encode($backUrl, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
-            }, 1500);
-        </script>
-    <?php endif; ?>
-
-    <form method="POST" action="">
-        <?php echo csrf_field(); ?>
-        <label for="current_password">Current Password:</label>
-        <input type="password" id="current_password" name="current_password" autocomplete="current-password" required>
-        <?php if ($current_password_err !== ''): ?>
-            <span class="error"><?php echo e($current_password_err); ?></span>
+<?php ui_page_start('Change Password', 'Keep your employee account secure with a personal passphrase.', ['current' => $current]); ?>
+<div class="grid-2">
+    <section class="panel" aria-labelledby="password-title">
+        <div class="panel-header"><div><p class="eyebrow">Account security</p><h2 id="password-title">Choose a new passphrase</h2></div><span class="badge badge-neutral">Employee <?php echo e($current['employee_id']); ?></span></div>
+        <?php if ($current['must_change_password']): ?>
+            <?php ui_notice('Choose a new passphrase before continuing. Use your temporary password as the current password.', 'info'); ?>
         <?php endif; ?>
-        <label for="new_password">New passphrase (at least 15 characters):</label>
-        <input type="password" id="new_password" name="new_password" autocomplete="new-password" minlength="15" required>
-        <?php if (!empty($new_password_err)): ?>
-            <span class="error"><?php echo e($new_password_err); ?></span>
+        <?php if ($success_msg !== ''): ?>
+            <?php ui_notice($success_msg, 'success'); ?>
+            <p><a class="button" href="<?php echo e($backUrl); ?>">Continue to workspace</a></p>
+            <script>
+                setTimeout(function() {
+                    window.location.href = <?php echo json_encode($backUrl, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
+                }, 1500);
+            </script>
+        <?php else: ?>
+            <?php if ($current_password_err !== '' || $new_password_err !== '' || $confirm_password_err !== ''): ?>
+                <?php ui_notice('Your password could not be changed. Review the highlighted fields below.', 'error'); ?>
+            <?php endif; ?>
+            <form method="POST" action="" class="form-grid">
+                <?php echo csrf_field(); ?>
+                <div class="field field-full">
+                    <label for="current_password">Current password</label>
+                    <div class="password-field"><input type="password" id="current_password" name="current_password" autocomplete="current-password"<?php echo $current_password_err !== '' ? ' aria-invalid="true" aria-describedby="current-password-error"' : ''; ?> required></div>
+                    <?php if ($current_password_err !== ''): ?><p class="field-hint" id="current-password-error" role="alert"><?php echo e($current_password_err); ?></p><?php endif; ?>
+                </div>
+                <div class="field field-full">
+                    <label for="new_password">New passphrase</label>
+                    <div class="password-field"><input type="password" id="new_password" name="new_password" autocomplete="new-password" minlength="15" aria-describedby="new-password-hint<?php echo $new_password_err !== '' ? ' new-password-error' : ''; ?>"<?php echo $new_password_err !== '' ? ' aria-invalid="true"' : ''; ?> required></div>
+                    <p class="field-hint" id="new-password-hint">Use at least 15 characters and choose a passphrase different from your current password.</p>
+                    <?php if ($new_password_err !== ''): ?><p class="field-hint" id="new-password-error" role="alert"><?php echo e($new_password_err); ?></p><?php endif; ?>
+                </div>
+                <div class="field field-full">
+                    <label for="confirm_password">Confirm new passphrase</label>
+                    <div class="password-field"><input type="password" id="confirm_password" name="confirm_password" autocomplete="new-password" minlength="15"<?php echo $confirm_password_err !== '' ? ' aria-invalid="true" aria-describedby="confirm-password-error"' : ''; ?> required></div>
+                    <?php if ($confirm_password_err !== ''): ?><p class="field-hint" id="confirm-password-error" role="alert"><?php echo e($confirm_password_err); ?></p><?php endif; ?>
+                </div>
+                <div class="form-actions field-full"><button type="submit" class="button">Update password</button><?php if (!$current['must_change_password']): ?><a class="button button-secondary" href="<?php echo e($backUrl); ?>">Cancel</a><?php endif; ?></div>
+            </form>
         <?php endif; ?>
-
-        <label for="confirm_password">Check Password:</label>
-        <input type="password" id="confirm_password" name="confirm_password" autocomplete="new-password" minlength="15" required>
-        <?php if (!empty($confirm_password_err)): ?>
-            <span class="error"><?php echo e($confirm_password_err); ?></span>
-        <?php endif; ?>
-
-        <button type="submit">Change Password</button>
-    </form>
-</body>
-
-</html>
+    </section>
+    <aside class="panel" aria-labelledby="passphrase-help-title">
+        <p class="eyebrow">A little peace of mind</p><h2 id="passphrase-help-title">Make it memorable</h2>
+        <p>A longer passphrase made from several unrelated words is easier to remember. Keep it unique to this account.</p>
+        <p class="muted">After a successful change, your other signed-in sessions are revoked.</p>
+        <a class="button button-quiet" href="logout.php">Sign out of this account</a>
+    </aside>
+</div>
+<?php ui_page_end(); ?>
