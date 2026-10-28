@@ -89,4 +89,10 @@ return [
     'Select an office' => '근무지를 선택하세요', 'Browse directory' => '직원 목록 열기',
     'You can also open a record from the employee directory.' => '직원 목록에서도 수정할 직원을 선택할 수 있습니다.',
     'Remove employee record' => '직원 정보 삭제',
+    'Kilburnazon company overview' => 'Kilburnazon 직원 업무 안내',
+    'Kilburnazon delivery company illustration, Manchester, UK.' => '영국 맨체스터의 Kilburnazon 배송 회사를 표현한 일러스트.',
+    'Employee management, in one place.' => '직원 관리 업무를 한곳에서.',
+    'Keep employee records current and review leave requests from your team.' => '직원 정보를 관리하고 팀의 휴가 신청을 검토하세요.',
+    'Your employee services.' => '직원 업무 지원.',
+    'Check your available leave, submit a request and follow its approval status.' => '남은 휴가 일수를 확인하고 휴가 신청부터 승인 결과까지 살펴보세요.',
 ];

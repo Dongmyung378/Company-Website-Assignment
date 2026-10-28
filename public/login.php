@@ -39,12 +39,17 @@ if ($method === 'POST') {
 ?>
 <?php ui_page_start('Employee operations sign-in', 'Access your employee services and account.', ['auth' => true]); ?>
 <section class="auth-intro" aria-labelledby="welcome-title">
+    <figure class="company-art"><img src="assets/images/company-illustration.jpg" width="1024" height="1024" alt="<?php echo e(ui_t('Kilburnazon delivery company illustration, Manchester, UK.')); ?>" fetchpriority="high" decoding="async"></figure>
+    <div class="auth-intro-copy">
     <p class="eyebrow"><?php echo e(ui_t('Kilburnazon employee portal')); ?></p>
     <h2 id="welcome-title"><?php echo e(ui_t('Employee operations')); ?></h2>
     <p><?php echo e(ui_t('Access your leave balance, requests and account settings in one workspace.')); ?></p>
-    <div class="summary-row"><span>01</span><div><strong><?php echo e(ui_t('Leave balances')); ?></strong><p><?php echo e(ui_t('Check available annual, sick and personal leave.')); ?></p></div></div>
-    <div class="summary-row"><span>02</span><div><strong><?php echo e(ui_t('Request tracking')); ?></strong><p><?php echo e(ui_t('Submit leave requests and review their status.')); ?></p></div></div>
-    <div class="summary-row"><span>03</span><div><strong><?php echo e(ui_t('Account security')); ?></strong><p><?php echo e(ui_t('Change your password and manage your sign-in session.')); ?></p></div></div>
+    <ul class="auth-services">
+        <li><?php echo ui_icon('calendar'); ?><span><?php echo e(ui_t('Leave balances')); ?></span></li>
+        <li><?php echo ui_icon('review'); ?><span><?php echo e(ui_t('Request tracking')); ?></span></li>
+        <li><?php echo ui_icon('lock'); ?><span><?php echo e(ui_t('Account security')); ?></span></li>
+    </ul>
+    </div>
 </section>
 <section class="panel auth-form" aria-labelledby="login-title">
     <p class="eyebrow"><?php echo e(ui_t('Employee access')); ?></p>

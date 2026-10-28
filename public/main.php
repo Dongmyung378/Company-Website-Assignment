@@ -24,6 +24,20 @@ ui_page_start('My leave overview', 'View your leave balances, submit requests, a
     'actions' => '<a class="button" href="holiday_requests.php">' . ui_icon('plus') . e(ui_t('Request leave')) . '</a>',
 ]);
 ?>
+<section class="company-banner" aria-label="<?php echo e(ui_t('Kilburnazon company overview')); ?>">
+    <div class="company-banner-copy">
+        <p class="eyebrow">Kilburnazon</p>
+        <h2><?php echo e(ui_t('Your employee services.')); ?></h2>
+        <p><?php echo e(ui_t('Check your available leave, submit a request and follow its approval status.')); ?></p>
+        <div class="company-banner-links">
+            <a class="button button-secondary" href="holiday_requests.php"><?php echo e(ui_t('Request leave')); ?></a>
+            <a class="button button-quiet" href="check_my_holiday.php"><?php echo e(ui_t('View leave history')); ?> <?php echo ui_icon('arrow'); ?></a>
+        </div>
+    </div>
+    <figure class="company-banner-art">
+        <img src="assets/images/company-illustration.jpg" width="1024" height="1024" alt="<?php echo e(ui_t('Kilburnazon delivery company illustration, Manchester, UK.')); ?>" loading="eager" decoding="async">
+    </figure>
+</section>
 <?php if (!$balance): ?>
 <div class="notice notice-warning" role="status"><?php echo e(ui_t('Your leave balance is unavailable. Please contact your administrator.')); ?></div>
 <?php endif; ?>

@@ -35,6 +35,8 @@ The [Korean overview](README.ko.md) and matching Korean guides are provided sepa
 
 Every page uses the same navigation, typography and responsive layout. The administrator overview shows current employee counts and pending requests without interrupting alerts. Employees see their own balances and recent leave decisions.
 
+The original Kilburnazon company illustration appears in full on the sign-in page and both overviews. Navy and dark green, a soft sage background, and consistently spaced white panels connect the interface to that image. Text stays on separate surfaces rather than covering the artwork. On mobile, sign-in controls come before the illustration.
+
 - Search the directory by name or email, combine department/position/office filters, and browse 12 employees per page. Search treats percent signs and underscores literally; filters remain in page links.
 - Open an employee profile and choose **Edit employee** to load the matching record. Position choices follow the selected department; the server still verifies the assignment and record version.
 - Preview inclusive calendar days and the balance remaining after approval before submitting leave. This is a preview; the server and administrator approval remain authoritative.

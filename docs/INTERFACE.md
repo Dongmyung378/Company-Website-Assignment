@@ -35,7 +35,9 @@ All application labels, help, status badges, account notices and client-side pre
 
 ## Readability and visual consistency
 
-The navy/teal design uses consistent SVG icons and neutral avatar colors. Body copy, navigation, field labels, report headings, badges and supporting text were increased in size. Activity rows and login panels have tighter, deliberate spacing. Numeric salary columns align right; wide tables show a localized horizontal-scroll hint. The mobile menu keeps background content inert while it is open.
+The original square Kilburnazon company illustration is shown without cropping on the sign-in page and the administrator and employee overviews. Its colors inform a navy and dark-green palette with a soft sage background. Body copy and captions stay on separate surfaces rather than covering the image. On mobile, the sign-in form comes first and the illustration follows.
+
+The consolidated `app.css` defines shared spacing for panels, forms and task cards. Consistent SVG icons, restrained avatar colors and distinct white content surfaces give each task a clear visual boundary. Numeric salary columns align right; wide tables show a localized horizontal-scroll hint. The mobile menu keeps background content inert while it is open.
 
 Computed foreground/background colors, including alpha composition, are checked against the [W3C text-contrast criteria](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html) and [non-text contrast criteria](https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html). These checks use 4.5:1 for normal text, 3:1 for large text, and 3:1 for meaningful control boundaries/icons. They are focused checks, not a claim of complete accessibility certification.
 
@@ -45,13 +47,14 @@ Follow the existing [setup guide](../database/README.md). Login information is d
 
 ## Verification
 
-Current results: **121/121 HTTP, security, workflow and language assertions**; **1,288/1,288 real-browser assertions** across **90 page/language/viewport combinations**, including **24 reviewed screenshots**. English and Korean were checked at 1440px and 390px; 320px, 360px and 768px have additional checks.
+The current design passed **1,288/1,288 real-browser assertions** across **90 page/language/viewport combinations**, including **24 reviewed screenshots**. English and Korean were checked at 1440px and 390px; 320px, 360px and 768px have additional checks. The separate [HTTP, security, workflow and language suite](verification/company-design-regression.json) passed **121/121 assertions**.
 
-Across those rendered cases, 22,168 text samples and 78 placeholders met their contrast thresholds. The minimum measured text contrast was **4.792:1**, placeholder contrast **5.277:1**, and control-boundary contrast **3.494:1**. The audit also checked 868 functional SVG samples, 22,506 font-size samples and 84 button/icon containment samples. No unresolved paint stacks or failures remained. Hidden, inactive, inert and decorative content is excluded as described in the saved report.
+Across those rendered cases, 22,244 text samples and 78 placeholders met their contrast thresholds. The minimum measured text contrast was **5.141:1**, placeholder contrast **5.461:1**, and control-boundary contrast **3.523:1** across 1,040 boundary samples. The audit also checked 882 functional SVG samples, 22,582 font-size samples and 98 button/icon containment samples. No unresolved paint stacks or failures remained. Hidden, inactive, inert and decorative content is excluded as described in the saved report.
 
-- [Current HTTP/language evidence](verification/bilingual-regression.json) retains the original 97 checks and adds 24 grouped language checks, including all 17 screens in both languages, default-language behavior, locale persistence, placeholder coverage, unchanged English CSV and access restrictions.
-- [Current PHP syntax evidence](verification/bilingual-php-lint.json) covers all 52 PHP files, including the language catalogs.
-- [Current browser and computed-style evidence](verification/bilingual-browser.json) records contrast, layout, language selection, unsaved-entry handling, form clicks, calendar previews, resource/script errors and test-process cleanup.
+- [Current HTTP/language evidence](verification/company-design-regression.json) covers all 17 screens in both languages, default-language behavior, locale persistence, placeholder coverage, unchanged English CSV, workflow integrity and access restrictions.
+- [Current PHP syntax evidence](verification/company-design-php-lint.json) covers the five PHP files changed for this design. The earlier [full PHP check](verification/bilingual-php-lint.json) covers all 52 files.
+- [Current browser and computed-style evidence](verification/company-design-browser.json) records contrast, layout, language selection, unsaved-entry handling, form clicks, calendar previews, resource/script errors and test-process cleanup.
+- The earlier [bilingual HTTP/language evidence](verification/bilingual-regression.json) and [bilingual browser evidence](verification/bilingual-browser.json) remain available as prior checkpoints.
 - Earlier [interface regression](verification/ui-regression.json), [browser evidence](verification/ui-browser.json) and [security-update evidence](SECURITY.md) remain available as the initial checkpoints.
 
 Re-run the standard suite against a disposable `_test` database:

@@ -1,0 +1,26 @@
+{
+  "checks": [
+    {
+      "path": "lib/translations/common.ko.php",
+      "passed": true
+    },
+    {
+      "path": "lib/ui.php",
+      "passed": true
+    },
+    {
+      "path": "public/admin_main.php",
+      "passed": true
+    },
+    {
+      "path": "public/login.php",
+      "passed": true
+    },
+    {
+      "path": "public/main.php",
+      "passed": true
+    }
+  ],
+  "passed": 5,
+  "total": 5
+}

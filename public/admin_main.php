@@ -22,6 +22,20 @@ ui_page_start('Workforce overview', 'Employee records and leave approvals for yo
     'actions' => '<a class="button" href="add_employee.php">' . ui_icon('plus') . e(ui_t('Add employee')) . '</a>',
 ]);
 ?>
+<section class="company-banner" aria-label="<?php echo e(ui_t('Kilburnazon company overview')); ?>">
+    <div class="company-banner-copy">
+        <p class="eyebrow">Kilburnazon</p>
+        <h2><?php echo e(ui_t('Employee management, in one place.')); ?></h2>
+        <p><?php echo e(ui_t('Keep employee records current and review leave requests from your team.')); ?></p>
+        <div class="company-banner-links">
+            <a class="button button-secondary" href="list_employees.php"><?php echo e(ui_t('Open directory')); ?></a>
+            <a class="button button-quiet" href="check_holiday_requests.php"><?php echo e(ui_t('Review requests')); ?> <?php echo ui_icon('arrow'); ?></a>
+        </div>
+    </div>
+    <figure class="company-banner-art">
+        <img src="assets/images/company-illustration.jpg" width="1024" height="1024" alt="<?php echo e(ui_t('Kilburnazon delivery company illustration, Manchester, UK.')); ?>" loading="eager" decoding="async">
+    </figure>
+</section>
 <div class="stat-grid">
     <a class="stat-card" href="list_employees.php">
         <span class="stat-label"><?php echo e(ui_t('Total employees')); ?></span>

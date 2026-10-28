@@ -58,7 +58,7 @@ function ui_page_start(string $title, string $description = '', array $options =
     <script type="application/json" id="ui-messages"><?php echo json_encode(ui_client_messages(), JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?></script>
     <script src="assets/js/app.js?v=<?php echo $jsVersion; ?>" defer></script>
 </head>
-<body class="<?php echo $auth ? 'auth-page' : 'app-page'; ?>">
+<body class="<?php echo $auth ? 'auth-page' : 'app-page'; ?>" data-page="<?php echo e($page); ?>">
 <a class="skip-link" href="#main-content"><?php echo e(ui_t('Skip to content')); ?></a>
 <?php if ($auth): ?>
 <header class="auth-header"><div class="brand"><?php echo $brand; ?></div><?php echo ui_language_switch(); ?></header>
