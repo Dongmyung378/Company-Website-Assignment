@@ -102,7 +102,7 @@ ui_page_start('Workforce overview', 'Employee records and leave approvals for yo
     </section>
 </div>
 
-<section aria-labelledby="quick-heading">
+<section class="task-section" aria-labelledby="quick-heading">
     <div class="panel-header"><div><p class="eyebrow"><?php echo e(ui_t('Management tools')); ?></p><h2 id="quick-heading"><?php echo e(ui_t('Common tasks')); ?></h2></div></div>
     <div class="grid-3">
         <a class="action-card" href="list_employees.php"><span class="eyebrow"><?php echo e(ui_t('People')); ?></span><h3><?php echo e(ui_t('Employee directory')); ?></h3><p><?php echo e(ui_t('Search employee records, review profiles, and open an employee for editing.')); ?></p><span><?php echo e(ui_t('Open directory')); ?> <?php echo ui_icon('arrow'); ?></span></a>

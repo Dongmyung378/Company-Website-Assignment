@@ -6,6 +6,8 @@
   <p>A server-rendered PHP and MySQL employee operations application.</p>
 </div>
 
+**Development period: September to December 2024.**
+
 ## What it does
 
 Employees can request annual, sick or personal leave, check their request history and change their password. Executive users maintain employee and emergency-contact records, approve leave, review monthly absence and birthdays, export payroll reports and inspect deletion records. The supplied 197 employee records are fictional coursework data.
